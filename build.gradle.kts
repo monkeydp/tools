@@ -9,15 +9,17 @@ group = "com.monkeydp"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.apache.commons:commons-lang3:3.8.1")
-    testImplementation("junit:junit:4.12")
+    // kotlin
+    implementation(Deps.kotlinReflect)
+    implementation(Deps.kotlinStdlibJdk8)
+    // commons-lang3
+    implementation(Deps.commonsLang3)
+    // lombok
+    compileOnly(Deps.lombok)
+    annotationProcessor(Deps.lombok)
+    // junit
+    testImplementation(Deps.junit)
 }
 
 tasks.withType<KotlinCompile> {
