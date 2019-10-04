@@ -8,7 +8,7 @@ private object Versions {
     const val junit = "4.12"
 }
 
-object Deps {
+object Libs {
     const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
     const val kotlinStdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     const val commonsLang3 = "org.apache.commons:commons-lang3:${Versions.commonsLang3}"

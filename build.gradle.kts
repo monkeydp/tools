@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.2.71"
-    kotlin("plugin.spring") version "1.2.71"
 }
 
 group = "com.monkeydp"
@@ -11,15 +10,15 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     // kotlin
-    implementation(Deps.kotlinReflect)
-    implementation(Deps.kotlinStdlibJdk8)
+    implementation(Libs.kotlinReflect)
+    implementation(Libs.kotlinStdlibJdk8)
     // commons-lang3
-    implementation(Deps.commonsLang3)
+    implementation(Libs.commonsLang3)
     // lombok
-    compileOnly(Deps.lombok)
-    annotationProcessor(Deps.lombok)
+    compileOnly(Libs.lombok)
+    annotationProcessor(Libs.lombok)
     // junit
-    testImplementation(Deps.junit)
+    testImplementation(Libs.junit)
 }
 
 tasks.withType<KotlinCompile> {
