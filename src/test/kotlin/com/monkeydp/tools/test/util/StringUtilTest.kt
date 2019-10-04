@@ -1,6 +1,6 @@
 package com.monkeydp.tools.test.util
 
-import com.monkeydp.tools.util.StringUtil
+import com.monkeydp.tools.util.StringUtil.isEmpty
 import org.junit.Assert
 import org.junit.Test
 
@@ -12,10 +12,10 @@ class StringUtilTest {
     @Test
     fun isEmptyTest() {
         // true
-        Assert.assertTrue(StringUtil.isEmpty(null))
-        Assert.assertTrue(StringUtil.isEmpty(""))
+        Assert.assertTrue(isEmpty(null))
+        Assert.assertTrue(isEmpty(""))
         // false
-        Assert.assertFalse(StringUtil.isEmpty("iPotato"))
-        Assert.assertFalse(StringUtil.isEmpty(" "))
+        Assert.assertFalse(isEmpty("iPotato"))
+        Assert.assertFalse(isEmpty(" "))
     }
 }
