@@ -17,6 +17,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.apache.commons:commons-lang3:3.8.1")
+    testImplementation("junit:junit:4.12")
 }
 
 tasks.withType<KotlinCompile> {
