@@ -1,4 +1,4 @@
-package com.monkeydp.tools.util
+package com.monkeydp.common.tools.util
 
 import org.apache.commons.lang3.StringUtils
 

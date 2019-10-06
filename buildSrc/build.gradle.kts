@@ -2,4 +2,4 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.monkeydp"
+group = "com.monkeydp.common.tools"
