@@ -1,6 +1,6 @@
 package com.monkeydp.tools.test.util
 
-import com.monkeydp.common.tools.util.StringUtil.isEmpty
+import com.monkeydp.tools.util.StringUtil.isEmpty
 import org.junit.Assert
 import org.junit.Test
 

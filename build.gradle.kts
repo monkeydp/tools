@@ -8,7 +8,7 @@ plugins {
     kotlin("jvm") version "1.2.71"
 }
 
-group = "com.monkeydp.common"
+group = "com.monkeydp"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
