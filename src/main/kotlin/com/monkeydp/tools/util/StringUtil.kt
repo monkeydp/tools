@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils
  */
 object StringUtil {
     /**
-     * 字符串是否为空
+     * Whether the string is empty
      */
     fun isEmpty(string: String?) =
             StringUtils.isEmpty(string)
