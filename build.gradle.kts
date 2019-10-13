@@ -1,9 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    // spring (only use for dependency management)
-    id("org.springframework.boot") version "2.1.9.RELEASE"
-    id("io.spring.dependency-management") version "1.0.8.RELEASE"
     // kotlin
     kotlin("jvm") version "1.2.71"
 }
@@ -17,12 +14,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     // commons-lang3
-    implementation("org.apache.commons:commons-lang3")
+    implementation("org.apache.commons:commons-lang3:3.8.1")
     // lombok
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok:1.18.10")
+    annotationProcessor("org.projectlombok:lombok:1.18.10")
     // junit
-    testImplementation("junit:junit")
+    testImplementation("junit:junit:4.12")
 }
 
 tasks.withType<KotlinCompile> {
