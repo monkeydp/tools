@@ -1,5 +1,6 @@
 package com.monkeydp.tools.util
 
+import com.monkeydp.tools.exception.inner.StdInnerException
 import java.io.File
 import java.io.FilenameFilter
 
@@ -21,7 +22,7 @@ object FileUtil {
      */
     fun listFiles(dir: File, filter: FilenameFilter): Array<File> {
         if (!dir.isDirectory)
-            throw RuntimeException(String.format("File %s is not a directory!", dir))
+            throw StdInnerException(String.format("File %s is not a directory!", dir))
         val files: Array<File>? = dir.listFiles(filter)
         return files!!
     }
