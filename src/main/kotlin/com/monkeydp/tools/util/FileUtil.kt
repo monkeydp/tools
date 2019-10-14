@@ -1,6 +1,7 @@
 package com.monkeydp.tools.util
 
 import java.io.File
+import java.io.FilenameFilter
 
 /**
  * @author iPotato
@@ -8,15 +9,20 @@ import java.io.File
  */
 object FileUtil {
     /**
-     * List all files matched the given regex under the given directory
+     * List all files under the given directory
      */
-    fun listFiles(dirPath: String, pattern: String): Array<File> {
+    fun listFiles(dirPath: String, filter: FilenameFilter): Array<File> {
         val dir = File(dirPath)
+        return listFiles(dir, filter)
+    }
+
+    /**
+     * List all files under the given directory
+     */
+    fun listFiles(dir: File, filter: FilenameFilter): Array<File> {
         if (!dir.isDirectory)
-            throw RuntimeException(String.format("Cannot find dir in path: %s", dirPath))
-        val files = dir.listFiles { _, filename ->
-            filename.matches(pattern.toRegex())
-        }
+            throw RuntimeException(String.format("File %s is not a directory!", dir))
+        val files: Array<File>? = dir.listFiles(filter)
         return files!!
     }
 }
