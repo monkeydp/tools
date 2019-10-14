@@ -20,6 +20,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.10")
     // junit
     testImplementation("junit:junit:4.12")
+    // yaml
+    implementation("org.yaml:snakeyaml:1.23")
 }
 
 tasks.withType<KotlinCompile> {
