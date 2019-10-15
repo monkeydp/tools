@@ -9,4 +9,5 @@ import com.monkeydp.tools.exception.AbstractGlobalException
 abstract class AbstractInnerException : InnerException, AbstractGlobalException {
     constructor(message: String) : super(message)
     constructor(message: String, cause: Throwable) : super(message, cause)
+    constructor(cause: Throwable) : super(cause)
 }
