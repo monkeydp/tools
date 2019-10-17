@@ -21,9 +21,22 @@ object FileUtil {
      * List all files under the given directory
      */
     fun listFiles(dir: File, filter: FilenameFilter): Array<File> {
-        if (!dir.isDirectory)
-            throw StdInnerException(String.format("File %s is not a directory!", dir))
+        checkIsDir(dir)
         val files: Array<File>? = dir.listFiles(filter)
         return files!!
+    }
+
+    /**
+     * Delete all children files/dirs
+     */
+    fun deleteAllChildren(dir: File) {
+        checkIsDir(dir)
+        dir.deleteRecursively()
+        dir.mkdir()
+    }
+
+    private fun checkIsDir(file: File) {
+        if (!file.isDirectory)
+            throw StdInnerException(String.format("File %s is not a directory!", file))
     }
 }
