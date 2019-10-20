@@ -20,8 +20,10 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.10")
     // junit
     testImplementation("junit:junit:4.12")
-    // yaml
+    // snakeyaml
     implementation("org.yaml:snakeyaml:1.23")
+    // jackson
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
 }
 
 tasks.withType<KotlinCompile> {

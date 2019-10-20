@@ -6,6 +6,6 @@ import com.monkeydp.tools.exception.inner.AbstractInnerException
  * @author iPotato
  * @date 2019/10/15
  */
-abstract class AbstractRawException : RawException, AbstractInnerException {
+abstract class AbstractRawException : AbstractInnerException {
     constructor(cause: Throwable) : super(cause)
 }
