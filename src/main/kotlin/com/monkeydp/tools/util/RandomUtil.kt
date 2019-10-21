@@ -1,5 +1,6 @@
 package com.monkeydp.tools.util
 
+import org.jetbrains.annotations.TestOnly
 import java.util.*
 
 /**
@@ -9,6 +10,11 @@ import java.util.*
 object RandomUtil {
 
     private val random = Random()
+
+    @TestOnly
+    fun randomId(): Long {
+        return randomInt(1, 1000).toLong()
+    }
 
     /**
      * Random Integer between min and max
