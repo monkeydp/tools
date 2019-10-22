@@ -56,6 +56,6 @@ object FileUtil {
 
     private fun checkIsDir(file: File) {
         if (!file.isDirectory)
-            throw StdInnerException(String.format("File %s is not a directory!", file))
+            throw StdInnerException("File $file is not a directory!")
     }
 }

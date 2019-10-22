@@ -1,6 +1,5 @@
 package com.monkeydp.tools.util
 
-import com.monkeydp.tools.exception.inner.StdInnerException
 import com.monkeydp.tools.exception.inner.raw.RawIllegalAccessException
 import com.monkeydp.tools.exception.inner.raw.RawNoSuchFieldException
 import java.lang.reflect.Field
@@ -21,22 +20,14 @@ object FieldUtil {
 
     // ==== Get field ====
 
-    fun getField(any: Any, fieldName: String): Field? {
-        return getField(any.javaClass, fieldName, DEFAULT_IGNORE_NOT_EXIST)
-    }
-
-    fun getField(any: Any, fieldName: String, ignoreNotExist: Boolean): Field? {
+    fun getField(any: Any, fieldName: String,
+                 ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST): Field? {
         return getField(any.javaClass, fieldName, ignoreNotExist)
     }
 
-    fun getField(clazz: Class<*>, fieldName: String): Field? {
-        return getField(clazz, fieldName, DEFAULT_IGNORE_NOT_EXIST)
-    }
-
-    fun getField(clazz: Class<*>, fieldName: String, ignoreNotExist: Boolean): Field? {
-
+    fun getField(clazz: Class<*>, fieldName: String,
+                 ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST): Field? {
         var field: Field? = null
-
         try {
             // get field from current class
             field = getDeclaredField(clazz, fieldName, false)
@@ -44,19 +35,13 @@ object FieldUtil {
             // ignore
         }
 
-        if (field != null) {
-            return field
-        }
+        if (field != null) return field
 
         val superclass = clazz.superclass
-        if (null != superclass && !Class::class.java.isAssignableFrom(superclass)) {
-            // get field from superclass
+        if (null != superclass && !Class::class.java.isAssignableFrom(superclass))
             return getField(superclass, fieldName, ignoreNotExist)
-        }
 
-        if (!ignoreNotExist && null == superclass) {
-            throw RawNoSuchFieldException()
-        }
+        if (!ignoreNotExist && null == superclass) throw RawNoSuchFieldException()
 
         return null
     }
@@ -68,7 +53,8 @@ object FieldUtil {
      *
      * @return
      */
-    fun rawGetField(clazz: Class<*>, fieldName: String, ignoreNotExist: Boolean): Field? {
+    fun rawGetField(clazz: Class<*>, fieldName: String,
+                    ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST): Field? {
         try {
             return clazz.getField(fieldName)
         } catch (e: NoSuchFieldException) {
@@ -98,11 +84,8 @@ object FieldUtil {
         val superclass = clazz.superclass
         if (null != superclass && !Class::class.java.isAssignableFrom(superclass)) {
             val superFields = getFields(superclass)
-
             superFields.forEach { superField ->
-                if (fieldNames.contains(superField.name)) {
-                    return@forEach
-                }
+                if (fieldNames.contains(superField.name)) return@forEach
                 fields.add(superField)
                 fieldNames.add(superField.name)
             }
@@ -113,11 +96,8 @@ object FieldUtil {
 
     // ==== Get field value ====
 
-    fun <T> getValue(any: Any, fieldName: String): T? {
-        return getValue<T>(any, fieldName, DEFAULT_IGNORE_NOT_EXIST)
-    }
-
-    fun <T> getValue(any: Any, fieldName: String, ignoreNotExist: Boolean): T? {
+    fun <T> getValue(any: Any, fieldName: String,
+                     ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST): T? {
         val field = getField(any, fieldName, ignoreNotExist) ?: return null
         return getValue<T>(any, field)
     }
@@ -127,19 +107,14 @@ object FieldUtil {
         try {
             return field.get(any) as T
         } catch (e: IllegalAccessException) {
-            throw StdInnerException(e)
+            throw RawIllegalAccessException()
         }
-
     }
 
     // ==== Set field value ====
 
-    fun setValue(any: Any, fieldName: String, value: Any?) {
-        val field = getField(any, fieldName, DEFAULT_IGNORE_NOT_EXIST) ?: return
-        setValue(any, field, value)
-    }
-
-    fun setValue(any: Any, fieldName: String, value: Any?, ignoreNotExist: Boolean) {
+    fun setValue(any: Any, fieldName: String, value: Any?,
+                 ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST) {
         val field = getField(any, fieldName, ignoreNotExist) ?: return
         setValue(any, field, value)
     }
@@ -155,31 +130,20 @@ object FieldUtil {
 
     // ==== Get declared field ====
 
-    fun getDeclaredField(any: Any, fieldName: String): Field? {
-        return getDeclaredField(any.javaClass, fieldName, DEFAULT_IGNORE_NOT_EXIST)
-    }
-
-    fun getDeclaredField(any: Any, fieldName: String, ignoreNotExist: Boolean): Field? {
+    fun getDeclaredField(any: Any, fieldName: String,
+                         ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST): Field? {
         return getDeclaredField(any.javaClass, fieldName, ignoreNotExist)
     }
 
-    fun getDeclaredField(clazz: Class<*>, fieldName: String): Field? {
-        return getDeclaredField(clazz, fieldName, DEFAULT_IGNORE_NOT_EXIST)
-    }
-
-    fun getDeclaredField(clazz: Class<*>, fieldName: String, ignoreNotExist: Boolean): Field? {
-
-        var field: Field? = null
+    fun getDeclaredField(clazz: Class<*>, fieldName: String,
+                         ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST): Field? {
         try {
-            field = clazz.getDeclaredField(fieldName)
+            return clazz.getDeclaredField(fieldName)
         } catch (e: NoSuchFieldException) {
-            if (!ignoreNotExist) {
-                throw RawNoSuchFieldException()
-            }
+            if (!ignoreNotExist) throw RawNoSuchFieldException()
             // ignore
         }
-
-        return field
+        return null
     }
 
     // ==== Get declared fields====
@@ -199,25 +163,16 @@ object FieldUtil {
 
     // ==== Get declared field value ====
 
-    fun <T> getDeclaredValue(any: Any, fieldName: String): T? {
-        val field = getDeclaredField(any, fieldName, DEFAULT_IGNORE_NOT_EXIST) ?: return null
-        return getValue<Any>(any, field) as T?
-    }
-
-    fun <T> getDeclaredValue(any: Any, fieldName: String, ignoreNotExist: Boolean): T? {
+    fun <T> getDeclaredValue(any: Any, fieldName: String,
+                             ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST): T? {
         val field = getDeclaredField(any, fieldName, ignoreNotExist) ?: return null
         return getValue<Any>(any, field) as T?
     }
 
-
     // ==== Set declared field value ====
 
-    fun setDeclaredValue(any: Any, fieldName: String, value: Any?) {
-        val field = getDeclaredField(any, fieldName, DEFAULT_IGNORE_NOT_EXIST) ?: return
-        setDeclaredValue(any, field, value)
-    }
-
-    fun setDeclaredValue(any: Any, fieldName: String, value: Any?, ignoreNotExist: Boolean) {
+    fun setDeclaredValue(any: Any, fieldName: String, value: Any?,
+                         ignoreNotExist: Boolean = DEFAULT_IGNORE_NOT_EXIST) {
         val field = getDeclaredField(any, fieldName, ignoreNotExist) ?: return
         setDeclaredValue(any, field, value)
     }

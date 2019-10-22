@@ -27,7 +27,7 @@ object ClassUtil {
     </T> */
     @SneakyThrows
     fun <T> newInstance(clazz: Class<T>, vararg args: Any): T {
-        val argClasses = TypeUtil.types(*args)
+        val argClasses = TypeUtil.getTypes(*args)
         return getMatchingAccessibleConstructor<T>(clazz, *argClasses)
                 .newInstance(*args)
     }
