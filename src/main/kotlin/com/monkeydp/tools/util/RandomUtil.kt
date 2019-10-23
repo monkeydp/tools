@@ -12,14 +12,15 @@ object RandomUtil {
     private val random = Random()
 
     @TestOnly
-    fun randomId(): Long {
-        return randomInt(1, 1000).toLong()
-    }
+    fun randomId(min: Int = 1, max: Int = 1000): Long = randomInt(min, max).toLong()
 
     /**
-     * Random Integer between min and max
+     * Random int between min (inclusive) and max (inclusive)
      */
-    fun randomInt(min: Int, max: Int): Int {
-        return random.nextInt(max - min + 1) + min
-    }
+    fun randomInt(min: Int, max: Int): Int = random.nextInt(max - min + 1) + min
+
+    /**
+     * Random int between zero (inclusive) and max (exclusive)
+     */
+    fun nextInt(max: Int) = random.nextInt(max)
 }
