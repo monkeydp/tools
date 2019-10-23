@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     // kotlin
-    kotlin("jvm") version "1.2.71"
+    val kotlinVersion = "1.3.50"
+    kotlin("jvm") version kotlinVersion
 }
 
 group = "com.monkeydp"
