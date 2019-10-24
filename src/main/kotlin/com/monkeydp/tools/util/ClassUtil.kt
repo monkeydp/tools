@@ -1,6 +1,5 @@
 package com.monkeydp.tools.util
 
-import lombok.SneakyThrows
 import org.apache.commons.lang3.reflect.ConstructorUtils
 import java.lang.reflect.Constructor
 
@@ -25,7 +24,6 @@ object ClassUtil {
      * @param <T>
      * @return
     </T> */
-    @SneakyThrows
     fun <T> newInstance(clazz: Class<T>, vararg args: Any): T {
         val argClasses = TypeUtil.getTypes(*args)
         return getMatchingAccessibleConstructor<T>(clazz, *argClasses)

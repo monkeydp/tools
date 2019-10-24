@@ -16,9 +16,6 @@ dependencies {
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     // commons-lang3
     implementation("org.apache.commons:commons-lang3:3.8.1")
-    // lombok
-    implementation("org.projectlombok:lombok:1.18.10")
-    annotationProcessor("org.projectlombok:lombok:1.18.10")
     // junit
     testImplementation("junit:junit:4.12")
     // snakeyaml
