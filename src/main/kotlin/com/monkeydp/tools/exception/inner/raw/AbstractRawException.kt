@@ -1,11 +1,9 @@
 package com.monkeydp.tools.exception.inner.raw
 
-import com.monkeydp.tools.exception.inner.AbstractInnerException
-
 /**
  * @author iPotato
  * @date 2019/10/15
  */
-abstract class AbstractRawException : AbstractInnerException {
+abstract class AbstractRawException : RawException<AbstractRawException>, RuntimeException {
     constructor(cause: Throwable) : super(cause)
 }
