@@ -1,7 +1,5 @@
 package com.monkeydp.tools.util
 
-import com.monkeydp.tools.exception.inner.raw.RawIllegalAccessException
-import com.monkeydp.tools.exception.inner.raw.RawNoSuchFieldException
 import java.lang.reflect.Field
 
 /**
@@ -35,7 +33,7 @@ object FieldUtil {
         try {
             // get field from current class
             field = getDeclaredField(clazz, fieldName, false)
-        } catch (e: RawNoSuchFieldException) {
+        } catch (e: NoSuchFieldException) {
             // ignore
         }
         
@@ -44,8 +42,8 @@ object FieldUtil {
         val superclass = clazz.superclass
         if (null != superclass && !Class::class.java.isAssignableFrom(superclass))
             return getField(superclass, fieldName, ignoreNotFound)
-        
-        if (!ignoreNotFound && null == superclass) throw RawNoSuchFieldException()
+    
+        if (!ignoreNotFound && null == superclass) throw NoSuchFieldException()
         
         return null
     }
@@ -61,15 +59,12 @@ object FieldUtil {
      */
     fun rawGetField(clazz: Class<*>, fieldName: String,
                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
-        try {
-            return clazz.getField(fieldName)
+        return try {
+            clazz.getField(fieldName)
         } catch (e: NoSuchFieldException) {
-            if (!ignoreNotFound) {
-                throw RawNoSuchFieldException()
-            }
-            // ignore
+            if (!ignoreNotFound) throw e
+            null
         }
-        return null
     }
     
     
@@ -110,11 +105,7 @@ object FieldUtil {
     
     fun <T> getValue(any: Any, field: Field): T? {
         field.isAccessible = true
-        try {
-            return field.get(any) as T
-        } catch (e: IllegalAccessException) {
-            throw RawIllegalAccessException()
-        }
+        return field.get(any) as T
     }
     
     fun <T> getNotnullValue(any: Any, fieldName: String): T = getValue<T>(any, fieldName, false)!!
@@ -131,11 +122,7 @@ object FieldUtil {
     
     fun setValue(any: Any, field: Field, value: Any?) {
         field.isAccessible = true
-        try {
-            field.set(any, value)
-        } catch (e: IllegalAccessException) {
-            throw RawIllegalAccessException()
-        }
+        field.set(any, value)
     }
     
     fun setNotnullValue(any: Any, fieldName: String, value: Any,
@@ -156,13 +143,12 @@ object FieldUtil {
     
     fun getDeclaredField(clazz: Class<*>, fieldName: String,
                          ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
-        try {
+        return try {
             return clazz.getDeclaredField(fieldName)
         } catch (e: NoSuchFieldException) {
-            if (!ignoreNotFound) throw RawNoSuchFieldException()
-            // ignore
+            if (!ignoreNotFound) throw e
+            null
         }
-        return null
     }
     
     // ==== Get declared fields====
@@ -200,11 +186,7 @@ object FieldUtil {
     
     fun setDeclaredValue(any: Any, field: Field, value: Any?) {
         field.isAccessible = true
-        try {
-            field.set(any, value)
-        } catch (e: IllegalAccessException) {
-            throw RawIllegalAccessException()
-        }
+        field.set(any, value)
     }
     
     fun setDeclaredNotnullValue(any: Any, fieldName: String, value: Any) = setDeclaredValue(any, fieldName, value)
