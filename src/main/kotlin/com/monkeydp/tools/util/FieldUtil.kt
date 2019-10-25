@@ -20,10 +20,14 @@ object FieldUtil {
     
     // ==== Get field ====
     
+    fun getField(any: Any, fieldName: String) = getField(any.javaClass, fieldName, false)!!
+    
     fun getField(any: Any, fieldName: String,
                  ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
         return getField(any.javaClass, fieldName, ignoreNotFound)
     }
+    
+    fun getField(clazz: Class<*>, fieldName: String) = getField(clazz, fieldName, false)!!
     
     fun getField(clazz: Class<*>, fieldName: String,
                  ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
@@ -45,6 +49,8 @@ object FieldUtil {
         
         return null
     }
+    
+    fun rawGetField(clazz: Class<*>, fieldName: String) = rawGetField(clazz, fieldName, false)!!
     
     /**
      * Raw method to get field
@@ -111,6 +117,10 @@ object FieldUtil {
         }
     }
     
+    fun <T> getNotnullValue(any: Any, fieldName: String): T = getValue<T>(any, fieldName, false)!!
+    
+    fun <T> getNotnullValue(any: Any, field: Field): T = getValue<T>(any, field)!!
+    
     // ==== Set field value ====
     
     fun setValue(any: Any, fieldName: String, value: Any?,
@@ -128,12 +138,21 @@ object FieldUtil {
         }
     }
     
+    fun setNotnullValue(any: Any, fieldName: String, value: Any,
+                        ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND) = setValue(any, fieldName, value, ignoreNotFound)
+    
+    fun setNotnullValue(any: Any, field: Field, value: Any) = setValue(any, field, value)
+    
     // ==== Get declared field ====
+    
+    fun getDeclaredField(any: Any, fieldName: String): Field = getDeclaredField(any, fieldName, false)!!
     
     fun getDeclaredField(any: Any, fieldName: String,
                          ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
         return getDeclaredField(any.javaClass, fieldName, ignoreNotFound)
     }
+    
+    fun getDeclaredField(clazz: Class<*>, fieldName: String) = getDeclaredField(clazz, fieldName, false)!!
     
     fun getDeclaredField(clazz: Class<*>, fieldName: String,
                          ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
@@ -169,6 +188,8 @@ object FieldUtil {
         return getValue<Any>(any, field) as T?
     }
     
+    fun <T> getDeclaredNotnullValue(any: Any, fieldName: String) = getDeclaredValue<T>(any, fieldName, false)!!
+    
     // ==== Set declared field value ====
     
     fun setDeclaredValue(any: Any, fieldName: String, value: Any?,
@@ -185,4 +206,8 @@ object FieldUtil {
             throw RawIllegalAccessException()
         }
     }
+    
+    fun setDeclaredNotnullValue(any: Any, fieldName: String, value: Any) = setDeclaredValue(any, fieldName, value)
+    
+    fun setDeclaredNotnullValue(any: Any, field: Field, value: Any) = setDeclaredValue(any, field, value)
 }
