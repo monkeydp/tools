@@ -21,7 +21,8 @@ dependencies {
     // snakeyaml
     implementation("org.yaml:snakeyaml:1.23")
     // jackson
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
+    api("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7")
 }
 
 tasks.withType<KotlinCompile> {
