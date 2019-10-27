@@ -112,6 +112,32 @@ object FieldUtil {
     
     fun <T> getNotnullValue(any: Any, field: Field): T = getValue<T>(any, field)!!
     
+    // ==== Get fields values ====
+    
+    fun <T> getValues(any: Any): List<T?> {
+        val list = mutableListOf<T?>()
+        getFields(any).forEach { list.add(getValue(any, it)) }
+        return list.toList()
+    }
+    
+    fun <T> getNotnullValues(any: Any): List<T> {
+        val list = mutableListOf<T>()
+        getFields(any).forEach { list.add(getNotnullValue(any, it)) }
+        return list.toList()
+    }
+    
+    fun <T> getDeclaredValues(any: Any): List<T?> {
+        val list = mutableListOf<T?>()
+        getDeclaredFields(any).forEach { list.add(getValue(any, it)) }
+        return list.toList()
+    }
+    
+    fun <T> getDeclaredNotnullValues(any: Any): List<T> {
+        val list = mutableListOf<T>()
+        getDeclaredFields(any).forEach { list.add(getNotnullValue(any, it)) }
+        return list.toList()
+    }
+    
     // ==== Set field value ====
     
     fun setValue(any: Any, fieldName: String, value: Any?,
@@ -126,7 +152,8 @@ object FieldUtil {
     }
     
     fun setNotnullValue(any: Any, fieldName: String, value: Any,
-                        ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND) = setValue(any, fieldName, value, ignoreNotFound)
+                        ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND) =
+            setValue(any, fieldName, value, ignoreNotFound)
     
     fun setNotnullValue(any: Any, field: Field, value: Any) = setValue(any, field, value)
     
