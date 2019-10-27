@@ -108,9 +108,24 @@ object FieldUtil {
         return field.get(any) as T
     }
     
+    fun <T> getValue(clazz: Class<*>, fieldName: String,
+                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): T? {
+        val field = getField(clazz, fieldName, ignoreNotFound) ?: return null
+        return getValue(clazz, field)
+    }
+    
+    fun <T> getValue(clazz: Class<*>, field: Field): T? {
+        field.isAccessible = true
+        return field.get(clazz) as T
+    }
+    
     fun <T> getNotnullValue(any: Any, fieldName: String): T = getValue<T>(any, fieldName, false)!!
     
     fun <T> getNotnullValue(any: Any, field: Field): T = getValue<T>(any, field)!!
+    
+    fun <T> getNotnullValue(clazz: Class<*>, fieldName: String): T = getValue<T>(clazz, fieldName, false)!!
+    
+    fun <T> getNotnullValue(clazz: Class<*>, field: Field): T = getValue<T>(clazz, field)!!
     
     // ==== Get fields values ====
     
