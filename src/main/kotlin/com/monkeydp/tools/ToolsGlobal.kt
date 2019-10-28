@@ -1,6 +1,9 @@
 package com.monkeydp.tools
 
 import com.monkeydp.tools.exception.inner.StdInnerException
+import com.monkeydp.tools.ext.NotNullSingleInitVar
+import kotlin.properties.Delegates
+import kotlin.properties.ReadWriteProperty
 
 /**
  * @author iPotato
@@ -15,3 +18,5 @@ fun ierror(cause: Throwable): Nothing = throw StdInnerException(cause)
 fun <T> MutableList<T>.append(vararg list: T) {
     this.addAll(list)
 }
+
+fun <T : Any> Delegates.notNullSingleInit(): ReadWriteProperty<Any?, T> = NotNullSingleInitVar()
