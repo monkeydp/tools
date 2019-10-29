@@ -14,7 +14,7 @@ object PropertyUtil {
         val properties = Properties()
         val fields = FieldUtil.getFields(any)
         fields.forEach { field ->
-            properties[field.name] = FieldUtil.getValue(any, field)
+            properties[field.name] = FieldUtil.getValue(any, field, true)
         }
         return properties
     }

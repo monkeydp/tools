@@ -15,6 +15,10 @@ object FieldUtil {
      * Whether to ignore the exception when the field not found
      */
     private const val DEFAULT_IGNORE_NOT_FOUND = false
+    /**
+     * Whether to force access not public field
+     */
+    private const val DEFAULT_FORCE_ACCESS = false
     
     // ==== Get field ====
     
@@ -98,52 +102,68 @@ object FieldUtil {
     // ==== Get field value ====
     
     fun <T> getValue(any: Any, fieldName: String,
-                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): T? {
+                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T? {
         val field = getField(any, fieldName, ignoreNotFound) ?: return null
-        return getValue<T>(any, field)
+        return getValue<T>(any, field, forceAccess)
     }
     
-    fun <T> getValue(any: Any, field: Field): T? {
-        field.isAccessible = true
+    fun <T> getValue(any: Any, field: Field,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T? {
+        if (forceAccess) field.isAccessible = true
         return field.get(any) as T
     }
     
     fun <T> getValue(clazz: Class<*>, fieldName: String,
-                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): T? {
+                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T? {
         val field = getField(clazz, fieldName, ignoreNotFound) ?: return null
-        return getValue(clazz, field)
+        return getValue(clazz, field, forceAccess)
     }
     
-    fun <T> getValue(clazz: Class<*>, field: Field): T? {
-        field.isAccessible = true
+    fun <T> getValue(clazz: Class<*>, field: Field,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T? {
+        if (forceAccess) field.isAccessible = true
         return field.get(clazz) as T
     }
     
-    fun <T> getNotnullValue(any: Any, fieldName: String): T = getValue<T>(any, fieldName, false)!!
+    fun <T> getNotnullValue(any: Any, fieldName: String,
+                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T = getValue<T>(any, fieldName, false, forceAccess)!!
     
-    fun <T> getNotnullValue(any: Any, field: Field): T = getValue<T>(any, field)!!
+    fun <T> getNotnullValue(any: Any, field: Field,
+                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T = getValue<T>(any, field, forceAccess)!!
     
-    fun <T> getNotnullValue(clazz: Class<*>, fieldName: String): T = getValue<T>(clazz, fieldName, false)!!
+    fun <T> getNotnullValue(clazz: Class<*>, fieldName: String,
+                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T = getValue<T>(clazz, fieldName, false, forceAccess)!!
     
-    fun <T> getNotnullValue(clazz: Class<*>, field: Field): T = getValue<T>(clazz, field)!!
+    fun <T> getNotnullValue(clazz: Class<*>, field: Field,
+                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T = getValue<T>(clazz, field, forceAccess)!!
     
     // ==== Get fields values ====
     
-    fun <T> getValues(any: Any): List<T?> {
+    fun <T> getValues(any: Any, forceAccess: Boolean = DEFAULT_FORCE_ACCESS): List<T?> {
         val list = mutableListOf<T?>()
-        getFields(any).forEach { list.add(getValue(any, it)) }
+        getFields(any).forEach { list.add(getValue(any, it, forceAccess)) }
         return list.toList()
     }
     
-    fun <T> getNotnullValues(any: Any): List<T> {
+    fun <T> getNotnullValues(any: Any, forceAccess: Boolean = DEFAULT_FORCE_ACCESS): List<T> {
         val list = mutableListOf<T>()
-        getFields(any).forEach { list.add(getNotnullValue(any, it)) }
+        getFields(any).forEach { list.add(getNotnullValue(any, it, forceAccess)) }
         return list.toList()
     }
     
-    fun <T> getDeclaredValues(any: Any): List<T?> {
+    fun <T> getDeclaredValues(any: Any, forceAccess: Boolean = DEFAULT_FORCE_ACCESS): List<T?> {
         val list = mutableListOf<T?>()
-        getDeclaredFields(any).forEach { list.add(getValue(any, it)) }
+        getDeclaredFields(any).forEach { list.add(getValue(any, it, forceAccess)) }
         return list.toList()
     }
     
@@ -211,12 +231,15 @@ object FieldUtil {
     // ==== Get declared field value ====
     
     fun <T> getDeclaredValue(any: Any, fieldName: String,
-                             ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): T? {
+                             ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
+                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS): T? {
         val field = getDeclaredField(any, fieldName, ignoreNotFound) ?: return null
-        return getValue<Any>(any, field) as T?
+        return getValue<Any>(any, field, forceAccess) as T?
     }
     
-    fun <T> getDeclaredNotnullValue(any: Any, fieldName: String) = getDeclaredValue<T>(any, fieldName, false)!!
+    fun <T> getDeclaredNotnullValue(any: Any, fieldName: String,
+                                    forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = getDeclaredValue<T>(any, fieldName, false, forceAccess)!!
     
     // ==== Set declared field value ====
     
