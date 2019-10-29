@@ -14,15 +14,17 @@ dependencies {
     // kotlin
     api("org.jetbrains.kotlin:kotlin-reflect")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    // commons-lang3
+    // tool
     implementation("org.apache.commons:commons-lang3:3.8.1")
-    // junit
-    testImplementation("junit:junit:4.12")
-    // snakeyaml
+    // yaml
     implementation("org.yaml:snakeyaml:1.23")
-    // jackson
+    // json
     api("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7")
+    // log
+    implementation("org.slf4j:slf4j-api:1.7.28")
+    // test
+    testImplementation("junit:junit:4.12")
 }
 
 tasks.withType<KotlinCompile> {
