@@ -75,9 +75,7 @@ object FieldUtil {
     // ==== Get fields ====
     // ==== The field in current class overrides same name field in superclass ====
     
-    fun getFields(any: Any): List<Field> {
-        return getFields(any.javaClass)
-    }
+    fun getFields(any: Any) = getFields(any.javaClass)
     
     fun getFields(clazz: Class<*>): List<Field> {
         
