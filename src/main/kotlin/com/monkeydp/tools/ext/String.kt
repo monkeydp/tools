@@ -1,5 +1,7 @@
 package com.monkeydp.tools.ext
 
+import com.monkeydp.tools.enumeration.Symbol
+
 /**
  * @author iPotato
  * @date 2019/10/30
@@ -53,3 +55,7 @@ fun String.camelCase2List(): List<String> {
     if (list.first().isEmpty()) list.removeFirst()
     return list.toList()
 }
+
+fun String.toStdPath() = this.replace(Symbol.BACKSLASH, Symbol.SLASH)
+
+fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")

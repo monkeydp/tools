@@ -22,7 +22,7 @@ object FileUtil {
     /**
      * List all files under the given directory by FilenameFilter
      */
-    fun listFiles(dir: File, filter: FilenameFilter): Array<File> {
+    fun listFiles(dir: File, filter: FilenameFilter? = null): Array<File> {
         checkIsDir(dir)
         val files: Array<File>? = dir.listFiles(filter)
         return files!!
@@ -31,7 +31,7 @@ object FileUtil {
     /**
      * List all files under the given directory path by FileFilter
      */
-    fun listFiles(dirPath: String, filter: FileFilter): Array<File> {
+    fun listFiles(dirPath: String, filter: FileFilter? = null): Array<File> {
         val dir = File(dirPath)
         return listFiles(dir, filter)
     }
@@ -39,7 +39,7 @@ object FileUtil {
     /**
      * List all files under the given directory by FileFilter
      */
-    fun listFiles(dir: File, filter: FileFilter): Array<File> {
+    fun listFiles(dir: File, filter: FileFilter? = null): Array<File> {
         checkIsDir(dir)
         val files: Array<File>? = dir.listFiles(filter)
         return files!!
