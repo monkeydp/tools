@@ -16,3 +16,7 @@ fun <E> MutableList<E>.replace(old: E, new: E) {
 fun <E> MutableList<E>.replaceLast(new: E) {
     this[this.lastIndex] = new
 }
+
+fun <E> MutableList<E>.removeFirst() {
+    this.removeAt(0)
+}
