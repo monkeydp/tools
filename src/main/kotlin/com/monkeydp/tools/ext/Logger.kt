@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.monkeydp.tools.function
+package com.monkeydp.tools.ext
 
 /**
  * @author iPotato

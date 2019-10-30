@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.monkeydp.tools.function
+package com.monkeydp.tools.ext
 
 import java.util.*
 import kotlin.reflect.full.declaredMemberProperties
