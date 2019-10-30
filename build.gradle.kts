@@ -22,7 +22,9 @@ dependencies {
     api("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7")
     // log
-    implementation("org.slf4j:slf4j-api:1.7.28")
+    api("org.slf4j:slf4j-api:1.7.28")
+    api("ch.qos.logback:logback-classic:1.2.3")
+    api("org.slf4j:jul-to-slf4j:1.7.28")
     // test
     testImplementation("junit:junit:4.12")
 }
