@@ -3,6 +3,8 @@ package com.monkeydp.tools.util
 import java.lang.reflect.Field
 
 /**
+ * !!!! Using properties first, reflection destroys encapsulation !!!!
+ *
  * Declared: only include current class, exclude superclass
  *
  * @author iPotato
