@@ -10,14 +10,20 @@ import java.io.InputStream
  * @date 2019/10/14
  */
 object YamlUtil {
-
-    private val yaml = Yaml()
-
-    fun <T> loadAs(file: File, type: Class<T>): T {
-        return loadAs(FileInputStream(file), type)
-    }
-
-    fun <T> loadAs(inputStream: InputStream, type: Class<T>): T {
-        return yaml.loadAs<T>(inputStream, type)
-    }
+    
+    val yaml = Yaml()
+    
+    inline fun <reified T> load(yamlString: String) = this.yaml.load<T>(yamlString)
+    
+    inline fun <reified T> loadAs(yaml: String) = this.yaml.loadAs(yaml, T::class.java)
+    
+    fun <T> loadAs(string: String, type: Class<T>) = yaml.loadAs(string, type)
+    
+    inline fun <reified T> loadAs(inputStream: InputStream) = yaml.loadAs<T>(inputStream, T::class.java)
+    
+    fun <T> loadAs(inputStream: InputStream, type: Class<T>) = yaml.loadAs<T>(inputStream, type)
+    
+    inline fun <reified T> loadAs(file: File) = loadAs(FileInputStream(file), T::class.java)
+    
+    fun <T> loadAs(file: File, type: Class<T>) = loadAs(FileInputStream(file), type)
 }
