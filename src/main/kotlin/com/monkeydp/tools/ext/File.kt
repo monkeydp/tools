@@ -9,7 +9,7 @@ import java.io.File
  */
 fun File.getClassname(prefix: String = ""): String {
     return path.toStdPath()
-            .removePrefix(prefix)
+            .removePrefix(prefix.toStdPath())
             .removeExtension()
             .replace(Symbol.SLASH, Symbol.DOT)
             .removePrefix(Symbol.DOT)
