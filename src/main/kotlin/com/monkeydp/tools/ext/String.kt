@@ -6,7 +6,9 @@ import com.monkeydp.tools.enumeration.Symbol
  * @author iPotato
  * @date 2019/10/30
  */
-fun String.toUpperCamelcase() = toCamelCase(true)
+fun String.replaceAt(index: Int, replacement: CharSequence) = this.replaceRange(index, index + 1, replacement)
+
+fun String.toUpperCamelCase() = toCamelCase(true)
 
 fun String.toLowerCamelCase() = toCamelCase(false)
 
@@ -17,14 +19,17 @@ fun String.toLowerCamelCase() = toCamelCase(false)
  * false -> lower camel case
  */
 fun String.toCamelCase(capitalize: Boolean? = null): String {
-    return this.split('_').mapIndexed { index, str ->
-        if (index == 1)
+    return this.split(Symbol.UNDERSCORE).mapIndexed { index, str ->
+        if (index == 0)
             when (capitalize) {
-                null  -> str
-                true  -> str.capitalize()
-                false -> str.decapitalize()
+                null  -> {
+                    val first = str[0].toString()
+                    str.toLowerCase().replaceAt(0, first)
+                }
+                true  -> str.toLowerCase().capitalize()
+                false -> str.toLowerCase()
             }
-        else str.capitalize()
+        else str.toLowerCase().capitalize()
     }.joinToString("")
 }
 

@@ -10,11 +10,11 @@ import kotlin.reflect.KProperty
 internal class NotNullSingleInitVar<T : Any>() : ReadWriteProperty<Any?, T> {
     private var value: T? = null
     public override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        return value ?: throw IllegalStateException("Property ${property.name} should be initialized before get.")
+        return value ?: ierror("Property ${property.name} should be initialized before get.")
     }
     
     public override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         if (null == this.value) this.value = value
-        else throw IllegalStateException("Property ${property.name} is already initialized.")
+        else ierror("Property ${property.name} is already initialized.")
     }
 }
