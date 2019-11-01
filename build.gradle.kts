@@ -14,8 +14,6 @@ dependencies {
     // kotlin
     api("org.jetbrains.kotlin:kotlin-reflect")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    // groovy
-    implementation("org.codehaus.groovy:groovy-all:2.5.8")
     // tool
     implementation("org.apache.commons:commons-lang3:3.8.1")
     // yaml
