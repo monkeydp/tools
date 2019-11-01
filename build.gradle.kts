@@ -25,6 +25,8 @@ dependencies {
     api("org.slf4j:slf4j-api:1.7.28")
     api("ch.qos.logback:logback-classic:1.2.3")
     api("org.slf4j:jul-to-slf4j:1.7.28")
+    // reflection
+    api("org.reflections:reflections:0.9.11")
     // test
     testImplementation("junit:junit:4.12")
 }
