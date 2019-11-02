@@ -22,9 +22,7 @@ dependencies {
     api("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7")
     // log
-    api("org.slf4j:slf4j-api:1.7.28")
-    api("ch.qos.logback:logback-classic:1.2.3")
-    api("org.slf4j:jul-to-slf4j:1.7.28")
+    api("org.springframework.boot:spring-boot-starter-logging:2.1.9.RELEASE")
     // reflection
     api("org.reflections:reflections:0.9.11")
     // test

@@ -27,14 +27,14 @@ object FieldUtil {
     fun getField(any: Any, fieldName: String) = getField(any.javaClass, fieldName, false)!!
     
     fun getField(any: Any, fieldName: String,
-                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
-        return getField(any.javaClass, fieldName, ignoreNotFound)
-    }
+                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) = getField(any.javaClass, fieldName, ignoreNotFound)
     
     fun getField(clazz: Class<*>, fieldName: String) = getField(clazz, fieldName, false)!!
     
     fun getField(clazz: Class<*>, fieldName: String,
-                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
+                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ): Field? {
         var field: Field? = null
         try {
             // get field from current class
@@ -64,15 +64,13 @@ object FieldUtil {
      * @return
      */
     fun rawGetField(clazz: Class<*>, fieldName: String,
-                    ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
-        return try {
-            clazz.getField(fieldName)
-        } catch (e: NoSuchFieldException) {
-            if (!ignoreNotFound) throw e
-            null
-        }
+                    ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) = try {
+        clazz.getField(fieldName)
+    } catch (e: NoSuchFieldException) {
+        if (!ignoreNotFound) throw e
+        null
     }
-    
     
     // ==== Get fields ====
     // ==== The field in current class overrides same name field in superclass ====
@@ -80,7 +78,6 @@ object FieldUtil {
     fun getFields(any: Any) = getFields(any.javaClass)
     
     fun getFields(clazz: Class<*>): List<Field> {
-        
         val fields = getDeclaredFields(clazz).toMutableList()
         val fieldNames: MutableList<String> = mutableListOf()
         
@@ -95,7 +92,6 @@ object FieldUtil {
                 fieldNames.add(superField.name)
             }
         }
-        
         return fields
     }
     
@@ -133,11 +129,11 @@ object FieldUtil {
     
     fun <T> getNotnullValue(any: Any, fieldName: String,
                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T = getValue<T>(any, fieldName, false, forceAccess)!!
+    ) = getValue<T>(any, fieldName, false, forceAccess)!!
     
     fun <T> getNotnullValue(any: Any, field: Field,
                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T = getValue<T>(any, field, forceAccess)!!
+    ) = getValue<T>(any, field, forceAccess)!!
     
     fun <T> getNotnullValue(clazz: Class<*>, fieldName: String,
                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
@@ -149,19 +145,25 @@ object FieldUtil {
     
     // ==== Get fields values ====
     
-    fun <T> getValues(any: Any, forceAccess: Boolean = DEFAULT_FORCE_ACCESS): List<T?> {
+    fun <T> getValues(any: Any,
+                      forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): List<T?> {
         val list = mutableListOf<T?>()
         getFields(any).forEach { list.add(getValue(any, it, forceAccess)) }
         return list.toList()
     }
     
-    fun <T> getNotnullValues(any: Any, forceAccess: Boolean = DEFAULT_FORCE_ACCESS): List<T> {
+    fun <T> getNotnullValues(any: Any,
+                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): List<T> {
         val list = mutableListOf<T>()
         getFields(any).forEach { list.add(getNotnullValue(any, it, forceAccess)) }
         return list.toList()
     }
     
-    fun <T> getDeclaredValues(any: Any, forceAccess: Boolean = DEFAULT_FORCE_ACCESS): List<T?> {
+    fun <T> getDeclaredValues(any: Any,
+                              forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): List<T?> {
         val list = mutableListOf<T?>()
         getDeclaredFields(any).forEach { list.add(getValue(any, it, forceAccess)) }
         return list.toList()
@@ -176,63 +178,60 @@ object FieldUtil {
     // ==== Set field value ====
     
     fun setValue(any: Any, fieldName: String, value: Any?,
-                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND) {
+                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) {
         val field = getField(any, fieldName, ignoreNotFound) ?: return
         setValue(any, field, value)
     }
     
-    fun setValue(any: Any, field: Field, value: Any?) {
-        field.isAccessible = true
+    fun setValue(any: Any, field: Field, value: Any?,
+                 forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) {
+        if (forceAccess) field.isAccessible = true
         field.set(any, value)
     }
     
     fun setNotnullValue(any: Any, fieldName: String, value: Any,
-                        ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND) =
-            setValue(any, fieldName, value, ignoreNotFound)
+                        ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) = setValue(any, fieldName, value, ignoreNotFound)
     
-    fun setNotnullValue(any: Any, field: Field, value: Any) = setValue(any, field, value)
+    fun setNotnullValue(any: Any, field: Field, value: Any,
+                        forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = setValue(any, field, value, forceAccess)
     
     // ==== Get declared field ====
     
     fun getDeclaredField(any: Any, fieldName: String): Field = getDeclaredField(any, fieldName, false)!!
     
     fun getDeclaredField(any: Any, fieldName: String,
-                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
-        return getDeclaredField(any.javaClass, fieldName, ignoreNotFound)
-    }
+                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) = getDeclaredField(any.javaClass, fieldName, ignoreNotFound)
     
     fun getDeclaredField(clazz: Class<*>, fieldName: String) = getDeclaredField(clazz, fieldName, false)!!
     
     fun getDeclaredField(clazz: Class<*>, fieldName: String,
-                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND): Field? {
-        return try {
-            return clazz.getDeclaredField(fieldName)
-        } catch (e: NoSuchFieldException) {
-            if (!ignoreNotFound) throw e
-            null
-        }
+                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) = try {
+        clazz.getDeclaredField(fieldName)
+    } catch (e: NoSuchFieldException) {
+        if (!ignoreNotFound) throw e
+        null
     }
     
     // ==== Get declared fields====
     
-    fun getDeclaredFields(any: Any): List<Field> {
-        return getDeclaredFields(any.javaClass)
-    }
+    fun getDeclaredFields(any: Any) = getDeclaredFields(any.javaClass)
     
-    fun getDeclaredFields(clazz: Class<*>): List<Field> {
-        val fields = rawGetDeclaredFields(clazz)
-        return listOf(*fields)
-    }
+    fun getDeclaredFields(clazz: Class<*>) = listOf(*rawGetDeclaredFields(clazz))
     
-    private fun rawGetDeclaredFields(clazz: Class<*>): Array<Field> {
-        return clazz.declaredFields
-    }
+    private fun rawGetDeclaredFields(clazz: Class<*>) = clazz.declaredFields
     
     // ==== Get declared field value ====
     
     fun <T> getDeclaredValue(any: Any, fieldName: String,
                              ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
-                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS): T? {
+                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T? {
         val field = getDeclaredField(any, fieldName, ignoreNotFound) ?: return null
         return getValue<Any>(any, field, forceAccess) as T?
     }
@@ -244,17 +243,22 @@ object FieldUtil {
     // ==== Set declared field value ====
     
     fun setDeclaredValue(any: Any, fieldName: String, value: Any?,
-                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND) {
+                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) {
         val field = getDeclaredField(any, fieldName, ignoreNotFound) ?: return
         setDeclaredValue(any, field, value)
     }
     
-    fun setDeclaredValue(any: Any, field: Field, value: Any?) {
-        field.isAccessible = true
+    fun setDeclaredValue(any: Any, field: Field, value: Any?,
+                         forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) {
+        if (forceAccess) field.isAccessible = true
         field.set(any, value)
     }
     
     fun setDeclaredNotnullValue(any: Any, fieldName: String, value: Any) = setDeclaredValue(any, fieldName, value)
     
-    fun setDeclaredNotnullValue(any: Any, field: Field, value: Any) = setDeclaredValue(any, field, value)
+    fun setDeclaredNotnullValue(any: Any, field: Field, value: Any,
+                                forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = setDeclaredValue(any, field, value, forceAccess)
 }

@@ -2,9 +2,17 @@
 
 package com.monkeydp.tools.ext
 
+import com.monkeydp.tools.util.FieldUtil
+import java.lang.reflect.Field
 import java.util.*
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.isSupertypeOf
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaField
 
 /**
  * @author iPotato
@@ -37,3 +45,38 @@ fun <T> Any.toPropListX() = toPropList() as List<T>
 fun Any.toDeclaredPropList() = this.javaClass.kotlin.declaredMemberProperties.map { it.get(this) }.toList()
 
 fun <T> Any.toDeclaredPropListX() = toDeclaredPropList() as List<T>
+
+fun <T : Any, S : Any> T.copyPropsFrom(source: S, vararg props: KProperty<*>) {
+    val mutableProps = this::class.memberProperties.filterIsInstance<KMutableProperty<*>>()
+    val sourceProps = if (props.isEmpty()) source::class.memberProperties else props.toList()
+    mutableProps.forEach { targetProp ->
+        sourceProps.find {
+            it.name == targetProp.name &&
+            targetProp.returnType.isSupertypeOf(it.returnType)
+        }?.let { matchingProp ->
+            targetProp.setter.call(this, matchingProp.getter.call(source))
+        }
+    }
+}
+
+fun <T : Any, S : Any> T.copyFieldsFromX(source: S, vararg ignoreProps: KProperty<T>, forceAssess: Boolean = false) {
+    copyFieldsFrom(source, *ignoreProps.map { it.javaField!! }.toTypedArray(), forceAssess = forceAssess)
+}
+
+fun <T : Any, S : Any> T.copyFieldsFrom(source: S, vararg ignoreFields: Field, forceAssess: Boolean = false) {
+    val sourceFields = FieldUtil.getFields(source)
+    sourceFields.forEach { sourceField ->
+        val field = FieldUtil.getField(this, sourceField.name)
+        if (ignoreFields.contains(field)) return
+        val sourceValue = sourceField.get(source)
+        if (sourceField.type.kotlin.isSubclassOf(field.type.kotlin))
+            if (field.isAccessible || forceAssess)
+                FieldUtil.setValue(this, field, sourceValue, true)
+    }
+}
+
+fun <T : Any, R : Any> T.copyFieldsFrom(vararg pairs: Pair<KProperty1<T, R>, R>, forceAssess: Boolean = false) {
+    pairs.forEach { pair ->
+        FieldUtil.setValue(this, pair.first.name, pair.second, forceAssess)
+    }
+}
