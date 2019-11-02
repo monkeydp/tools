@@ -14,6 +14,8 @@ dependencies {
     // kotlin
     api("org.jetbrains.kotlin:kotlin-reflect")
     api("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    // groovy
+    api("org.codehaus.groovy:groovy:2.5.8")
     // tool
     implementation("org.apache.commons:commons-lang3:3.8.1")
     // yaml
@@ -34,4 +36,8 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
     }
+}
+
+tasks.withType<ProcessResources> {
+    exclude("*.groovy")
 }
