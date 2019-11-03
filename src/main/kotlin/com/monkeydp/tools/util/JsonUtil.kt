@@ -1,6 +1,5 @@
 package com.monkeydp.tools.util
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -21,8 +20,6 @@ object JsonUtil {
     inline fun <reified T> toObject(jsonStr: String) = mapper.readValue(jsonStr, T::class.java)
     
     fun <T> toObject(jsonStr: String, clazz: Class<T>) = mapper.readValue(jsonStr, clazz)
-    
-    fun <T> toObject(jsonStr: String, typeReference: TypeReference<T>) = mapper.readValue<T>(jsonStr, typeReference)
     
     inline fun <reified T> toObject(jsonNode: JsonNode) = mapper.treeToValue(jsonNode, T::class.java)
     
