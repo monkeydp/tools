@@ -1,5 +1,6 @@
 package com.monkeydp.tools.ext
 
+import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.memberProperties
 
@@ -12,3 +13,6 @@ inline fun <reified E : Enum<*>> E.toPropMap() =
 
 inline fun <reified E : Enum<*>> E.toDeclaredPropMap() =
         E::class.declaredMemberProperties.map { it.name to it.get(this) }.toMap()
+
+inline fun <reified E : Enum<*>> KClass<E>.valueOfOrNull(name: String) =
+        E::class.java.enumConstants.firstOrNull { it.name == name }

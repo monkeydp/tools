@@ -1,6 +1,8 @@
 package com.monkeydp.tools.ext
 
-import com.monkeydp.tools.enumeration.Symbol
+import com.monkeydp.tools.enumeration.Symbol.BACKSLASH
+import com.monkeydp.tools.enumeration.Symbol.SLASH
+import com.monkeydp.tools.enumeration.Symbol.UNDERSCORE
 
 /**
  * @author iPotato
@@ -19,7 +21,7 @@ fun String.toLowerCamelCase() = toCamelCase(false)
  * false -> lower camel case
  */
 fun String.toCamelCase(capitalize: Boolean? = null): String {
-    return this.split(Symbol.UNDERSCORE).mapIndexed { index, str ->
+    return this.split(UNDERSCORE).mapIndexed { index, str ->
         if (index == 0)
             when (capitalize) {
                 null  -> {
@@ -39,7 +41,7 @@ fun String.toSnakeCase(): String {
     this.forEach {
         if (it.isUpperCase()) {
             if (isFirst) isFirst = false
-            else builder.append("_")
+            else builder.append(UNDERSCORE)
             builder.append(it.toLowerCase())
         } else builder.append(it)
     }
@@ -61,6 +63,8 @@ fun String.camelCase2List(): List<String> {
     return list.toList()
 }
 
-fun String.toStdPath() = this.replace(Symbol.BACKSLASH, Symbol.SLASH)
+fun String.toStdPath() = this.replace(BACKSLASH, SLASH)
 
 fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")
+
+fun String.firstOfSnackCase() = this.split(UNDERSCORE).first()
