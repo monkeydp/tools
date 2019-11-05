@@ -16,4 +16,5 @@ object Symbol {
     const val UNDERSCORE = "_"
     const val SLASH = "/"
     const val BACKSLASH = "\\"
+    const val SPACE = " "
 }

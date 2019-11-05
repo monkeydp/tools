@@ -3,6 +3,7 @@
 package com.monkeydp.tools.ext
 
 import com.monkeydp.tools.util.FieldUtil
+import com.monkeydp.tools.util.JsonUtil
 import java.lang.reflect.Field
 import java.util.*
 import kotlin.reflect.KMutableProperty
@@ -81,3 +82,5 @@ fun <T : Any, R : Any> T.copyFieldsFrom(vararg pairs: Pair<KProperty1<T, R>, R>,
         FieldUtil.setValue(this, pair.first.name, pair.second, forceAssess)
     }
 }
+
+fun Any.toJson() = JsonUtil.toString(this)
