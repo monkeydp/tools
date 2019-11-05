@@ -40,7 +40,8 @@ fun <K, V> Any.toDeclaredPropMapX() = toDeclaredPropMap() as Map<K, V>
 
 fun Any.toPropList() = this.javaClass.kotlin.memberProperties.map { it.get(this) }.toList()
 
-fun <T> Any.toPropListX() = toPropList() as List<T>
+inline fun <reified T> Any.toPropListX() = this.javaClass.kotlin.memberProperties
+        .map { it.get(this) }.filterIsInstance<T>().toList()
 
 fun Any.toDeclaredPropList() = this.javaClass.kotlin.declaredMemberProperties.map { it.get(this) }.toList()
 

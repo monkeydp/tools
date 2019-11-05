@@ -16,3 +16,5 @@ inline fun <reified E : Enum<*>> E.toDeclaredPropMap() =
 
 inline fun <reified E : Enum<*>> KClass<E>.valueOfOrNull(name: String) =
         E::class.java.enumConstants.firstOrNull { it.name == name }
+
+inline fun <reified E : Enum<*>> KClass<E>.valueOf(name: String) = E::class.java.enumConstants.first { it.name == name }
