@@ -24,11 +24,11 @@ fun String.toCamelCase(capitalize: Boolean? = null): String {
     return this.split(UNDERSCORE).mapIndexed { index, str ->
         if (index == 0)
             when (capitalize) {
-                null  -> {
+                null -> {
                     val first = str[0].toString()
                     str.toLowerCase().replaceAt(0, first)
                 }
-                true  -> str.toLowerCase().capitalize()
+                true -> str.toLowerCase().capitalize()
                 false -> str.toLowerCase()
             }
         else str.toLowerCase().capitalize()

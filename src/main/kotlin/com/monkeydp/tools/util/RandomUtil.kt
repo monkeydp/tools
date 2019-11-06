@@ -11,9 +11,6 @@ object RandomUtil {
 
     private val random = Random()
 
-    @TestOnly
-    fun randomId(min: Int = 1, max: Int = 1000): Long = randomInt(min, max).toLong()
-
     /**
      * Random int between min (inclusive) and max (inclusive)
      */
