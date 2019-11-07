@@ -14,3 +14,5 @@ fun File.getClassname(prefix: String = ""): String {
             .replace(Symbol.SLASH, Symbol.DOT)
             .removePrefix(Symbol.DOT)
 }
+
+fun mockFile() = File("[MOCK FILE]")

@@ -15,7 +15,10 @@ object JsonUtil {
             .registerModule(KotlinModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     
-    fun <T> toString(t: T) = mapper.writeValueAsString(t)
+    fun <T> toString(t: T): String {
+        return if (t is String) t
+        else mapper.writeValueAsString(t)
+    }
     
     inline fun <reified T> toObject(jsonStr: String) = mapper.readValue(jsonStr, T::class.java)
     
