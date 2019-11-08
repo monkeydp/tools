@@ -84,3 +84,7 @@ fun <T : Any, R : Any> T.copyFieldsFrom(vararg pairs: Pair<KProperty1<T, R>, R>,
 }
 
 fun Any.toJson() = JsonUtil.toString(this)
+
+inline fun <reified T> Any.convertTo() = JsonUtil.convertTo<T>(this)
+
+fun <T> Any.convertTo(clazz: Class<*>) = JsonUtil.convertTo(this, clazz)
