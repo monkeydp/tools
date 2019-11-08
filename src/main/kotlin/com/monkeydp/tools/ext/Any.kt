@@ -6,6 +6,7 @@ import com.monkeydp.tools.util.FieldUtil
 import com.monkeydp.tools.util.JsonUtil
 import java.lang.reflect.Field
 import java.util.*
+import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
@@ -87,4 +88,6 @@ fun Any.toJson() = JsonUtil.toString(this)
 
 inline fun <reified T> Any.convertTo() = JsonUtil.convertTo<T>(this)
 
-fun <T> Any.convertTo(clazz: Class<*>) = JsonUtil.convertTo(this, clazz)
+fun <T> Any.convertTo(clazz: Class<T>) = JsonUtil.convertTo(this, clazz)
+
+fun <T : Any> Any.convertTo(kClass: KClass<T>) = JsonUtil.convertTo(this, kClass.java)

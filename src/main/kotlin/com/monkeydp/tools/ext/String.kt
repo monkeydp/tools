@@ -2,6 +2,7 @@ package com.monkeydp.tools.ext
 
 import com.monkeydp.tools.enumeration.Symbol.BACKSLASH
 import com.monkeydp.tools.enumeration.Symbol.SLASH
+import com.monkeydp.tools.enumeration.Symbol.SPACE
 import com.monkeydp.tools.enumeration.Symbol.UNDERSCORE
 
 /**
@@ -68,3 +69,9 @@ fun String.toStdPath() = this.replace(BACKSLASH, SLASH)
 fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")
 
 fun String.firstOfSnackCase() = this.split(UNDERSCORE).first()
+
+fun String.camelCaseSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequence = SPACE): String {
+    val strings = camelCase2List()
+    if (capitalizeEveryWord) strings.forEach { it.capitalize() }
+    return strings.joinToString(symbol)
+}
