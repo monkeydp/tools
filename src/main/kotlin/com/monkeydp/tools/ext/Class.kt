@@ -10,7 +10,7 @@ import org.apache.commons.lang3.reflect.ConstructorUtils
 fun Class<*>.singletonInstance() =
         fields.first { it.name == "INSTANCE" }.get(this)
 
-inline fun <reified C> Class<C>.singletonInstanceX() =
+inline fun <reified C> Class<out C>.singletonInstanceX() =
         fields.first { it.name == "INSTANCE" }.get(this) as C
 
 fun <T> Class<T>.newInstanceX(vararg args: Any): T {
