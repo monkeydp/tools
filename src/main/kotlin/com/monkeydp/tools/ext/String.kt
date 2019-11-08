@@ -71,7 +71,7 @@ fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")
 fun String.firstOfSnackCase() = this.split(UNDERSCORE).first()
 
 fun String.camelCaseSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequence = SPACE): String {
-    val strings = camelCase2List()
-    if (capitalizeEveryWord) strings.forEach { it.capitalize() }
+    var strings = camelCase2List()
+    if (capitalizeEveryWord) strings = strings.map { it.capitalize() }.toList()
     return strings.joinToString(symbol)
 }
