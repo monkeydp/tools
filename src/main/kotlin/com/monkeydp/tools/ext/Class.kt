@@ -18,3 +18,7 @@ fun <T> Class<T>.newInstanceX(vararg args: Any): T {
     return ConstructorUtils.getMatchingAccessibleConstructor(this, *argClasses)
             .newInstance(*args)
 }
+
+fun Class<*>.hasAnnotation(annotClass: Class<out Annotation>) = getAnnotation(annotClass) != null
+
+inline fun <reified A : Annotation> Class<*>.hasAnnotation() = hasAnnotation(A::class.java)

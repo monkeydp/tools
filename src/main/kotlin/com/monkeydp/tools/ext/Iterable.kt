@@ -9,7 +9,7 @@ package com.monkeydp.tools.ext
  *  If match once, return matched element
  *  else throw ex
  */
-public inline fun <T> Iterable<T>.matchOnce(predicate: (T) -> Boolean): T {
+inline fun <T> Iterable<T>.matchOne(predicate: (T) -> Boolean): T {
     val matched = filter(predicate)
     if (matched.size != 1)
         ierror(
