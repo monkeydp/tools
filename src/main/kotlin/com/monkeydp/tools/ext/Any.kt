@@ -10,10 +10,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSupertypeOf
-import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.*
 import kotlin.reflect.jvm.javaField
 
 /**
@@ -42,10 +39,19 @@ fun <K, V> Any.toDeclaredPropMapX() = toDeclaredPropMap() as Map<K, V>
 
 fun Any.toPropList() = this.javaClass.kotlin.memberProperties.map { it.get(this) }.toList()
 
-inline fun <reified T> Any.toPropListX() = this.javaClass.kotlin.memberProperties
-        .map { it.get(this) }.filterIsInstance<T>().toList()
+inline fun <reified T> Any.toPropListX() = toPropList(this.javaClass.kotlin.memberProperties).filterIsInstance<T>()
 
-fun Any.toDeclaredPropList() = this.javaClass.kotlin.declaredMemberProperties.map { it.get(this) }.toList()
+fun Any.toDeclaredPropList() = toPropList(this.javaClass.kotlin.declaredMemberProperties)
+
+fun Any.toPropList(props: Collection<KProperty1<Any, *>>) =
+        props.filter {
+            try {
+                it.get(this)
+                true
+            } catch (e: IllegalCallableAccessException) {
+                false
+            }
+        }.map { it.get(this) }
 
 fun <T> Any.toDeclaredPropListX() = toDeclaredPropList() as List<T>
 

@@ -9,11 +9,14 @@ import kotlin.reflect.KClass
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> Reflections.getAnnotSingletonsX(annotClass: KClass<out Annotation>) =
-        getAnnotSingletons(annotClass) as List<T>
+        getAnnotSingletons(annotClass) as Set<T>
 
 fun Reflections.getAnnotSingletons(annotClass: KClass<out Annotation>) =
         getTypesAnnotatedWith(annotClass.java)
-                .map { it.singletonInstance() }.toList()
+                .map { it.singletonInstance() }.toSet()
+
+fun Reflections.getAnnotClasses(annotClass: KClass<out Annotation>) =
+        getTypesAnnotatedWith(annotClass.java).map { it }.toSet()
 
 fun Reflections.getAnnotKClasses(annotClass: KClass<out Annotation>) =
-        getTypesAnnotatedWith(annotClass.java).map { it.kotlin }.toList()
+        getAnnotClasses(annotClass).map { it.kotlin }.toSet()

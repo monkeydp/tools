@@ -24,3 +24,5 @@ fun KClass<*>.getInterfaces(): Set<KClass<*>> {
     }
     return set.toSet()
 }
+
+fun KClass<*>.getJavaInterfaces() = getInterfaces().map { it.java }.toSet()
