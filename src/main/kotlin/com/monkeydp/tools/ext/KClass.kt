@@ -1,7 +1,6 @@
 package com.monkeydp.tools.ext
 
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.superclasses
 
@@ -10,7 +9,7 @@ import kotlin.reflect.full.superclasses
  * @date 2019/11/8
  */
 inline fun <reified T : Annotation> KClass<*>.getAnnotatedProps() =
-        this.memberProperties.filter { it.findAnnotation<T>() != null }.toList()
+        this.memberProperties.filter { it.hasAnnotation<T>() }.toList()
 
 /**
  * Recursively matches all superclass
