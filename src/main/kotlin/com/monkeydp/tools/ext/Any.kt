@@ -97,3 +97,10 @@ inline fun <reified T> Any.convertTo() = JsonUtil.convertTo<T>(this)
 fun <T> Any.convertTo(clazz: Class<T>) = JsonUtil.convertTo(this, clazz)
 
 fun <T : Any> Any.convertTo(kClass: KClass<T>) = JsonUtil.convertTo(this, kClass.java)
+
+fun Any.getReflections() = getReflections(this::class)
+
+fun Any.getPropValue(propName: String) =
+        this::class.memberProperties.first { it.name == propName }.getter.call(this)
+
+fun <T> Any.getPropValueX(propName: String) = getPropValue(propName) as T
