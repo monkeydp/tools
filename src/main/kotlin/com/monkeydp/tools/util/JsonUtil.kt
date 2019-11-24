@@ -28,7 +28,9 @@ object JsonUtil {
     
     fun <T> toObject(jsonNode: JsonNode, clazz: Class<T>) = mapper.treeToValue(jsonNode, clazz)
     
-    fun toJsonNode(jsonStr: String) = mapper.readTree(jsonStr)
+    fun toJsonNode(str: String) = mapper.readTree(str)
+    
+    fun toJsonNode(bytes: ByteArray) = mapper.readTree(bytes)
     
     inline fun <reified T> convertTo(any: Any) = mapper.convertValue(any, T::class.java)
     
