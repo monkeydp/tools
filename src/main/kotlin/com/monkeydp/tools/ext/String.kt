@@ -64,6 +64,8 @@ fun String.camelCase2List(): List<String> {
     return list.toList()
 }
 
+fun String.camelCaseFirst() = camelCase2List().first()
+
 fun String.toStdPath() = this.replace(BACKSLASH, SLASH)
 
 fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")
