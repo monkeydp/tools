@@ -1,5 +1,6 @@
 package com.monkeydp.tools.useful
 
+import org.apache.commons.lang3.StringUtils
 import java.math.BigInteger
 import java.util.*
 import java.util.regex.Matcher
@@ -24,7 +25,7 @@ import java.util.regex.Pattern
  * numeric component comes after any non-numeric one. Two non-numeric components
  * are ordered by [String.compareToIgnoreCase].
  */
-internal class VersionComparator : Comparator<String> {
+internal class VersionStringComparator : Comparator<String> {
     /**
      * Compares two version strings using the algorithm described above.
      *
@@ -36,20 +37,20 @@ internal class VersionComparator : Comparator<String> {
     override fun compare(version1: String,
                          version2: String): Int { // Get the version numbers, remove all whitespaces
         var thisVersion = "0"
-        if (version1.isNotEmpty()) {
+        if (StringUtils.isNoneEmpty(version1)) {
             thisVersion = version1.replace(" ".toRegex(), "")
         }
         var compareVersion = "0"
-        if (version2.isNotEmpty()) {
+        if (StringUtils.isNoneEmpty(version2)) {
             compareVersion = version2.replace(" ".toRegex(), "")
         }
-        require(!(!thisVersion.matches(Regex(VALID_VERSION_PATTERN)) || !compareVersion.matches(Regex(VALID_VERSION_PATTERN)))) { "Version number '$thisVersion' cannot be compared to '$compareVersion'" }
+        require(!(!thisVersion.matches(VALID_VERSION_PATTERN.toRegex()) || !compareVersion.matches(VALID_VERSION_PATTERN.toRegex()))) { "Version number '$thisVersion' cannot be compared to '$compareVersion'" }
         // Split the version numbers
         val v1: Array<String> =
-                thisVersion.split(DELIMITER_PATTERN)
+                thisVersion.split(DELIMITER_PATTERN.toRegex())
                         .toTypedArray()
         val v2: Array<String> =
-                compareVersion.split(DELIMITER_PATTERN)
+                compareVersion.split(DELIMITER_PATTERN.toRegex())
                         .toTypedArray()
         val componentComparator: Comparator<String> =
                 VersionStringComponentComparator()
@@ -102,7 +103,7 @@ internal class VersionComparator : Comparator<String> {
         }
         
         private fun isInteger(string: String): Boolean {
-            return string.matches(Regex("\\d+"))
+            return string.matches("\\d+".toRegex())
         }
         
         private fun getStartingInteger(string: String): BigInteger? {
@@ -115,14 +116,14 @@ internal class VersionComparator : Comparator<String> {
     }
     
     companion object {
-        const val DELIMITER_PATTERN = "[\\.-]"
+        const val DELIMITER_PATTERN = "[.-]"
         private const val COMPONENT_PATTERN = "[\\d\\w]+"
         const val VALID_VERSION_PATTERN: String =
                 COMPONENT_PATTERN + "(?:" + DELIMITER_PATTERN + COMPONENT_PATTERN + ")*"
         private val START_WITH_INT_PATTERN = Pattern.compile("(^\\d+)")
         private val SNAPSHOT_PATTERN = Pattern.compile(".*-SNAPSHOT$")
         fun isValidVersionString(version: String?): Boolean {
-            return version != null && version.matches(Regex(VALID_VERSION_PATTERN))
+            return version != null && version.matches(VALID_VERSION_PATTERN.toRegex())
         }
         
         fun isSnapshotVersion(version: String?): Boolean {
