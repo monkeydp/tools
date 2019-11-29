@@ -7,5 +7,5 @@ import kotlin.properties.ReadWriteProperty
  * @author iPotato
  * @date 2019/10/29
  */
-fun <T : Any> Delegates.notNullSingleton(): ReadWriteProperty<Any?, T> =
-        NotNullSingleInitVar()
+fun <T : Any> Delegates.notNullSingleton(ignoreAlreadyInitializedError: Boolean = false): ReadWriteProperty<Any?, T> =
+        NotNullSingleInitVar(ignoreAlreadyInitializedError)
