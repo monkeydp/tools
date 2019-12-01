@@ -12,8 +12,8 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     // kotlin
-    api("org.jetbrains.kotlin:kotlin-reflect")
-    api("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    api(kotlin("reflect"))
+    api(kotlin("stdlib-jdk8"))
     // tool
     implementation("org.apache.commons:commons-lang3:3.8.1")
     // yaml
