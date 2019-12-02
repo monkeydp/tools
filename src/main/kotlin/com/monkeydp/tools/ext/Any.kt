@@ -104,3 +104,9 @@ fun Any.getPropValue(propName: String) =
         this::class.memberProperties.first { it.name == propName }.getter.call(this)
 
 fun <T> Any.getPropValueX(propName: String) = getPropValue(propName) as T
+
+inline fun <reified T> initInstance(init: T.() -> Unit, vararg args: Any): T {
+    val instance = T::class.java.newInstanceX(*args)
+    instance.init()
+    return instance
+}

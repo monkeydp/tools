@@ -25,3 +25,5 @@ fun KClass<*>.getInterfaces(): Set<KClass<*>> {
 }
 
 fun KClass<*>.getJavaInterfaces() = getInterfaces().map { it.java }.toSet()
+
+fun KClass<*>.lowerCameCaseName() = java.simpleName.toLowerCamelCase()
