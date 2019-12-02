@@ -21,20 +21,22 @@ fun String.toLowerCamelCase() = toCamelCase(false)
  * true -> upper camel case
  * false -> lower camel case
  */
-fun String.toCamelCase(capitalize: Boolean? = null): String {
-    return this.split(UNDERSCORE).mapIndexed { index, str ->
-        if (index == 0)
-            when (capitalize) {
-                null -> {
-                    val first = str[0].toString()
-                    str.toLowerCase().replaceAt(0, first)
-                }
-                true -> str.toLowerCase().capitalize()
-                false -> str.toLowerCase()
-            }
-        else str.toLowerCase().capitalize()
-    }.joinToString("")
-}
+fun String.toCamelCase(capitalize: Boolean? = null) =
+        this.split(UNDERSCORE)
+                .map { it.camelCase2List() }
+                .flatten()
+                .mapIndexed { index, str ->
+                    if (index == 0)
+                        when (capitalize) {
+                            null -> {
+                                val first = str[0].toString()
+                                str.toLowerCase().replaceAt(0, first)
+                            }
+                            true -> str.toLowerCase().capitalize()
+                            false -> str.toLowerCase()
+                        }
+                    else str.toLowerCase().capitalize()
+                }.joinToString("")
 
 fun String.toSnakeCase(): String {
     var builder = StringBuilder()
