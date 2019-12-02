@@ -1,5 +1,6 @@
 package com.monkeydp.tools.ext
 
+import com.monkeydp.tools.exception.inner.PropertyUninitializedException
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -12,7 +13,7 @@ internal class NotNullSingleInitVar<T : Any>(
 ) : ReadWriteProperty<Any?, T> {
     private var value: T? = null
     public override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        return value ?: ierror("Property ${property.name} should be initialized before get.")
+        return value ?: throw PropertyUninitializedException(property)
     }
     
     public override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
