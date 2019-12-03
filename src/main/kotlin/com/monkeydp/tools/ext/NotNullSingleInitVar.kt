@@ -9,11 +9,12 @@ import kotlin.reflect.KProperty
  * @date 2019/10/28
  */
 internal class NotNullSingleInitVar<T : Any>(
+        private val defaultValue: T? = null,
         private val ignoreAlreadyInitializedError: Boolean = false
 ) : ReadWriteProperty<Any?, T> {
     private var value: T? = null
     public override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        return value ?: throw PropertyUninitializedException(property)
+        return value ?: defaultValue ?: throw PropertyUninitializedException(property)
     }
     
     public override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {

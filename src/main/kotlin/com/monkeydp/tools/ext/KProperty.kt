@@ -20,3 +20,12 @@ fun KProperty<*>.getFirstUpperBound(): KClass<*> {
         else -> ierror("Unknown type $type!")
     }
 }
+
+fun KProperty<*>.getValueKClass() = getValueClass().kotlin
+
+fun KProperty<*>.getValueClass() =
+        when (val type = returnType.javaType) {
+            is Class<*> -> type
+            is ParameterizedTypeImpl -> type.rawType
+            else -> ierror("Unsupported type: $type")
+        }
