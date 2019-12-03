@@ -15,6 +15,7 @@ inline fun <reified E : Enum<*>> E.toDeclaredPropMap() =
         E::class.declaredMemberProperties.map { it.name to it.get(this) }.toMap()
 
 inline fun <reified E : Enum<*>> KClass<E>.valueOfOrNull(name: String) =
-        E::class.java.enumConstants.firstOrNull { it.name == name }
+        E::class.java.enumConstants.firstOrNull { it.name == name.toUpperCase() }
 
-inline fun <reified E : Enum<*>> KClass<E>.valueOf(name: String) = E::class.java.enumConstants.first { it.name == name }
+inline fun <reified E : Enum<*>> KClass<E>.valueOf(name: String) =
+        E::class.java.enumConstants.first { it.name == name.toUpperCase() }
