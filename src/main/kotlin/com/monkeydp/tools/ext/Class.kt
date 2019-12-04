@@ -7,11 +7,10 @@ import org.apache.commons.lang3.reflect.ConstructorUtils
  * @author iPotato
  * @date 2019/10/30
  */
-fun Class<*>.singletonInstance() =
+fun Class<*>.singleton() =
         fields.first { it.name == "INSTANCE" }.get(this)
 
-inline fun <reified C> Class<out C>.singletonInstanceX() =
-        fields.first { it.name == "INSTANCE" }.get(this) as C
+inline fun <reified C> Class<out C>.singletonX() = singleton() as C
 
 fun <T> Class<T>.newInstanceX(vararg args: Any): T {
     val argClasses = TypeUtil.getTypes(*args)

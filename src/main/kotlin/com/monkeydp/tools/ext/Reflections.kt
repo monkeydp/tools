@@ -29,7 +29,7 @@ fun getReflections(
 
 fun Reflections.getAnnotSingletons(annotClass: KClass<out Annotation>) =
         getTypesAnnotatedWith(annotClass.java)
-                .map { it.singletonInstance() }.toSet()
+                .map { it.singleton() }.toSet()
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Reflections.getAnnotSingletonsX(annotClass: KClass<out Annotation>) =
