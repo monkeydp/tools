@@ -9,14 +9,28 @@ package com.monkeydp.tools.ext
  *  If match once, return matched element
  *  else throw ex
  */
+// ==== match ====
+
 inline fun <T> Iterable<T>.matchOne(predicate: (T) -> Boolean): T {
     val matched = filter(predicate)
-    if (matched.size != 1)
-        ierror(
-                """ Element is matched ${matched.size} times, not once!
-                    Following elements are matched:
-                    $this
-                """
-        )
+    if (matched.size != 1) {
+        val msg = StringBuilder()
+        msg.append("Element is matched ${matched.size} times, not once!")
+        if (matched.size > 1) msg.append(" Following elements are matched: ${linesln()}")
+        ierror(msg)
+    }
     return matched.first()
 }
+
+
+// ==== Lines ====
+
+private val Iterable<*>.lineSeparator
+    get() = System.lineSeparator()
+
+fun Iterable<*>.lines(): String {
+    val indent = "|    "
+    return "$indent${joinToString("$lineSeparator$indent")}".trimMargin()
+}
+
+fun Iterable<*>.linesln() = "$lineSeparator${lines()}"
