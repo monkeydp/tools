@@ -4,6 +4,7 @@ import org.reflections.Reflections
 import org.reflections.util.ClasspathHelper
 import org.reflections.util.ConfigurationBuilder
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * @author iPotato
@@ -39,3 +40,7 @@ fun Reflections.getAnnotClasses(annotClass: KClass<out Annotation>) =
 
 fun Reflections.getAnnotKClasses(annotClass: KClass<out Annotation>) =
         getAnnotClasses(annotClass).map { it.kotlin }.toSet()
+
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T> Reflections.getTypesAnnotatedWithX(annotClass: Class<out Annotation>) =
+        getTypesAnnotatedWith(annotClass).filter { it.kotlin.isSubclassOf(T::class) }.toSet() as Set<Class<T>>
