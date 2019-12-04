@@ -27,4 +27,4 @@ fun isDebugMode() = devModel == DEBUG
 
 fun isNormalMode() = devModel == NORMAL
 
-fun Logger.debugMode(msg: String): Unit = debug("<DEBUG MODE> $msg")
+fun Logger.debugMode(msg: CharSequence): Unit = debug("<DEBUG MODE> $msg")

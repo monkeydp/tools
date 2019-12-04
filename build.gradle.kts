@@ -25,6 +25,8 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-logging:2.1.9.RELEASE")
     // reflection
     api("org.reflections:reflections:0.9.11")
+    // di
+    api("org.kodein.di:kodein-di-generic-jvm:6.4.1")
     // test
     testImplementation("junit:junit:4.12")
 }
