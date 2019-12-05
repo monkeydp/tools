@@ -10,10 +10,10 @@ import org.slf4j.Logger
  */
 enum class DevMode {
     DEBUG,
-    NORMAL
+    NORMAL;
 }
 
-private var devModel = NORMAL
+var devModel = NORMAL
 
 fun enableDebugMode() {
     devModel = DEBUG
