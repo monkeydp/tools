@@ -7,4 +7,4 @@ import kotlin.reflect.KProperty
  * @date 2019/12/2
  */
 class PropertyUninitializedException(property: KProperty<*>)
-    : AbstractInnerException("Property ${property.name} should be initialized before get.")
+    : InnerException("Property ${property.name} should be initialized before get.")
