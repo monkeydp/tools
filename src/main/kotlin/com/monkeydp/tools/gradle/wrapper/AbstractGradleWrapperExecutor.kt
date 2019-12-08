@@ -16,7 +16,7 @@ import org.kodein.di.generic.instance
  */
 abstract class AbstractGradleWrapperExecutor(
         /**
-         * Location of the file gradlew/gradlew.bat
+         * Directory where the gradlew/gradlew.bat is
          */
         private val gradlewLocation: String
 ) : GradleWrapperExecutor {
