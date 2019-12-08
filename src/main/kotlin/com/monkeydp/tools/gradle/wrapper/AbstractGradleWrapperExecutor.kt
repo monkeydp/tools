@@ -16,16 +16,18 @@ import org.kodein.di.generic.instance
  */
 abstract class AbstractGradleWrapperExecutor(
         /**
-         * Location of the file gradlew/gradlew.bat
+         * Directory where the gradlew/gradlew.bat is
          */
-        private val gradlewLocation: String
+        private val gradlewDirpath: String
 ) : GradleWrapperExecutor {
     
-    protected val log = getLogger()
+    companion object {
+        private val log = getLogger()
+    }
     
     private val executor: Executor by kodein.instance()
     
-    protected val gradlewPath: String
+    private val gradlewPath: String
         get() {
             val gradlewFilename =
                     when {
@@ -35,7 +37,7 @@ abstract class AbstractGradleWrapperExecutor(
                     }
             
             return StringBuilder()
-                    .append(gradlewLocation)
+                    .append(gradlewDirpath)
                     .append("/")
                     .append(gradlewFilename)
                     .toString()
