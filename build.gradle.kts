@@ -14,7 +14,7 @@ dependencies {
     // kotlin
     api(kotlin("reflect"))
     api(kotlin("stdlib-jdk8"))
-    // tool
+    // other tool
     implementation("org.apache.commons:commons-lang3:3.8.1")
     // yaml
     implementation("org.yaml:snakeyaml:1.23")
@@ -27,6 +27,8 @@ dependencies {
     api("org.reflections:reflections:0.9.11")
     // di
     api("org.kodein.di:kodein-di-generic-jvm:6.4.1")
+    // command line
+    implementation("org.apache.commons:commons-exec:1.3")
     // test
     testImplementation("junit:junit:4.12")
 }
