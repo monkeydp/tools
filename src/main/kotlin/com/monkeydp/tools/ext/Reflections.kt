@@ -18,7 +18,7 @@ fun getReflections(clazz: Class<*>) = getReflections(clazz.`package`.name, clazz
 
 fun getReflections(
         packageName: String,
-        classLoader: ClassLoader
+        classLoader: ClassLoader = Thread.currentThread().contextClassLoader
 ): Reflections {
     val urls =
             ClasspathHelper.forPackage(packageName, classLoader)
@@ -26,6 +26,8 @@ fun getReflections(
             .setUrls(urls)
             .addClassLoader(classLoader))
 }
+
+inline fun <reified T> Reflections.getSubTypesOf() = getSubTypesOf(T::class.java)
 
 fun Reflections.getAnnotSingletons(annotClass: KClass<out Annotation>) =
         getTypesAnnotatedWith(annotClass.java)
