@@ -14,8 +14,12 @@ inline fun <reified E : Enum<*>> E.toPropMap() =
 inline fun <reified E : Enum<*>> E.toDeclaredPropMap() =
         E::class.declaredMemberProperties.map { it.name to it.get(this) }.toMap()
 
-inline fun <reified E : Enum<*>> KClass<E>.valueOfOrNull(name: String) =
-        E::class.java.enumConstants.firstOrNull { it.name == name.toUpperCase() }
 
-inline fun <reified E : Enum<*>> KClass<E>.valueOf(name: String) =
-        E::class.java.enumConstants.first { it.name == name.toUpperCase() }
+fun <E : Enum<E>> KClass<E>.valueOfOrNull(name: String, caseSensitive: Boolean = false) =
+        enumSet().matchOneOrNull { it.name == transformEnumName(name, caseSensitive) }
+
+fun <E : Enum<E>> KClass<E>.valueOf(name: String, caseSensitive: Boolean = false) =
+        enumSet().matchOne { it.name == transformEnumName(name, caseSensitive) }
+
+fun transformEnumName(enumName: String, caseSensitive: Boolean = false) =
+        if (caseSensitive) enumName else enumName.toUpperCase()

@@ -20,15 +20,21 @@ fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean {
 // ==== Match ====
 
 inline fun <T> Iterable<T>.matchOne(predicate: (T) -> Boolean): T {
-    val matched = filter(predicate)
-    if (matched.size != 1) {
-        val msg = StringBuilder()
-        msg.append("Element is matched ${matched.size} times, not once!")
-        if (matched.size > 1) msg.append(" Following elements are matched: ${linesln()}")
-        ierror(msg)
-    }
-    return matched.first()
+    val t = matchOneOrNull(predicate)
+    if (t != null) return t
+    ierror(matchOneErrorMsg(0))
 }
+
+inline fun <T> Iterable<T>.matchOneOrNull(predicate: (T) -> Boolean): T? {
+    val matched = filter(predicate)
+    return when (val size = matched.size) {
+        0 -> null
+        1 -> matched.first()
+        else -> ierror("${matchOneErrorMsg(size)} Following elements are matched: ${matched.linesln()}")
+    }
+}
+
+fun matchOneErrorMsg(size: Int) = StringBuilder("Element is matched $size times, not once!")
 
 
 // ==== Lines ====
