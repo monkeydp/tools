@@ -10,3 +10,7 @@ import kotlin.reflect.KClass
  */
 fun <T : Any> Kodein.Builder.bind(kClass: KClass<out T>, tag: Any? = null, overrides: Boolean? = null) =
         Bind<T>(TT(kClass), tag, overrides)
+
+enum class KodeinTag {
+    TEST
+}
