@@ -194,7 +194,7 @@ fun <T : Any> Any.convertTo(kClass: KClass<T>) = JsonUtil.convertTo(this, kClass
 
 // ==== Reflections ====
 
-fun Any.getReflections() = getReflections(this::class)
+fun Any.getReflections() = com.monkeydp.tools.reflections.reflections(this::class)
 
 fun Any.getPropValue(propName: String) =
         this::class.memberProperties.first { it.name == propName }.getter.call(this)

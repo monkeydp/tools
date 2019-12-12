@@ -1,5 +1,6 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.reflections
 
+import com.monkeydp.tools.ext.singleton
 import org.reflections.Reflections
 import org.reflections.util.ClasspathHelper
 import org.reflections.util.ConfigurationBuilder
@@ -10,18 +11,19 @@ import kotlin.reflect.full.isSubclassOf
  * @author iPotato
  * @date 2019/11/8
  */
-fun getReflections(any: Any) = getReflections(any::class)
+fun reflections(any: Any) = reflections(any::class)
 
-fun getReflections(kClass: KClass<*>) = getReflections(kClass.java)
+fun reflections(kClass: KClass<*>) = reflections(kClass.java)
 
-fun getReflections(clazz: Class<*>) = getReflections(clazz.`package`.name, clazz.classLoader)
+fun reflections(clazz: Class<*>) =
+        reflections(clazz.`package`.name, clazz.classLoader)
 
-fun getReflections(
+fun reflections(
         packageName: String,
         classLoader: ClassLoader = Thread.currentThread().contextClassLoader
-) = getReflections(listOf(packageName), classLoader)
+) = reflections(listOf(packageName), classLoader)
 
-fun getReflections(
+fun reflections(
         packageNames: Iterable<String>,
         classLoader: ClassLoader = Thread.currentThread().contextClassLoader
 ): Reflections {
