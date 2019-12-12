@@ -2,7 +2,7 @@ package com.monkeydp.tools.config
 
 import com.monkeydp.tools.config.DevMode.DEBUG
 import com.monkeydp.tools.config.DevMode.NORMAL
-import com.monkeydp.tools.ext.lines
+import com.monkeydp.tools.ext.kotlin.lines
 import org.slf4j.Logger
 
 /**

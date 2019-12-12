@@ -1,6 +1,6 @@
-package com.monkeydp.tools.reflections
+package com.monkeydp.tools.ext.reflections
 
-import com.monkeydp.tools.ext.singleton
+import com.monkeydp.tools.ext.java.singleton
 import org.reflections.Reflections
 import org.reflections.util.ClasspathHelper
 import org.reflections.util.ConfigurationBuilder

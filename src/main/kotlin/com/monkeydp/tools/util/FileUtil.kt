@@ -1,6 +1,6 @@
 package com.monkeydp.tools.util
 
-import com.monkeydp.tools.ext.ierror
+import com.monkeydp.tools.ext.main.ierror
 import java.io.File
 import java.io.FileFilter
 import java.io.FilenameFilter

@@ -1,6 +1,8 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.java
 
 import com.monkeydp.tools.enumeration.Symbol
+import com.monkeydp.tools.ext.kotlin.removeExtension
+import com.monkeydp.tools.ext.kotlin.toStdPath
 import java.io.File
 
 /**

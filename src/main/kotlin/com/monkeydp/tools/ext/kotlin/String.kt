@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.kotlin
 
 import com.monkeydp.tools.enumeration.Symbol.BACKSLASH
 import com.monkeydp.tools.enumeration.Symbol.SLASH

@@ -1,5 +1,6 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.kotlin
 
+import com.monkeydp.tools.ext.main.ierror
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
 import sun.reflect.generics.reflectiveObjects.WildcardTypeImpl
 import kotlin.reflect.KClass

@@ -1,6 +1,7 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.kotlin
 
 import com.monkeydp.tools.exception.inner.PropertyUninitializedException
+import com.monkeydp.tools.ext.main.ierror
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 

@@ -1,4 +1,4 @@
-package com.monkeydp.tools.kodein
+package com.monkeydp.tools.ext.kodein
 
 import org.kodein.di.*
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl

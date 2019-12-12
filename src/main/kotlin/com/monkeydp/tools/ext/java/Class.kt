@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.java
 
 import com.monkeydp.tools.util.TypeUtil
 import org.apache.commons.lang3.reflect.ConstructorUtils

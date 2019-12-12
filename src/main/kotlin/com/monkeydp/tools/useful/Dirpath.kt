@@ -1,6 +1,6 @@
 package com.monkeydp.tools.useful
 
-import com.monkeydp.tools.ext.toStdPath
+import com.monkeydp.tools.ext.kotlin.toStdPath
 
 /**
  * @author iPotato

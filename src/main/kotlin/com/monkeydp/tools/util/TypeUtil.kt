@@ -1,6 +1,6 @@
 package com.monkeydp.tools.util
 
-import com.monkeydp.tools.ext.ierror
+import com.monkeydp.tools.ext.main.ierror
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 

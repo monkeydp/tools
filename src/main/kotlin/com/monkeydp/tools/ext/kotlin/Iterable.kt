@@ -1,4 +1,6 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.kotlin
+
+import com.monkeydp.tools.ext.main.ierror
 
 /**
  * @author iPotato

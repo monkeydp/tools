@@ -1,7 +1,10 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.kotlin
 
+import com.monkeydp.tools.ext.main.ierror
+import com.monkeydp.tools.ext.java.newInstanceX
+import com.monkeydp.tools.ext.reflections.reflections
 import com.monkeydp.tools.util.FieldUtil
 import com.monkeydp.tools.util.JsonUtil
 import java.lang.reflect.Field
@@ -194,7 +197,7 @@ fun <T : Any> Any.convertTo(kClass: KClass<T>) = JsonUtil.convertTo(this, kClass
 
 // ==== Reflections ====
 
-fun Any.getReflections() = com.monkeydp.tools.reflections.reflections(this::class)
+fun Any.getReflections() = reflections(this::class)
 
 fun Any.getPropValue(propName: String) =
         this::class.memberProperties.first { it.name == propName }.getter.call(this)

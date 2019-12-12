@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.kotlin
 
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties

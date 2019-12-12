@@ -1,6 +1,6 @@
-package com.monkeydp.tools.kodein
+package com.monkeydp.tools.ext.kodein
 
-import com.monkeydp.tools.kodein.KodeinComponent.Type.SINGLETON
+import com.monkeydp.tools.ext.kodein.KodeinComponent.Type.SINGLETON
 import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
 
 /**

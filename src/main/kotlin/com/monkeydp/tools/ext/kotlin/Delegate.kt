@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.kotlin
 
 import kotlin.properties.Delegates
 import kotlin.properties.ReadWriteProperty

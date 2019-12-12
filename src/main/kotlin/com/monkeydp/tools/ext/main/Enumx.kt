@@ -1,6 +1,10 @@
-package com.monkeydp.tools.ext
+package com.monkeydp.tools.ext.main
 
 import com.monkeydp.tools.enumx.Enumx
+import com.monkeydp.tools.ext.kotlin.enumSet
+import com.monkeydp.tools.ext.kotlin.matchOne
+import com.monkeydp.tools.ext.kotlin.matchOneOrNull
+import com.monkeydp.tools.ext.kotlin.transformEnumName
 import kotlin.reflect.KClass
 
 /**
