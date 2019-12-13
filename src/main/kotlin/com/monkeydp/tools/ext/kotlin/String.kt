@@ -52,6 +52,9 @@ fun String.toSnakeCase(): String {
 }
 
 fun String.camelCase2List(): List<String> {
+    
+    if (isAllUpperCase()) return listOf(this)
+    
     val list = mutableListOf<String>()
     val builder = StringBuilder()
     this.forEach {
@@ -64,6 +67,17 @@ fun String.camelCase2List(): List<String> {
     list.add(builder.toString())
     if (list.first().isEmpty()) list.removeFirst()
     return list.toList()
+}
+
+fun String.isAllUpperCase(): Boolean {
+    var bool = true
+    forEach {
+        if (!it.isUpperCase()) {
+            bool = false
+            return@forEach
+        }
+    }
+    return bool
 }
 
 fun String.camelCaseFirst() = camelCase2List().first()

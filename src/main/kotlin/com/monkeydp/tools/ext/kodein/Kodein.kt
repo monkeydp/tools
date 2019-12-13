@@ -2,6 +2,7 @@ package com.monkeydp.tools.ext.kodein
 
 import org.kodein.di.*
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+import java.lang.reflect.ParameterizedType
 import kotlin.reflect.KClass
 
 /**
@@ -12,17 +13,35 @@ enum class KodeinTag {
     NULL, TEST
 }
 
+fun <T : Any> Kodein.Builder.bindX(any: T, tag: Any? = null, overrides: Boolean? = null) =
+        bindX(any::class, tag, overrides)
+
 fun <T : Any> Kodein.Builder.bindX(kClass: KClass<out T>, tag: Any? = null, overrides: Boolean? = null) =
         Bind<T>(TT(kClass), tag, overrides)
 
-inline fun <reified T : Any, reified K : KClass<out T>> Kodein.Builder.bindKClass(
-        kClass: K,
+fun <T : Any> Kodein.Builder.bindX(type: ParameterizedType, tag: Any? = null, overrides: Boolean? = null) =
+        @Suppress("UNCHECKED_CAST")
+        Bind<T>(TT(type) as TypeToken<out T>, tag, overrides)
+
+inline fun <reified T : KClass<*>> Kodein.Builder.bindKClass(
+        kClass: T,
         tag: Any? = null,
         overrides: Boolean? = null
-): Kodein.Builder.TypeBinder<K> {
+): Kodein.Builder.TypeBinder<T> {
     val type = ParameterizedTypeImpl.make(KClass::class.java, arrayOf(kClass.java), null)
-    @Suppress("UNCHECKED_CAST")
-    return Bind<K>(TT(type) as TypeToken<out K>, tag, overrides)
+    return bindX(type, tag, overrides)
 }
+
+inline fun <reified T : Map<*, *>> Kodein.Builder.bindMap(
+        type: ParameterizedType,
+        tag: Any? = null,
+        overrides: Boolean? = null
+): Kodein.Builder.TypeBinder<T> = bindX(type, tag, overrides)
+
+fun Kodein.Builder.bindMapX(
+        type: ParameterizedType,
+        tag: Any? = null,
+        overrides: Boolean? = null
+): Kodein.Builder.TypeBinder<Map<*, *>> = bindMap(type, tag, overrides)
 
 fun <T : Any> KodeinAware.instanceX(kClass: KClass<out T>, tag: Any? = null) = Instance<T>(TT(kClass), tag)
