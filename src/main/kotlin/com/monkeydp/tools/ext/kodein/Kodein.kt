@@ -32,16 +32,4 @@ inline fun <reified T : KClass<*>> Kodein.Builder.bindKClass(
     return bindX(type, tag, overrides)
 }
 
-inline fun <reified T : Map<*, *>> Kodein.Builder.bindMap(
-        type: ParameterizedType,
-        tag: Any? = null,
-        overrides: Boolean? = null
-): Kodein.Builder.TypeBinder<T> = bindX(type, tag, overrides)
-
-fun Kodein.Builder.bindMapX(
-        type: ParameterizedType,
-        tag: Any? = null,
-        overrides: Boolean? = null
-): Kodein.Builder.TypeBinder<Map<*, *>> = bindMap(type, tag, overrides)
-
 fun <T : Any> KodeinAware.instanceX(kClass: KClass<out T>, tag: Any? = null) = Instance<T>(TT(kClass), tag)
