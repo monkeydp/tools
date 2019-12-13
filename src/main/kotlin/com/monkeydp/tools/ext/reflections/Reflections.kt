@@ -1,7 +1,12 @@
 package com.monkeydp.tools.ext.reflections
 
+import com.monkeydp.tools.ext.java.clazzX
 import com.monkeydp.tools.ext.java.singleton
+import com.monkeydp.tools.util.FieldUtil
 import org.reflections.Reflections
+import org.reflections.scanners.Scanner
+import org.reflections.scanners.SubTypesScanner
+import org.reflections.scanners.TypeAnnotationsScanner
 import org.reflections.util.ClasspathHelper
 import org.reflections.util.ConfigurationBuilder
 import kotlin.reflect.KClass
@@ -11,6 +16,8 @@ import kotlin.reflect.full.isSubclassOf
  * @author iPotato
  * @date 2019/11/8
  */
+val reflectionsDefaultScanners = arrayOf<Scanner>(TypeAnnotationsScanner(), SubTypesScanner())
+
 fun reflections(any: Any) = reflections(any::class)
 
 fun reflections(kClass: KClass<*>) = reflections(kClass.java)
@@ -62,3 +69,16 @@ fun Reflections.getAnnotatedAnnotKClasses(annotKClass: KClass<out Annotation>, h
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> Reflections.getTypesAnnotatedWithX(annotClass: Class<out Annotation>) =
         getTypesAnnotatedWith(annotClass).filter { it.kotlin.isSubclassOf(T::class) }.toSet() as Set<Class<T>>
+
+/**
+ * The class where annotated field in, must be a singleton
+ */
+fun Reflections.getAnnotatedFieldValues(
+        annotClass: KClass<out Annotation>,
+        forceAccess: Boolean = false
+): Collection<Any> =
+        getFieldsAnnotatedWith(annotClass.java).map {
+            val singleton = it.clazzX.singleton()
+            val value: Any = FieldUtil.getValue(singleton, it, forceAccess = forceAccess)
+            value
+        }

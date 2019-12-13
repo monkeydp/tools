@@ -48,7 +48,7 @@ object FieldUtil {
         val superclass = clazz.superclass
         if (null != superclass && !Class::class.java.isAssignableFrom(superclass))
             return getField(superclass, fieldName, ignoreNotFound)
-    
+        
         if (!ignoreNotFound && null == superclass) throw NoSuchFieldException()
         
         return null
@@ -97,107 +97,107 @@ object FieldUtil {
     
     // ==== Get field value ====
     
-    fun <T> getValue(any: Any, fieldName: String,
-                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
-                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun <T> getValueOrNull(any: Any, fieldName: String,
+                           ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
+                           forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): T? {
         val field = getField(any, fieldName, ignoreNotFound) ?: return null
-        return getValue<T>(any, field, forceAccess)
+        return getValueOrNull<T>(any, field, forceAccess)
     }
     
-    fun <T> getValue(any: Any, field: Field,
-                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun <T> getValueOrNull(any: Any, field: Field,
+                           forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): T? {
         if (forceAccess) field.isAccessible = true
         return field.get(any) as T
     }
     
-    fun <T> getValue(clazz: Class<*>, fieldName: String,
-                     ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
-                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun <T> getValueOrNull(clazz: Class<*>, fieldName: String,
+                           ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
+                           forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): T? {
         val field = getField(clazz, fieldName, ignoreNotFound) ?: return null
-        return getValue(clazz, field, forceAccess)
+        return getValueOrNull(clazz, field, forceAccess)
     }
     
-    fun <T> getValue(clazz: Class<*>, field: Field,
-                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun <T> getValueOrNull(clazz: Class<*>, field: Field,
+                           forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): T? {
         if (forceAccess) field.isAccessible = true
         return field.get(clazz) as T
     }
     
-    fun <T> getNotnullValue(any: Any, fieldName: String,
-                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = getValue<T>(any, fieldName, false, forceAccess)!!
+    fun <T> getValue(any: Any, fieldName: String,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = getValueOrNull<T>(any, fieldName, false, forceAccess)!!
     
-    fun <T> getNotnullValue(any: Any, field: Field,
-                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = getValue<T>(any, field, forceAccess)!!
+    fun <T> getValue(any: Any, field: Field,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = getValueOrNull<T>(any, field, forceAccess)!!
     
-    fun <T> getNotnullValue(clazz: Class<*>, fieldName: String,
-                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T = getValue<T>(clazz, fieldName, false, forceAccess)!!
+    fun <T> getValue(clazz: Class<*>, fieldName: String,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T = getValueOrNull<T>(clazz, fieldName, false, forceAccess)!!
     
-    fun <T> getNotnullValue(clazz: Class<*>, field: Field,
-                            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T = getValue<T>(clazz, field, forceAccess)!!
+    fun <T> getValue(clazz: Class<*>, field: Field,
+                     forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): T = getValueOrNull<T>(clazz, field, forceAccess)!!
     
     // ==== Get fields values ====
     
-    fun <T> getValues(any: Any,
-                      forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun <T> getNullableValues(any: Any,
+                              forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): List<T?> {
         val list = mutableListOf<T?>()
+        getFields(any).forEach { list.add(getValueOrNull(any, it, forceAccess)) }
+        return list.toList()
+    }
+    
+    fun <T> getValues(any: Any,
+                      forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): List<T> {
+        val list = mutableListOf<T>()
         getFields(any).forEach { list.add(getValue(any, it, forceAccess)) }
         return list.toList()
     }
     
-    fun <T> getNotnullValues(any: Any,
-                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): List<T> {
-        val list = mutableListOf<T>()
-        getFields(any).forEach { list.add(getNotnullValue(any, it, forceAccess)) }
-        return list.toList()
-    }
-    
-    fun <T> getDeclaredValues(any: Any,
-                              forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun <T> getDeclaredNullableValues(any: Any,
+                                      forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): List<T?> {
         val list = mutableListOf<T?>()
-        getDeclaredFields(any).forEach { list.add(getValue(any, it, forceAccess)) }
+        getDeclaredFields(any).forEach { list.add(getValueOrNull(any, it, forceAccess)) }
         return list.toList()
     }
     
-    fun <T> getDeclaredNotnullValues(any: Any): List<T> {
+    fun <T> getDeclaredValues(any: Any): List<T> {
         val list = mutableListOf<T>()
-        getDeclaredFields(any).forEach { list.add(getNotnullValue(any, it)) }
+        getDeclaredFields(any).forEach { list.add(getValue(any, it)) }
         return list.toList()
     }
     
     // ==== Set field value ====
     
-    fun setValue(any: Any, fieldName: String, value: Any?,
-                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    fun setNullableValue(any: Any, fieldName: String, value: Any?,
+                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
     ) {
         val field = getField(any, fieldName, ignoreNotFound) ?: return
-        setValue(any, field, value)
+        setNullableValue(any, field, value)
     }
     
-    fun setValue(any: Any, field: Field, value: Any?,
-                 forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun setNullableValue(any: Any, field: Field, value: Any?,
+                         forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ) {
         if (forceAccess) field.isAccessible = true
         field.set(any, value)
     }
     
-    fun setNotnullValue(any: Any, fieldName: String, value: Any,
-                        ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
-    ) = setValue(any, fieldName, value, ignoreNotFound)
+    fun setValue(any: Any, fieldName: String, value: Any,
+                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    ) = setNullableValue(any, fieldName, value, ignoreNotFound)
     
-    fun setNotnullValue(any: Any, field: Field, value: Any,
-                        forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = setValue(any, field, value, forceAccess)
+    fun setValue(any: Any, field: Field, value: Any,
+                 forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = setNullableValue(any, field, value, forceAccess)
     
     // ==== Get declared field ====
     
@@ -228,37 +228,37 @@ object FieldUtil {
     
     // ==== Get declared field value ====
     
-    fun <T> getDeclaredValue(any: Any, fieldName: String,
-                             ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
-                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun <T> getDeclaredValueOrNull(any: Any, fieldName: String,
+                                   ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND,
+                                   forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): T? {
         val field = getDeclaredField(any, fieldName, ignoreNotFound) ?: return null
-        return getValue<Any>(any, field, forceAccess) as T?
+        return getValueOrNull<Any>(any, field, forceAccess) as T?
     }
     
-    fun <T> getDeclaredNotnullValue(any: Any, fieldName: String,
-                                    forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = getDeclaredValue<T>(any, fieldName, false, forceAccess)!!
+    fun <T> getDeclaredValue(any: Any, fieldName: String,
+                             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = getDeclaredValueOrNull<T>(any, fieldName, false, forceAccess)!!
     
     // ==== Set declared field value ====
     
-    fun setDeclaredValue(any: Any, fieldName: String, value: Any?,
-                         ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
+    fun setDeclaredNullableValue(any: Any, fieldName: String, value: Any?,
+                                 ignoreNotFound: Boolean = DEFAULT_IGNORE_NOT_FOUND
     ) {
         val field = getDeclaredField(any, fieldName, ignoreNotFound) ?: return
-        setDeclaredValue(any, field, value)
+        setDeclaredNullableValue(any, field, value)
     }
     
-    fun setDeclaredValue(any: Any, field: Field, value: Any?,
-                         forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    fun setDeclaredNullableValue(any: Any, field: Field, value: Any?,
+                                 forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ) {
         if (forceAccess) field.isAccessible = true
         field.set(any, value)
     }
     
-    fun setDeclaredNotnullValue(any: Any, fieldName: String, value: Any) = setDeclaredValue(any, fieldName, value)
+    fun setDeclaredValue(any: Any, fieldName: String, value: Any) = setDeclaredNullableValue(any, fieldName, value)
     
-    fun setDeclaredNotnullValue(any: Any, field: Field, value: Any,
-                                forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = setDeclaredValue(any, field, value, forceAccess)
+    fun setDeclaredValue(any: Any, field: Field, value: Any,
+                         forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ) = setDeclaredNullableValue(any, field, value, forceAccess)
 }

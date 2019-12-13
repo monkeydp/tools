@@ -1,25 +1,16 @@
 package com.monkeydp.tools.ext.kodein
 
+import com.monkeydp.tools.ext.kotlin.classX
 import org.kodein.di.*
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
-import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 import kotlin.reflect.KClass
 
-/**
- * @author iPotato
- * @date 2019/12/4
- */
-enum class KodeinTag {
-    NULL, TEST
-}
-
 fun <T : Any> Kodein.Builder.bindX(any: T, tag: Any? = null, overrides: Boolean? = null) =
-        bindX(any::class, tag, overrides)
+        @Suppress("UNCHECKED_CAST")
+        Bind<T>(TT(any.classX) as TypeToken<out T>, tag, overrides)
 
-fun <T : Any> Kodein.Builder.bindX(kClass: KClass<out T>, tag: Any? = null, overrides: Boolean? = null) =
-        Bind<T>(TT(kClass), tag, overrides)
-
-fun <T : Any> Kodein.Builder.bindX(type: ParameterizedType, tag: Any? = null, overrides: Boolean? = null) =
+fun <T : Any> Kodein.Builder.bindX(type: Type, tag: Any? = null, overrides: Boolean? = null) =
         @Suppress("UNCHECKED_CAST")
         Bind<T>(TT(type) as TypeToken<out T>, tag, overrides)
 

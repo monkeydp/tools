@@ -22,7 +22,7 @@ import kotlin.reflect.jvm.javaField
  */
 // ==== Class X ====
 
-val Any.classX
+val <T : Any> T.classX
     get() =
         when (this) {
             is Class<*> -> this
@@ -30,7 +30,7 @@ val Any.classX
             else -> this.javaClass
         }
 
-val Any.kClassX
+val <T : Any> T.kClassX
     get() = classX.kotlin
 
 
@@ -187,13 +187,13 @@ fun <T : Any, S : Any> T.copyFieldsFrom(source: S, vararg ignoreFields: Field, f
         val sourceValue = sourceField.get(source)
         if (sourceField.type.kotlin.isSubclassOf(field.type.kotlin))
             if (field.isAccessible || forceAssess)
-                FieldUtil.setValue(this, field, sourceValue, true)
+                FieldUtil.setNullableValue(this, field, sourceValue, true)
     }
 }
 
 fun <T : Any, R : Any> T.copyFieldsFrom(vararg pairs: Pair<KProperty1<T, R>, R>, forceAssess: Boolean = false) {
     pairs.forEach { pair ->
-        FieldUtil.setValue(this, pair.first.name, pair.second, forceAssess)
+        FieldUtil.setNullableValue(this, pair.first.name, pair.second, forceAssess)
     }
 }
 
