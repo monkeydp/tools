@@ -1,8 +1,8 @@
 package com.monkeydp.tools.gradle.wrapper
 
 import com.monkeydp.tools.config.kodein
-import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.ext.logger.getLogger
+import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.util.SystemUtil.IS_OS_UNIX
 import com.monkeydp.tools.util.SystemUtil.IS_OS_WINDOWS
 import com.monkeydp.tools.util.SystemUtil.OS_NAME
