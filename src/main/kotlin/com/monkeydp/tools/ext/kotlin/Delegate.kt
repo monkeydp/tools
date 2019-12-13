@@ -15,3 +15,12 @@ fun <T : Any> Delegates.notNullSingleton(
                 defaultValue,
                 ignoreAlreadyInitialized
         )
+
+fun <T : Any> Delegates.notNullSingleton(
+        getDefaultValue: () -> T?,
+        ignoreAlreadyInitialized: Boolean = false
+): ReadWriteProperty<Any?, T> =
+        NotNullSingleInitVar(
+                getDefaultValue,
+                ignoreAlreadyInitialized
+        )

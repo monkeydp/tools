@@ -20,6 +20,20 @@ import kotlin.reflect.jvm.javaField
  * @author iPotato
  * @date 2019/10/29
  */
+// ==== Class X ====
+
+val Any.classX
+    get() =
+        when (this) {
+            is Class<*> -> this
+            is KClass<*> -> this.java
+            else -> this.javaClass
+        }
+
+val Any.kClassX
+    get() = classX.kotlin
+
+
 // ==== Properties ====
 
 fun Any.toProps(): Properties {
