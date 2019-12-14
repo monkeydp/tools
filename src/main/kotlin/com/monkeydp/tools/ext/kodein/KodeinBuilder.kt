@@ -22,5 +22,3 @@ inline fun <reified T : KClass<*>> Kodein.Builder.bindKClass(
     val type = ParameterizedTypeImpl.make(KClass::class.java, arrayOf(kClass.java), null)
     return bindX(type, tag, overrides)
 }
-
-fun <T : Any> KodeinAware.instanceX(kClass: KClass<out T>, tag: Any? = null) = Instance<T>(TT(kClass), tag)
