@@ -3,6 +3,7 @@ package com.monkeydp.tools.util
 import com.monkeydp.tools.ext.java.hasSuperclass
 import com.monkeydp.tools.ext.kotlin.classX
 import java.lang.reflect.Field
+import kotlin.reflect.KProperty1
 
 /**
  * !!!! Using properties first, reflection destroys encapsulation !!!!
@@ -113,6 +114,15 @@ object FieldUtil {
             fieldName: String,
             forceAccess: Boolean = DEFAULT_FORCE_ACCESS
     ): T = getField(any, fieldName).run { getValue(any, this, forceAccess) }
+    
+    /**
+     * Get field value
+     */
+    fun <T, R> getValue(
+            any: Any,
+            prop: KProperty1<T, R>,
+            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+    ): R = getValue(any, prop.name, forceAccess)
     
     /**
      * Get field value or null

@@ -3,6 +3,7 @@ package com.monkeydp.tools.test.util
 import com.monkeydp.tools.util.FieldUtil
 import org.junit.Assert
 import org.junit.Test
+import kotlin.reflect.jvm.javaField
 
 /**
  * @author iPotato
@@ -29,8 +30,9 @@ class FieldUtilTest {
     
     @Test
     fun getFieldTest() {
-        val field = FieldUtil.getField(mockChild(), Parent::phone.name)
-        Assert.assertNotNull(field)
+        val prop = Child::phone
+        val field = FieldUtil.getField(mockChild(), prop.name)
+        Assert.assertTrue(field == prop.javaField)
     }
     
     @Test
@@ -40,14 +42,39 @@ class FieldUtilTest {
     }
     
     @Test
-    fun getFieldsTest() {
-        val fields = FieldUtil.getFields(Child::class.java)
-        Assert.assertTrue(fields.size == 3)
+    fun getFieldsTest1() {
+        val fields = FieldUtil.getFields(Child::class)
+        val expected = listOf(
+                Child::name.javaField!!,
+                Parent::phone.javaField!!,
+                Parent::age.javaField!!)
+        Assert.assertTrue(fields == expected)
+    }
+    
+    @Test
+    fun getFieldsTest2() {
+        val fields = FieldUtil.getFields(Child::class, override = false)
+        val expected = listOf(
+                Child::name.javaField!!,
+                Parent::name.javaField!!,
+                Parent::phone.javaField!!,
+                Parent::age.javaField!!)
+        Assert.assertTrue(fields == expected)
+    }
+    
+    @Test
+    fun getValueTest() {
+        val prop = Child::phone
+        val value = FieldUtil.getValue(mockChild(), prop, forceAccess = true)
+        Assert.assertTrue(value == prop.get(Child()))
     }
     
     @Test
     fun getDeclaredFieldsTest() {
-        val declaredFields = FieldUtil.getDeclaredFields(Child::class.java)
-        Assert.assertTrue(declaredFields.size == 1)
+        val fields = FieldUtil.getDeclaredFields(Child::class.java)
+        val expected = listOf(
+                Child::name.javaField!!
+        )
+        Assert.assertTrue(fields == expected)
     }
 }
