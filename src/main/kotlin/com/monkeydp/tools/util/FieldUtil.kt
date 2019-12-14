@@ -238,7 +238,7 @@ object FieldUtil {
     /**
      * Get declared fields
      */
-    fun getDeclaredFields(any: Any): List<Field> = any.classX.declaredFields.toList()
+    fun getDeclaredFields(any: Any): List<Field> = any.classX.declaredFields.filter { it.name != "Companion" }.toList()
     
     /**
      * Get declared field value

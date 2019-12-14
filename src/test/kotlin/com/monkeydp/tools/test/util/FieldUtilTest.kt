@@ -1,5 +1,6 @@
 package com.monkeydp.tools.test.util
 
+import com.monkeydp.tools.ext.kotlin.equalsX
 import com.monkeydp.tools.util.FieldUtil
 import org.junit.Assert
 import org.junit.Test
@@ -21,23 +22,24 @@ class FieldUtilTest {
     }
     
     class Child : Parent() {
+        companion object {
+            val mock get() = Child()
+            val mock2 get() = Child()
+        }
+        
         override val name = "son"
-    }
-    
-    private fun mockChild(): Child {
-        return Child()
     }
     
     @Test
     fun getFieldTest() {
         val prop = Child::phone
-        val field = FieldUtil.getField(mockChild(), prop.name)
+        val field = FieldUtil.getField(Child.mock, prop.name)
         Assert.assertTrue(field == prop.javaField)
     }
     
     @Test
     fun getFieldOrNullTest() {
-        val field = FieldUtil.getFieldOrNull(mockChild(), NOT_EXIST_FIELD_NAME)
+        val field = FieldUtil.getFieldOrNull(Child.mock, NOT_EXIST_FIELD_NAME)
         Assert.assertNull(field)
     }
     
@@ -48,7 +50,7 @@ class FieldUtilTest {
                 Child::name.javaField!!,
                 Parent::phone.javaField!!,
                 Parent::age.javaField!!)
-        Assert.assertTrue(fields == expected)
+        Assert.assertTrue(fields.equalsX(expected, true))
     }
     
     @Test
@@ -59,22 +61,40 @@ class FieldUtilTest {
                 Parent::name.javaField!!,
                 Parent::phone.javaField!!,
                 Parent::age.javaField!!)
-        Assert.assertTrue(fields == expected)
+        Assert.assertTrue(fields.equalsX(expected, true))
     }
     
     @Test
     fun getValueTest() {
-        val prop = Child::phone
-        val value = FieldUtil.getValue(mockChild(), prop, forceAccess = true)
-        Assert.assertTrue(value == prop.get(Child()))
+        Child.mock.apply {
+            val prop = Child::phone
+            val value = FieldUtil.getValue(this, prop, forceAccess = true)
+            Assert.assertTrue(value == prop.get(this))
+        }
+    }
+    
+    @Test
+    fun getValuesTest() {
+        Child.mock.apply {
+            val values = FieldUtil.getValues<Any>(this, forceAccess = true)
+            val expected = listOf(name, phone, age)
+            Assert.assertTrue(values.equalsX(expected, true))
+        }
     }
     
     @Test
     fun getDeclaredFieldsTest() {
         val fields = FieldUtil.getDeclaredFields(Child::class.java)
-        val expected = listOf(
-                Child::name.javaField!!
-        )
+        val expected = listOf(Child::name.javaField!!)
         Assert.assertTrue(fields == expected)
+    }
+    
+    @Test
+    fun getDeclaredValuesTest() {
+        Child.mock.apply {
+            val values = FieldUtil.getDeclaredValues<Any>(this, forceAccess = true)
+            val expected = listOf(name)
+            Assert.assertTrue(values.equalsX(expected, true))
+        }
     }
 }
