@@ -24,7 +24,6 @@ class FieldUtilTest {
     class Child : Parent() {
         companion object {
             val mock get() = Child()
-            val mock2 get() = Child()
         }
         
         override val name = "son"
