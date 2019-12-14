@@ -14,13 +14,13 @@ class FieldUtilTest {
     }
     
     open class Parent {
-        open var name = "dad"
+        open val name = "dad"
         val phone = "15845678910"
         val age = 22
     }
     
     class Child : Parent() {
-        override var name = "son"
+        override val name = "son"
     }
     
     private fun mockChild(): Child {
