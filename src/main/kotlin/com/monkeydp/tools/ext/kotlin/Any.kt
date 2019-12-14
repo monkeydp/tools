@@ -157,7 +157,7 @@ inline fun <reified K, reified V> Any.toDeclaredPropMapX(ignoreIllegalAccess: Bo
 }
 
 
-// ==== Copy Props ====
+// ==== Copy Prop Values ====
 
 fun <T : Any, S : Any> T.copyPropsFrom(source: S, vararg props: KProperty<*>) {
     val mutableProps = this::class.memberProperties.filterIsInstance<KMutableProperty<*>>()
@@ -173,29 +173,31 @@ fun <T : Any, S : Any> T.copyPropsFrom(source: S, vararg props: KProperty<*>) {
 }
 
 
-// ==== Copy Fields ====
+// ==== Copy Field Values ====
 
-fun <T : Any, S : Any> T.copyFieldsFromX(source: S, vararg ignoreProps: KProperty<T>, forceAssess: Boolean = false) {
-    copyFieldsFrom(source, *ignoreProps.map { it.javaField!! }.toTypedArray(), forceAssess = forceAssess)
-}
+fun <T : Any, S : Any> T.copyFieldValuesFromX(
+        source: S,
+        vararg ignoreProps: KProperty<T>,
+        forceAssess: Boolean = false
+) = copyFieldValuesFrom(source, *ignoreProps.map { it.javaField!! }.toTypedArray(), forceAssess = forceAssess)
 
-fun <T : Any, S : Any> T.copyFieldsFrom(source: S, vararg ignoreFields: Field, forceAssess: Boolean = false) {
-    val sourceFields = FieldUtil.getFields(source)
-    sourceFields.forEach { sourceField ->
-        val field = FieldUtil.getField(this, sourceField.name)
-        if (ignoreFields.contains(field)) return
-        val sourceValue = sourceField.get(source)
-        if (sourceField.type.kotlin.isSubclassOf(field.type.kotlin))
-            if (field.isAccessible || forceAssess)
-                FieldUtil.setNullableValue(this, field, sourceValue, true)
-    }
-}
+fun <T : Any, S : Any> T.copyFieldValuesFrom(
+        source: S,
+        vararg ignoreFields: Field,
+        forceAssess: Boolean = false
+): Unit =
+        FieldUtil.getFields(source).forEach { sourceField ->
+            val field = FieldUtil.getField(this, sourceField.name)
+            if (ignoreFields.contains(field)) return
+            val sourceValue = sourceField.get(source)
+            if (sourceField.type.kotlin.isSubclassOf(field.type.kotlin))
+                FieldUtil.setValue(this, field, sourceValue, forceAssess)
+        }
 
-fun <T : Any, R : Any> T.copyFieldsFrom(vararg pairs: Pair<KProperty1<T, R>, R>, forceAssess: Boolean = false) {
-    pairs.forEach { pair ->
-        FieldUtil.setNullableValue(this, pair.first.name, pair.second, forceAssess)
-    }
-}
+fun <T : Any, R : Any> T.copyFieldValuesFrom(
+        vararg pairs: Pair<KProperty1<T, R>, R>,
+        forceAssess: Boolean = false
+): Unit = pairs.forEach { FieldUtil.setValue(this, it.first.name, it.second, forceAssess) }
 
 
 // ==== Json ====

@@ -29,29 +29,25 @@ class FieldUtilTest {
     
     @Test
     fun getFieldTest() {
-        getFieldSuccessTest()
-        getFieldFailTest()
-    }
-    
-    private fun getFieldSuccessTest() {
         val field = FieldUtil.getField(mockChild(), Parent::phone.name)
         Assert.assertNotNull(field)
     }
     
-    private fun getFieldFailTest() {
-        val field = FieldUtil.getField(mockChild(), NOT_EXIST_FIELD_NAME, true)
-        Assert.assertNull(field)
-    }
-    
     @Test
-    fun getDeclaredFieldsTest() {
-        val declaredFields = FieldUtil.getDeclaredFields(Child::class.java)
-        Assert.assertTrue(declaredFields.size == 1)
+    fun getFieldOrNullTest() {
+        val field = FieldUtil.getFieldOrNull(mockChild(), NOT_EXIST_FIELD_NAME)
+        Assert.assertNull(field)
     }
     
     @Test
     fun getFieldsTest() {
         val fields = FieldUtil.getFields(Child::class.java)
         Assert.assertTrue(fields.size == 3)
+    }
+    
+    @Test
+    fun getDeclaredFieldsTest() {
+        val declaredFields = FieldUtil.getDeclaredFields(Child::class.java)
+        Assert.assertTrue(declaredFields.size == 1)
     }
 }
