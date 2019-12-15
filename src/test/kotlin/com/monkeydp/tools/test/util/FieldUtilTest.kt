@@ -31,36 +31,41 @@ class FieldUtilTest {
     
     @Test
     fun getFieldTest() {
-        val prop = Child::phone
-        val field = FieldUtil.getField(Child.mock, prop.name)
-        Assert.assertTrue(field == prop.javaField)
+        Child::phone.apply {
+            FieldUtil.getField(Child.mock, name).also {
+                Assert.assertTrue(it == javaField)
+            }
+        }
     }
     
     @Test
     fun getFieldOrNullTest() {
-        val field = FieldUtil.getFieldOrNull(Child.mock, NOT_EXIST_FIELD_NAME)
-        Assert.assertNull(field)
+        FieldUtil.getFieldOrNull(Child.mock, NOT_EXIST_FIELD_NAME).also {
+            Assert.assertNull(it)
+        }
     }
     
     @Test
     fun getFieldsTest1() {
-        val fields = FieldUtil.getFields(Child::class)
-        val expected = listOf(
-                Child::name.javaField!!,
-                Parent::phone.javaField!!,
-                Parent::age.javaField!!)
-        Assert.assertTrue(fields.equalsX(expected, true))
+        FieldUtil.getFields(Child::class).also {
+            val expected = listOf(
+                    Child::name.javaField!!,
+                    Parent::phone.javaField!!,
+                    Parent::age.javaField!!)
+            Assert.assertTrue(it.equalsX(expected, true))
+        }
     }
     
     @Test
     fun getFieldsTest2() {
-        val fields = FieldUtil.getFields(Child::class, override = false)
-        val expected = listOf(
-                Child::name.javaField!!,
-                Parent::name.javaField!!,
-                Parent::phone.javaField!!,
-                Parent::age.javaField!!)
-        Assert.assertTrue(fields.equalsX(expected, true))
+        FieldUtil.getFields(Child::class, override = false).also {
+            val expected = listOf(
+                    Child::name.javaField!!,
+                    Parent::name.javaField!!,
+                    Parent::phone.javaField!!,
+                    Parent::age.javaField!!)
+            Assert.assertTrue(it.equalsX(expected, true))
+        }
     }
     
     @Test
@@ -83,9 +88,10 @@ class FieldUtilTest {
     
     @Test
     fun getDeclaredFieldsTest() {
-        val fields = FieldUtil.getDeclaredFields(Child::class.java)
-        val expected = listOf(Child::name.javaField!!)
-        Assert.assertTrue(fields == expected)
+        FieldUtil.getDeclaredFields(Child::class.java).also {
+            val expected = listOf(Child::name.javaField!!)
+            Assert.assertTrue(it == expected)
+        }
     }
     
     @Test
