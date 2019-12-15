@@ -1,7 +1,7 @@
 package com.monkeydp.tools.ext.kodein.component
 
 import com.monkeydp.tools.ext.kodein.component.KodeinComponent.RegisterItem.COMPONENT
-import com.monkeydp.tools.ext.kodein.component.KodeinComponent.Type.SINGLETON
+import com.monkeydp.tools.ext.kodein.component.KodeinComponent.Type.ANY
 import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
 import kotlin.reflect.KClass
 
@@ -11,12 +11,12 @@ import kotlin.reflect.KClass
  */
 @Target(ANNOTATION_CLASS)
 annotation class KodeinComponent<T : Any>(
-        val type: Type = SINGLETON,
+        val type: Type = ANY,
         val registerItems: Array<RegisterItem> = [COMPONENT],
         val mapGeneratorKClass: KClass<out KodeinMapGenerator<out Any, T>> = Nothing::class
 ) {
     enum class Type {
-        SINGLETON,
+        ANY,
         K_CLASS,
     }
     

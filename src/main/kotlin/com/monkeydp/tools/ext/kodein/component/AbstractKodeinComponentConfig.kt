@@ -26,7 +26,7 @@ abstract class AbstractKodeinComponentConfig : KodeinComponentConfig {
         annotKClasses.map { annotKClass ->
             val kodeinComponent = annotKClass.findAnnotation<KodeinComponent<*>>()!!
             annotKClass to when (kodeinComponent.type) {
-                KodeinComponent.Type.SINGLETON -> findSingletons(annotKClass)
+                KodeinComponent.Type.ANY -> findSingletons(annotKClass)
                 KodeinComponent.Type.K_CLASS -> findKClass(annotKClass)
             }
         }.toMap()
