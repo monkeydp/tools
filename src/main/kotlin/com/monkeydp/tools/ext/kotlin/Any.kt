@@ -51,87 +51,66 @@ fun Any.toDeclaredProps(): Properties {
 
 // ==== Prop Iterable ====
 
-private fun Any.filterIllegalAccessible(props: Iterable<KProperty1<Any, *>>) =
-        props.filter {
-            try {
-                it.get(this)
-                true
-            } catch (e: IllegalCallableAccessException) {
-                false
-            }
-        }
+private fun <T : Any> T.filterProps(
+        props: Iterable<KProperty1<T, *>>,
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): Iterable<KProperty1<T, *>> = let { KProperty1Filter.filterProps(this, props, config) }
 
-fun Any.toPropIterable(ignoreIllegalAccess: Boolean = false) =
-        _toPropIterable(javaClass.kotlin.memberProperties, ignoreIllegalAccess)
+fun <T : Any> T.toPropIterable(config: (KProperty1FilterConfig.() -> Unit)? = null) =
+        javaClass.kotlin.memberProperties.run { filterProps(this, config) }
 
-inline fun <reified T> Any.toPropIterableX(ignoreIllegalAccess: Boolean = false) =
-        toPropIterable(ignoreIllegalAccess).filterValueType<T>()
+inline fun <reified T> Any.toPropIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
+        toPropIterable(config).filterValueType<T>()
 
-fun Any.toDeclaredPropIterable(ignoreIllegalAccess: Boolean = false) =
-        _toPropIterable(javaClass.kotlin.declaredMemberProperties, ignoreIllegalAccess)
+fun <T : Any> T.toDeclaredPropIterable(config: (KProperty1FilterConfig.() -> Unit)? = null) =
+        javaClass.kotlin.declaredMemberProperties.run { filterProps(this, config) }
 
-inline fun <reified T> Any.toDeclaredPropIterableX(ignoreIllegalAccess: Boolean = false) =
-        toDeclaredPropIterable(ignoreIllegalAccess).filterValueType<T>()
+inline fun <reified T> Any.toDeclaredPropIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
+        toDeclaredPropIterable(config).filterValueType<T>()
 
-private fun Any._toPropIterable(
-        props: Iterable<KProperty1<Any, *>>,
-        ignoreIllegalAccess: Boolean = false
-): Iterable<KProperty1<Any, *>> {
-    var localProps = props
-    if (ignoreIllegalAccess) localProps = filterIllegalAccessible(localProps)
-    return localProps
-}
+fun <T : Any> T.toPropValueIterable(config: (KProperty1FilterConfig.() -> Unit)? = null): List<Any?> =
+        toPropIterable(config).map { it.get(this) }
 
-fun Any.toPropValueIterable(ignoreIllegalAccess: Boolean = false) =
-        _toPropValueIterable(javaClass.kotlin.memberProperties, ignoreIllegalAccess)
+inline fun <reified T> Any.toPropValueIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
+        toPropValueIterable(config).filterIsInstance<T>() as Iterable<T>
 
-inline fun <reified T> Any.toPropValueIterableX(ignoreIllegalAccess: Boolean = false) =
-        toPropValueIterable(ignoreIllegalAccess).filterIsInstance<T>() as Iterable<T>
+fun <T : Any> T.toDeclaredPropValueIterable(config: (KProperty1FilterConfig.() -> Unit)? = null): List<Any?> =
+        toDeclaredPropIterable(config).map { it.get(this) }
 
-fun Any.toDeclaredPropValueIterable(ignoreIllegalAccess: Boolean = false) =
-        _toPropValueIterable(javaClass.kotlin.declaredMemberProperties, ignoreIllegalAccess)
-
-inline fun <reified T> Any.toDeclaredPropValueIterableX(ignoreIllegalAccess: Boolean = false) =
-        toDeclaredPropValueIterable(ignoreIllegalAccess).filterIsInstance<T>() as Iterable<T>
-
-private fun Any._toPropValueIterable(
-        props: Iterable<KProperty1<Any, *>>,
-        ignoreIllegalAccess: Boolean = false
-): List<Any?> {
-    var localProps = props
-    if (ignoreIllegalAccess) localProps = filterIllegalAccessible(localProps)
-    return localProps.map { it.get(this) }
-}
+inline fun <reified T> Any.toDeclaredPropValueIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
+        toDeclaredPropValueIterable(config).filterIsInstance<T>() as Iterable<T>
 
 
 // ==== Prop List ====
 
-fun Any.toPropValueList() = toPropValueIterable().toList()
+fun <T : Any> T.toPropValueList() = toPropValueIterable().toList()
 
-inline fun <reified T> Any.toPropValueListX() = toPropValueIterableX<T>(true).toList()
+inline fun <reified T> Any.toPropValueListX() = toPropValueIterableX<T> { ignoreIllegalAccess = true }.toList()
 
-fun Any.toDeclaredPropValueList() = toDeclaredPropValueIterable().toList()
+fun <T : Any> T.toDeclaredPropValueList() = toDeclaredPropValueIterable().toList()
 
 inline fun <reified T> Any.toDeclaredPropValueListX() =
-        toDeclaredPropValueIterableX<T>(true).toList()
+        toDeclaredPropValueIterableX<T> { ignoreIllegalAccess = true }.toList()
 
 
 // ==== Prop Set ====
 
-fun Any.toPropValueSet() = toPropValueIterable().toSet()
+fun <T : Any> T.toPropValueSet() = toPropValueIterable().toSet()
 
-inline fun <reified T> Any.toPropValueSetX() = toPropValueIterableX<T>(true).toSet()
+inline fun <reified T> Any.toPropValueSetX() = toPropValueIterableX<T> { ignoreIllegalAccess = true }.toSet()
 
-fun Any.toDeclaredPropValueSet() = toDeclaredPropValueIterable().toList()
+fun <T : Any> T.toDeclaredPropValueSet() = toDeclaredPropValueIterable().toList()
 
 inline fun <reified T> Any.toDeclaredPropValueSetX() =
-        toDeclaredPropValueIterableX<T>(true).toSet()
+        toDeclaredPropValueIterableX<T> { ignoreIllegalAccess = true }.toSet()
 
 
 // ==== Prop Map ====
 
-fun Any.toPropMap(ignoreIllegalAccess: Boolean = false) =
-        toPropIterable(ignoreIllegalAccess).map { it.name to it.get(this) }.toMap()
+fun <T : Any, U : Any?> Any.toPropMap(
+        key: (KProperty1<Any, *>) -> T = { it as T },
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): Map<T, U> = toPropIterable(config).map { key(it) to it.get(this) as U }.toMap()
 
 inline fun <reified K, reified V> Any.buildPropMap(props: Iterable<KProperty1<Any, *>>): Map<K, V> {
     val kClass = K::class
@@ -143,31 +122,39 @@ inline fun <reified K, reified V> Any.buildPropMap(props: Iterable<KProperty1<An
 }
 
 
-inline fun <reified K, reified V> Any.toPropMapX(ignoreIllegalAccess: Boolean = false): Map<K, V> {
-    val props = toPropIterableX<V>(ignoreIllegalAccess)
-    return buildPropMap<K, V>(props)
-}
+inline fun <reified K, reified V> Any.toPropMapX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null): Map<K, V> =
+        toPropIterableX<V>(config).run(::buildPropMap)
 
-fun Any.toDeclaredPropMap(ignoreIllegalAccess: Boolean = false) =
-        toDeclaredPropIterable(ignoreIllegalAccess).map { it.name to it.get(this) }.toMap()
+fun <T : Any> T.toDeclaredPropMap(config: (KProperty1FilterConfig.() -> Unit)? = null) =
+        toDeclaredPropIterable(config).map { it.name to it.get(this) }.toMap()
 
-inline fun <reified K, reified V> Any.toDeclaredPropMapX(ignoreIllegalAccess: Boolean = false): Map<K, V> {
-    val props = toDeclaredPropIterableX<V>(ignoreIllegalAccess)
-    return buildPropMap<K, V>(props)
-}
+inline fun <reified K, reified V> Any.toDeclaredPropMapX(
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): Map<K, V> = toDeclaredPropIterableX<V>(config).run(::buildPropMap)
 
 
 // ==== Copy Prop Values ====
 
-fun <T : Any, S : Any> T.copyPropsFrom(source: S, vararg props: KProperty<*>) {
-    val mutableProps = this::class.memberProperties.filterIsInstance<KMutableProperty<*>>()
+fun <T : Any, S : Any> T.copyPropValuesFrom(source: S, vararg props: KProperty1<S, *>) {
     val sourceProps = if (props.isEmpty()) source::class.memberProperties else props.toList()
-    mutableProps.forEach { targetProp ->
-        sourceProps.find {
-            it.name == targetProp.name &&
-            targetProp.returnType.isSupertypeOf(it.returnType)
-        }?.let { matchingProp ->
-            targetProp.setter.call(this, matchingProp.getter.call(source))
+    this::class.memberProperties.filterIsInstance<KMutableProperty<*>>().also { mutableProps ->
+        mutableProps.forEach { targetProp ->
+            sourceProps.find { sourceProp ->
+                sourceProp.name == targetProp.name &&
+                targetProp.returnType.isSupertypeOf(sourceProp.returnType)
+            }?.let { targetProp.setter.call(this, it.getter.call(source)) }
+        }
+    }
+}
+
+fun <T : Any> T.copyPropValuesFrom(map: Map<String, Any?>) {
+    this::class.memberProperties.filterIsInstance<KMutableProperty<*>>().also { mutableProps ->
+        mutableProps.forEach { targetProp ->
+            val key = targetProp.name
+            if (!map.containsKey(key)) return@forEach
+            val anyOrNull = map[key]
+            if (anyOrNull != null && !targetProp.returnType.isSupertypeOf(anyOrNull::class.createType())) return@forEach
+            targetProp.setter.call(this, anyOrNull)
         }
     }
 }
@@ -202,7 +189,7 @@ fun <T : Any, R : Any> T.copyFieldValuesFrom(
 
 // ==== Json ====
 
-fun Any.toJson() = JsonUtil.toString(this)
+fun <T : Any> T.toJson() = JsonUtil.toString(this)
 
 inline fun <reified T> Any.convertTo() = JsonUtil.convertTo<T>(this)
 
@@ -213,17 +200,17 @@ fun <T : Any> Any.convertTo(kClass: KClass<T>) = JsonUtil.convertTo(this, kClass
 
 // ==== Reflections ====
 
-fun Any.getReflections() = reflections(this::class)
+fun <T : Any> T.getReflections() = reflections(this::class)
 
-fun Any.getPropValue(propName: String) =
+fun <T : Any> T.getPropValue(propName: String) =
         this::class.memberProperties.first { it.name == propName }.getter.call(this)
 
-fun <T> Any.getPropValueX(propName: String) = getPropValue(propName) as T
+fun <T : Any, U : Any> T.getPropValueX(propName: String) = getPropValue(propName) as U
 
 
 // ==== Init ====
 
-inline fun <reified T> initInstance(init: T.() -> Unit, vararg args: Any): T {
+inline fun <reified T : Any> initInstance(init: T.() -> Unit, vararg args: Any): T {
     val instance = T::class.java.newInstanceX(*args)
     instance.init()
     return instance
