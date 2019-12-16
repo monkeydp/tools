@@ -1,10 +1,12 @@
 package com.monkeydp.tools.ext.kodein
 
 import com.monkeydp.tools.ext.java.singletonX
+import com.monkeydp.tools.ext.kodein.component.KodeinCompConfig
+import com.monkeydp.tools.ext.kodein.component.KodeinCompOption
 import com.monkeydp.tools.ext.kodein.component.KodeinComponent
 import com.monkeydp.tools.ext.kodein.component.KodeinComponent.RegisterItem.*
-import com.monkeydp.tools.ext.kodein.component.KodeinComponentConfig
 import com.monkeydp.tools.ext.kotlin.classX
+import com.monkeydp.tools.ext.kotlin.kClassX
 import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.main.ierror
 import org.kodein.di.Kodein
@@ -20,7 +22,7 @@ import kotlin.reflect.full.findAnnotation
  * @date 2019/12/14
  */
 object KodeinHelper {
-    fun initKodein(config: KodeinComponentConfig, vararg modules: Kodein.Module) =
+    fun initKodein(config: KodeinCompConfig, vararg modules: Kodein.Module) =
             Kodein {
                 modules.forEach { import(it) }
                 config.componentsMap.forEach { (annotKClass, components) ->
@@ -28,7 +30,7 @@ object KodeinHelper {
                 }
             }
     
-    private fun Kodein.MainBuilder.registerAll(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
+    private fun Kodein.Builder.registerAll(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
         val kodeinComponent = annotKClass.findAnnotation<KodeinComponent<Any>>()!!
         kodeinComponent.registerItems.forEach {
             when (it) {
@@ -40,30 +42,33 @@ object KodeinHelper {
         }
     }
     
-    private fun Kodein.MainBuilder.registerComponents(components: Collection<Any>) {
-        components.forEach { registerComponent(it) }
-    }
+    private fun Kodein.Builder.registerComponents(components: Collection<Any>): Unit =
+            components.forEach { registerComponent(it) }
     
-    private fun Kodein.MainBuilder.registerComponent(component: Any) {
-        when (component) {
-            is KClass<*> -> bindKClass(component) with singleton { component as KClass<out Any> }
-            else -> bindX(component) with singleton { component }
+    private fun Kodein.Builder.registerComponent(component: Any) {
+        val option = component.kClassX.findAnnotation<KodeinCompOption>()
+        if (option == null) bindX(component) with singleton { component }
+        else {
+            val kodeinBind = option.bindArgsKClass.java.singletonX()
+            val (tokenType, tag, overrides) = kodeinBind
+            bindX(tokenType, tag, overrides) with singleton { component }
         }
     }
     
-    private fun Kodein.MainBuilder.registerList(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
+    
+    private fun Kodein.Builder.registerList(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
         val type =
                 getParameterizedType<List<*>>(components)
         bindX<List<*>>(type, annotKClass) with singleton { components.toList() }
     }
     
-    private fun Kodein.MainBuilder.registerSet(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
+    private fun Kodein.Builder.registerSet(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
         val type =
                 getParameterizedType<Set<*>>(components)
         bindX<Set<*>>(type, annotKClass) with singleton { components.toSet() }
     }
     
-    private fun Kodein.MainBuilder.registerMap(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
+    private fun Kodein.Builder.registerMap(annotKClass: KClass<out Annotation>, components: Collection<Any>) {
         val kodeinComponent = annotKClass.findAnnotation<KodeinComponent<Any>>()!!
         val mapGeneratorKClass = kodeinComponent.mapGeneratorKClass
         if (mapGeneratorKClass == Nothing::class) ierror("Map generator kClass must not be Nothing::class!")

@@ -10,7 +10,7 @@ import kotlin.reflect.full.findAnnotation
  * @author iPotato
  * @date 2019/12/14
  */
-abstract class AbstractKodeinComponentConfig : KodeinComponentConfig {
+abstract class AbstractKodeinCompConfig : KodeinCompConfig {
     
     protected open val packageNames = listOf(javaClass.`package`.name)
     
