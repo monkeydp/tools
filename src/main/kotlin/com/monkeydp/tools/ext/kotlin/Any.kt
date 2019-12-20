@@ -122,7 +122,8 @@ inline fun <reified K, reified V> Any.buildPropMap(props: Iterable<KProperty1<An
 }
 
 
-inline fun <reified K, reified V> Any.toPropMapX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null): Map<K, V> =
+inline fun <reified K, reified V> Any.toPropMapX(
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null): Map<K, V> =
         toPropIterableX<V>(config).run(::buildPropMap)
 
 fun <T : Any> T.toDeclaredPropMap(config: (KProperty1FilterConfig.() -> Unit)? = null) =
@@ -210,8 +211,8 @@ fun <T : Any, U : Any> T.getPropValueX(propName: String) = getPropValue(propName
 
 // ==== Init ====
 
-inline fun <reified T : Any> initInstance(init: T.() -> Unit, vararg args: Any): T {
+inline fun <reified T : Any> initInstance(noinline init: (T.() -> Unit)? = null, vararg args: Any): T {
     val instance = T::class.java.newInstanceX(*args)
-    instance.init()
+    init?.invoke(instance)
     return instance
 }
