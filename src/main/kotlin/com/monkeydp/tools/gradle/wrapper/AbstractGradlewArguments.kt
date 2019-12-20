@@ -24,7 +24,7 @@ abstract class AbstractGradlewArguments : GradlewArguments {
         _options.add(this)
     }
     
-    fun toCmdLine(): String {
+    override fun toCmdLine(): String {
         val line = StringBuilder()
         tasks.forEach { line.append(it).append(SPACE) }
         options.forEach { (name, value) ->

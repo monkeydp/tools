@@ -44,8 +44,7 @@ abstract class AbstractGradleWrapperExecutor(
         }
     
     override fun gradlew(init: GradlewArguments.() -> Unit) {
-        val args = StdGradlewArguments()
-        args.init()
+        val args = gradlewArguments(init)
         val line = "$gradlewPath ${args.toCmdLine()}"
         log.debug("Execute command `$line`...")
         val commandLine = CommandLine.parse(line)
