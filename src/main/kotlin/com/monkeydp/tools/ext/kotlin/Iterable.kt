@@ -21,32 +21,32 @@ fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean {
 
 // ==== Match ====
 
-inline fun <T> Iterable<T>.matchOne(predicate: (T) -> Boolean): T {
+fun <T> Iterable<T>.matchOne(predicate: (T) -> Boolean): T {
     val t = matchOneOrNull(predicate)
     if (t != null) return t
     ierror(matchOneErrorMsg(0))
 }
 
-inline fun <T> Iterable<T>.matchOneOrNull(predicate: (T) -> Boolean): T? {
+fun <T> Iterable<T>.matchOneOrNull(predicate: (T) -> Boolean): T? {
     val matched = filter(predicate)
     return when (val size = matched.size) {
         0 -> null
         1 -> matched.first()
-        else -> ierror("${matchOneErrorMsg(size)} Following elements are matched: ${matched.linesln()}")
+        else -> ierror("${matchOneErrorMsg(size)}" +
+                       "${lineSeparatorWithIndent}Following elements are matched: ${matched.linesln()}")
     }
 }
 
-fun matchOneErrorMsg(size: Int) = StringBuilder("Element is matched $size times, not once!")
-
+fun <T> Iterable<T>.matchOneErrorMsg(size: Int) =
+        StringBuilder("Element is matched $size times, not once!" +
+                      "${lineSeparatorWithIndent}Elements are: ${linesln()}")
 
 // ==== Lines ====
 
-private val Iterable<*>.lineSeparator
-    get() = System.lineSeparator()
+val Iterable<*>.indent get() = "|    "
+val Iterable<*>.lineSeparator get() = System.lineSeparator()
+val Iterable<*>.lineSeparatorWithIndent get() = "$lineSeparator$indent"
 
-fun Iterable<*>.lines(): String {
-    val indent = "|    "
-    return "$indent${joinToString("$lineSeparator$indent")}".trimMargin()
-}
+fun Iterable<*>.lines() = "$indent${joinToString("$lineSeparatorWithIndent")}".trimMargin()
 
 fun Iterable<*>.linesln() = "$lineSeparator${lines()}"

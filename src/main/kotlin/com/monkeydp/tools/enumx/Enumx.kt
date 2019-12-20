@@ -1,9 +1,9 @@
 package com.monkeydp.tools.enumx
 
+import com.monkeydp.tools.ext.kotlin.findAnnotOrNull
 import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.ext.main.valueOfOrNullX
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotation
 
 /**
  * @author iPotato
@@ -32,7 +32,7 @@ tailrec fun <C : Enumx<*>, K : KClass<out C>> K.recurFindEnumOrNull(
     var enum = valueOfOrNullX(enumName, caseSensitive)
     if (enum != null) return enum as C
     
-    val parent = findAnnotation<EnumxOption>()?.parent
+    val parent = findAnnotOrNull<EnumxOption>()?.parent
     if (parent == null || parent == Nothing::class) return null
     
     return (parent as KClass<out C>).recurFindEnumOrNull(enumName, caseSensitive)

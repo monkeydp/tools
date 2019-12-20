@@ -1,5 +1,7 @@
 package com.monkeydp.tools.ext.kotlin
 
+import com.monkeydp.tools.ext.java.singleton
+import com.monkeydp.tools.ext.java.singletonX
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.superclasses
@@ -9,7 +11,7 @@ import kotlin.reflect.full.superclasses
  * @date 2019/11/8
  */
 inline fun <reified T : Annotation> KClass<*>.getAnnotatedProps() =
-        this.memberProperties.filter { it.hasAnnotation<T>() }.toList()
+        this.memberProperties.filter { it.hasAnnot<T>() }.toList()
 
 /**
  * Recursively matches all superclass
@@ -31,3 +33,7 @@ fun KClass<*>.lowerCameCaseName() = java.simpleName.toLowerCamelCase()
 fun <T : Any> KClass<out T>.enumArray() = java.enumConstants
 
 fun <T : Any> KClass<out T>.enumSet() = enumArray().toSet()
+
+fun KClass<*>.singleton() = java.singleton()
+
+inline fun <reified C : Any> KClass<out C>.singletonX() = java.singletonX()

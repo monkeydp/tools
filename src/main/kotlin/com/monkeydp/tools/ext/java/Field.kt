@@ -7,6 +7,6 @@ import java.lang.reflect.Field
  * @author iPotato
  * @date 2019/12/14
  */
-val Field.clazzX get() = FieldUtil.getValue<Class<*>>(this, "clazz", forceAccess = true)
+val Field.inClass get() = FieldUtil.getValue<Class<*>>(this, "clazz", forceAccess = true)
 
-val Field.kClazzX get() = clazzX.kotlin
+val Field.inKClass get() = inClass.kotlin
