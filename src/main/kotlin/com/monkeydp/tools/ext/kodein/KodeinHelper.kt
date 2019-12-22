@@ -10,16 +10,10 @@ import org.kodein.di.Kodein
  */
 object KodeinHelper {
     
-    fun initKodein(comps: Collection<KodeinComp>, vararg modules: Kodein.Module) =
-            Kodein {
-                importAll(*modules)
-                bindAllComps(comps)
-            }
+    fun Kodein.Builder.bindComps(comps: Collection<KodeinComp>): Unit =
+            comps.groupBy { it.annot::class }.values.forEach { bindCompsWithSameAnnot(it) }
     
-    private fun Kodein.Builder.bindAllComps(comps: Collection<KodeinComp>): Unit =
-            comps.groupBy { it.annot::class }.values.forEach { bindComps(it) }
-    
-    private fun Kodein.Builder.bindComps(comps: Collection<KodeinComp>) {
+    private fun Kodein.Builder.bindCompsWithSameAnnot(comps: Collection<KodeinComp>) {
         if (comps.isEmpty()) return
         val builder = this
         val builderConfig = comps.first().compAnnot.builderConfigKClass.singletonX()
