@@ -2,7 +2,7 @@ package com.monkeydp.tools.ext.kodein.component.abstr
 
 import com.monkeydp.tools.ext.kodein.component.KodeinComponent
 import com.monkeydp.tools.ext.kodein.component.contract.KodeinComp
-import com.monkeydp.tools.ext.kodein.component.contract.KodeinRepo
+import com.monkeydp.tools.ext.kodein.component.contract.KodeinCompRepo
 import com.monkeydp.tools.ext.kodein.component.contract.kodeinFieldComp
 import com.monkeydp.tools.ext.kodein.component.contract.kodeinKClassComp
 import com.monkeydp.tools.ext.kotlin.findAnnot
@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
  * @author iPotato
  * @date 2019/12/14
  */
-abstract class AbstractKodeinRepo : KodeinRepo {
+abstract class AbstractKodeinCompRepo : KodeinCompRepo {
     
     companion object {
         val log = getLogger()
