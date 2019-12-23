@@ -11,6 +11,7 @@ import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
 import com.monkeydp.tools.ext.reflections.getAnnotatedFieldValueMap
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
 import com.monkeydp.tools.ext.reflections.reflectionsDefaultScanners
+import org.kodein.di.Kodein
 import org.reflections.Reflections
 import org.reflections.scanners.FieldAnnotationsScanner
 import org.reflections.scanners.Scanner
@@ -52,6 +53,7 @@ abstract class AbstractKodeinCompRepo : KodeinCompRepo {
      */
     protected open val compReflections: Reflections = reflections()
     
+    override val modules: Array<Kodein.Module> = emptyArray()
     override val comps: Collection<KodeinComp> by lazy { findAllComps() }
     
     private fun findAllComps(): Collection<KodeinComp> =
