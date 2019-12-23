@@ -1,6 +1,6 @@
 package com.monkeydp.tools.ext.kodein
 
-import com.monkeydp.tools.ext.kodein.component.contract.KodeinComp
+import com.monkeydp.tools.ext.kodein.component.KodeinComp
 import com.monkeydp.tools.ext.kotlin.singletonX
 import org.kodein.di.Kodein
 

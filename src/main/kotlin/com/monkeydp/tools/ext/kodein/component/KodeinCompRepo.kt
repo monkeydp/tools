@@ -1,10 +1,5 @@
-package com.monkeydp.tools.ext.kodein.component.abstr
+package com.monkeydp.tools.ext.kodein.component
 
-import com.monkeydp.tools.ext.kodein.component.KodeinComponent
-import com.monkeydp.tools.ext.kodein.component.contract.KodeinComp
-import com.monkeydp.tools.ext.kodein.component.contract.KodeinCompRepo
-import com.monkeydp.tools.ext.kodein.component.contract.kodeinFieldComp
-import com.monkeydp.tools.ext.kodein.component.contract.kodeinKClassComp
 import com.monkeydp.tools.ext.kotlin.findAnnot
 import com.monkeydp.tools.ext.logger.getLogger
 import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
@@ -15,14 +10,19 @@ import org.kodein.di.Kodein
 import org.reflections.Reflections
 import org.reflections.scanners.FieldAnnotationsScanner
 import org.reflections.scanners.Scanner
-import kotlin.annotation.AnnotationTarget.CLASS
-import kotlin.annotation.AnnotationTarget.FIELD
 import kotlin.reflect.KClass
 
 /**
+ * Kodein component repository
+ *
  * @author iPotato
- * @date 2019/12/14
+ * @date 2019/12/9
  */
+interface KodeinCompRepo {
+    val modules: Array<Kodein.Module>
+    val comps: Collection<KodeinComp>
+}
+
 abstract class AbstractKodeinCompRepo : KodeinCompRepo {
     
     companion object {
@@ -63,20 +63,20 @@ abstract class AbstractKodeinCompRepo : KodeinCompRepo {
     private fun findComps(annotKClass: KClass<out Annotation>): Collection<KodeinComp> {
         val comps = mutableListOf<KodeinComp>()
         val target = annotKClass.findAnnot<Target>()
-        target.allowedTargets.forEach {
-            val part = when (it) {
-                CLASS -> compReflections.getAnnotatedKClasses(annotKClass).map {
-                    kodeinKClassComp {
-                        annot = it.findAnnot(annotKClass)
-                        annotatedKClass = it
-                    }
+        target.allowedTargets.forEach { annotTarget ->
+            val part = when (annotTarget) {
+                AnnotationTarget.CLASS -> compReflections.getAnnotatedKClasses(annotKClass).map {
+                    KodeinKClassComp(
+                            annot = it.findAnnot(annotKClass),
+                            annotatedKClass = it
+                    )
                 }
-                FIELD -> compReflections.getAnnotatedFieldValueMap(annotKClass, true).map { (field, value) ->
-                    kodeinFieldComp {
-                        annot = field.getAnnotation(annotKClass.java)
-                        this.field = field
-                        this.value = value
-                    }
+                AnnotationTarget.FIELD -> compReflections.getAnnotatedFieldValueMap(annotKClass, true).map { (field, value) ->
+                    KodeinFieldComp(
+                            annot = field.getAnnotation(annotKClass.java),
+                            field = field,
+                            value = value
+                    )
                 }
                 else -> return@forEach
             }

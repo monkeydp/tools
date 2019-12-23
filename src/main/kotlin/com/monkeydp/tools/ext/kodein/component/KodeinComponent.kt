@@ -1,7 +1,5 @@
 package com.monkeydp.tools.ext.kodein.component
 
-import com.monkeydp.tools.ext.kodein.component.contract.KodeinBuilderConfig
-import com.monkeydp.tools.ext.kodein.component.contract.KodeinComp
 import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
 import kotlin.reflect.KClass
 

@@ -1,6 +1,5 @@
-package com.monkeydp.tools.ext.kodein.component.contract
+package com.monkeydp.tools.ext.kodein.component
 
-import com.monkeydp.tools.ext.kodein.component.KodeinComponent
 import com.monkeydp.tools.ext.kotlin.findAnnot
 
 /**
@@ -11,7 +10,15 @@ interface KodeinComp {
     /**
      * @see compAnnot The annotation annotated by `compAnnot`
      */
-    var annot: Annotation
+    val annot: Annotation
     
     val compAnnot: KodeinComponent get() = annot.annotationClass.findAnnot()
+}
+
+/**
+ * @author iPotato
+ * @date 2019/12/20
+ */
+internal abstract class AbstractKodeinComp(override val annot: Annotation) : KodeinComp {
+    override fun toString() = "(annot = $annot)"
 }
