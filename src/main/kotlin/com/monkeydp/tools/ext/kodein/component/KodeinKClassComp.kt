@@ -16,8 +16,7 @@ interface KodeinKClassComp : KodeinComp {
         operator fun invoke(
                 annot: Annotation,
                 annotatedKClass: KClass<*>
-        ): KodeinKClassComp =
-                StdKodeinKClassComp(annot, annotatedKClass)
+        ): KodeinKClassComp = StdKodeinKClassComp(annot, annotatedKClass)
     }
 }
 
