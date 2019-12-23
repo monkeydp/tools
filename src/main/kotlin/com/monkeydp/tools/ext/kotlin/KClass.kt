@@ -34,6 +34,6 @@ fun <T : Any> KClass<out T>.enumArray() = java.enumConstants
 
 fun <T : Any> KClass<out T>.enumSet() = enumArray().toSet()
 
-fun KClass<*>.singleton() = java.singleton()
+fun KClass<*>.singletonOrNull() = java.singleton()
 
 inline fun <reified C : Any> KClass<out C>.singletonX() = java.singletonX()

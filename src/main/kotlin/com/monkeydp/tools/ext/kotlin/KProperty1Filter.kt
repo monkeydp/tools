@@ -1,6 +1,5 @@
 package com.monkeydp.tools.ext.kotlin
 
-import com.monkeydp.tools.exception.inner.PropertyUninitializedException
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.IllegalCallableAccessException
@@ -48,4 +47,9 @@ object KProperty1Filter {
             else throw e
         }
     }
+}
+
+class KProperty1FilterConfig {
+    var ignoreIllegalAccess: Boolean = false
+    var ignoreUninitialized: Boolean = true
 }
