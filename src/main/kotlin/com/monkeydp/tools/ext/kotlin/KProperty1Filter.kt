@@ -1,8 +1,10 @@
 package com.monkeydp.tools.ext.kotlin
 
 import java.lang.reflect.InvocationTargetException
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.IllegalCallableAccessException
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * @author iPotato
@@ -18,32 +20,37 @@ object KProperty1Filter {
             with(KProperty1FilterConfig()) {
                 if (config != null) config(this)
                 var filteredProps = props
-                if (ignoreIllegalAccess) filteredProps = filterIllegalAccessible(any, props)
-                if (ignoreUninitialized) filteredProps = filterUninitialized(any, props)
+                if (ignoreIllegalAccess) filteredProps =
+                        filterException(any, props, IllegalCallableAccessException::class)
+                if (ignoreUninitialized) filteredProps =
+                        filterInvocationTargetException(any, props, PropertyUninitializedException::class)
                 filteredProps
             }
     
-    private fun <T : Any> filterIllegalAccessible(
+    private fun <T : Any> filterException(
             any: T,
-            props: Iterable<KProperty1<T, *>>
+            props: Iterable<KProperty1<T, *>>,
+            exKClass: KClass<out Throwable>
     ) = props.filter {
         try {
             it.get(any)
             true
-        } catch (e: IllegalCallableAccessException) {
-            false
+        } catch (e: Throwable) {
+            if (e::class.isSubclassOf(exKClass)) false
+            else throw e
         }
     }
     
-    private fun <T : Any> filterUninitialized(
+    private fun <T : Any> filterInvocationTargetException(
             any: T,
-            props: Iterable<KProperty1<T, *>>
+            props: Iterable<KProperty1<T, *>>,
+            exKClass: KClass<out Throwable>
     ) = props.filter {
         try {
             it.get(any)
             true
         } catch (e: InvocationTargetException) {
-            if (e.targetException is PropertyUninitializedException) false
+            if (e.targetException::class.isSubclassOf(exKClass)) false
             else throw e
         }
     }

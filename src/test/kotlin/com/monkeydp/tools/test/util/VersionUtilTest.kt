@@ -1,8 +1,8 @@
 package com.monkeydp.tools.test.util
 
 import com.monkeydp.tools.util.VersionUtil
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 /**
  * @author iPotato
@@ -16,8 +16,8 @@ class VersionUtilTest {
     
     @Test
     fun newerThanTest() {
-        Assert.assertTrue(VersionUtil.newerThan(v2, v1))
-        Assert.assertTrue(VersionUtil.newerThan(v3, v1))
-        Assert.assertTrue(VersionUtil.newerThan(v4, v1))
+       assertTrue(VersionUtil.newerThan(v2, v1))
+       assertTrue(VersionUtil.newerThan(v3, v1))
+       assertTrue(VersionUtil.newerThan(v4, v1))
     }
 }

@@ -30,7 +30,7 @@ dependencies {
     // command line
     implementation("org.apache.commons:commons-exec:1.3")
     // test
-    testImplementation("junit:junit:4.12")
+    testImplementation(kotlin("test-junit5"))
 }
 
 tasks.withType<KotlinCompile> {

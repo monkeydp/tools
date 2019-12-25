@@ -2,8 +2,8 @@ package com.monkeydp.tools.test.util
 
 import com.monkeydp.tools.ext.kotlin.equalsX
 import com.monkeydp.tools.util.FieldUtil
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import kotlin.reflect.jvm.javaField
 
 /**
@@ -33,7 +33,7 @@ class FieldUtilTest {
     fun getFieldTest() {
         Child::phone.apply {
             FieldUtil.getField(Child.mock, name).also {
-                Assert.assertTrue(it == javaField)
+                assertEquals(it, javaField)
             }
         }
     }
@@ -41,7 +41,7 @@ class FieldUtilTest {
     @Test
     fun getFieldOrNullTest() {
         FieldUtil.getFieldOrNull(Child.mock, NOT_EXIST_FIELD_NAME).also {
-            Assert.assertNull(it)
+            assertNull(it)
         }
     }
     
@@ -52,7 +52,7 @@ class FieldUtilTest {
                     Child::name.javaField!!,
                     Parent::phone.javaField!!,
                     Parent::age.javaField!!)
-            Assert.assertTrue(it.equalsX(expected, true))
+            assertTrue(it.equalsX(expected, true))
         }
     }
     
@@ -64,7 +64,7 @@ class FieldUtilTest {
                     Parent::name.javaField!!,
                     Parent::phone.javaField!!,
                     Parent::age.javaField!!)
-            Assert.assertTrue(it.equalsX(expected, true))
+            assertTrue(it.equalsX(expected, true))
         }
     }
     
@@ -73,7 +73,7 @@ class FieldUtilTest {
         Child.mock.apply {
             val prop = Child::phone
             val value = FieldUtil.getValue(this, prop, forceAccess = true)
-            Assert.assertTrue(value == prop.get(this))
+            assertTrue(value == prop.get(this))
         }
     }
     
@@ -82,7 +82,7 @@ class FieldUtilTest {
         Child.mock.apply {
             val values = FieldUtil.getValues<Any>(this, forceAccess = true)
             val expected = listOf(name, phone, age)
-            Assert.assertTrue(values.equalsX(expected, true))
+            assertTrue(values.equalsX(expected, true))
         }
     }
     
@@ -90,7 +90,7 @@ class FieldUtilTest {
     fun getDeclaredFieldsTest() {
         FieldUtil.getDeclaredFields(Child::class.java).also {
             val expected = listOf(Child::name.javaField!!)
-            Assert.assertTrue(it == expected)
+            assertTrue(it == expected)
         }
     }
     
@@ -99,7 +99,7 @@ class FieldUtilTest {
         Child.mock.apply {
             val values = FieldUtil.getDeclaredValues<Any>(this, forceAccess = true)
             val expected = listOf(name)
-            Assert.assertTrue(values.equalsX(expected, true))
+            assertTrue(values.equalsX(expected, true))
         }
     }
 }

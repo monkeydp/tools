@@ -1,6 +1,6 @@
 package com.monkeydp.tools.test.util
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * @author iPotato
