@@ -8,6 +8,7 @@ import com.monkeydp.tools.ext.reflections.reflections
 import com.monkeydp.tools.util.FieldUtil
 import com.monkeydp.tools.util.JsonUtil
 import java.lang.reflect.Field
+import java.lang.reflect.ParameterizedType
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
@@ -36,102 +37,100 @@ val <T : Any> T.kClassX
 
 // ==== Properties ====
 
-fun Any.toProps(): Properties {
+fun Any.toProperties(): Properties {
     val properties = Properties()
     this.javaClass.kotlin.memberProperties.forEach { properties[it.name] = it.get(this) }
     return properties
 }
 
-fun Any.toDeclaredProps(): Properties {
+fun Any.toDeclaredProperties(): Properties {
     val properties = Properties()
     this.javaClass.kotlin.declaredMemberProperties.forEach { properties[it.name] = it.get(this) }
     return properties
 }
 
 
-// ==== Prop Iterable ====
+// ==== Props ====
 
 private fun <T : Any> T.filterProps(
         props: Iterable<KProperty1<T, *>>,
         config: (KProperty1FilterConfig.() -> Unit)? = null
-): Iterable<KProperty1<T, *>> = let { KProperty1Filter.filterProps(this, props, config) }
+): List<KProperty1<T, *>> = let { KProperty1Filter.filterProps(this, props, config) }
 
-fun <T : Any> T.toPropIterable(config: (KProperty1FilterConfig.() -> Unit)? = null) =
-        javaClass.kotlin.memberProperties.run { filterProps(this, config) }
+fun <T : Any> T.toProps(
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<KProperty1<T, *>> = javaClass.kotlin.memberProperties.run { filterProps(this, config) }
 
-inline fun <reified T> Any.toPropIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
-        toPropIterable(config).filterValueType<T>()
+inline fun <T : Any, reified R> T.toPropsX(
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<KProperty1<T, R>> = toProps(config).filterValueType<T, R>()
 
-fun <T : Any> T.toDeclaredPropIterable(config: (KProperty1FilterConfig.() -> Unit)? = null) =
-        javaClass.kotlin.declaredMemberProperties.run { filterProps(this, config) }
+fun <T : Any> T.toDeclaredProps(
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<KProperty1<T, *>> = javaClass.kotlin.declaredMemberProperties.run { filterProps(this, config) }
 
-inline fun <reified T> Any.toDeclaredPropIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
-        toDeclaredPropIterable(config).filterValueType<T>()
-
-fun <T : Any> T.toPropValueIterable(config: (KProperty1FilterConfig.() -> Unit)? = null): List<Any?> =
-        toPropIterable(config).map { it.get(this) }
-
-inline fun <reified T> Any.toPropValueIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
-        toPropValueIterable(config).filterIsInstance<T>() as Iterable<T>
-
-fun <T : Any> T.toDeclaredPropValueIterable(config: (KProperty1FilterConfig.() -> Unit)? = null): List<Any?> =
-        toDeclaredPropIterable(config).map { it.get(this) }
-
-inline fun <reified T> Any.toDeclaredPropValueIterableX(noinline config: (KProperty1FilterConfig.() -> Unit)? = null) =
-        toDeclaredPropValueIterable(config).filterIsInstance<T>() as Iterable<T>
+inline fun <T : Any, reified R> T.toDeclaredPropsX(
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<KProperty1<T, R>> = toDeclaredProps(config).filterValueType<T, R>()
 
 
-// ==== Prop List ====
+// ==== Prop Values ====
 
-fun <T : Any> T.toPropValueList() = toPropValueIterable().toList()
+fun Any.toPropValues(
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<Any?> = toProps(config).map { it.get(this) }
 
-inline fun <reified T> Any.toPropValueListX() = toPropValueIterableX<T> { ignoreIllegalAccess = true }.toList()
+fun <V : Any> Any.toPropValues(
+        kClass: KClass<V>,
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<V> = toPropValues(config).filterIsInstance(kClass)
 
-fun <T : Any> T.toDeclaredPropValueList() = toDeclaredPropValueIterable().toList()
+inline fun <reified V> Any.toPropValuesX(
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<V> = toPropValues(config).filterIsInstance<V>()
 
-inline fun <reified T> Any.toDeclaredPropValueListX() =
-        toDeclaredPropValueIterableX<T> { ignoreIllegalAccess = true }.toList()
+fun Any.toDeclaredPropValues(
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<Any?> = toDeclaredProps(config).map { it.get(this) }
 
+fun <V : Any> Any.toDeclaredPropValues(
+        kClass: KClass<V>,
+        config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<V> = toDeclaredPropValues(config).filterIsInstance(kClass)
 
-// ==== Prop Set ====
-
-fun <T : Any> T.toPropValueSet() = toPropValueIterable().toSet()
-
-inline fun <reified T> Any.toPropValueSetX() = toPropValueIterableX<T> { ignoreIllegalAccess = true }.toSet()
-
-fun <T : Any> T.toDeclaredPropValueSet() = toDeclaredPropValueIterable().toList()
-
-inline fun <reified T> Any.toDeclaredPropValueSetX() =
-        toDeclaredPropValueIterableX<T> { ignoreIllegalAccess = true }.toSet()
+inline fun <reified V> Any.toDeclaredPropValuesX(
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): List<V> = toDeclaredPropValues(config).filterIsInstance<V>()
 
 
 // ==== Prop Map ====
 
-fun <T : Any, U : Any?> Any.toPropMap(
-        key: (KProperty1<Any, *>) -> T = { it as T },
-        config: (KProperty1FilterConfig.() -> Unit)? = null
-): Map<T, U> = toPropIterable(config).map { key(it) to it.get(this) as U }.toMap()
+inline fun <K, reified V> Any.toPropMap(
+        key: (KProperty1<Any, V>) -> K = { it as K },
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): Map<K, V> = toPropsX<Any, V>(config).map { key(it) to it.get(this) }.toMap()
 
-inline fun <reified K, reified V> Any.buildPropMap(props: Iterable<KProperty1<Any, *>>): Map<K, V> {
-    val kClass = K::class
-    return when {
-        kClass.isSubclassOf(String::class) -> props.map { it.name to it.get(this) }.toMap() as Map<K, V>
-        kClass.isSubclassOf(KProperty1::class) -> props.map { it to it.get(this) }.toMap() as Map<K, V>
-        else -> ierror("Unsupported type: $kClass!")
-    }
-}
-
+inline fun <reified K, reified V> Any.buildPropMap(props: Iterable<KProperty1<Any, *>>): Map<K, V> =
+        K::class.let { kClass ->
+            when {
+                kClass.isSubclassOf(String::class) -> props.map { it.name to it.get(this) }.toMap() as Map<K, V>
+                kClass.isSubclassOf(KProperty1::class) -> props.map { it to it.get(this) }.toMap() as Map<K, V>
+                else -> ierror("Unsupported type: $kClass!")
+            }
+        }
 
 inline fun <reified K, reified V> Any.toPropMapX(
-        noinline config: (KProperty1FilterConfig.() -> Unit)? = null): Map<K, V> =
-        toPropIterableX<V>(config).run(::buildPropMap)
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): Map<K, V> = toPropsX<Any, V>(config).run(::buildPropMap)
 
-fun <T : Any> T.toDeclaredPropMap(config: (KProperty1FilterConfig.() -> Unit)? = null) =
-        toDeclaredPropIterable(config).map { it.name to it.get(this) }.toMap()
+inline fun <K, reified V> Any.toDeclaredPropMap(
+        key: (KProperty1<Any, V>) -> K = { it as K },
+        noinline config: (KProperty1FilterConfig.() -> Unit)? = null
+): Map<K, V> = toDeclaredPropsX<Any, V>(config).map { key(it) to it.get(this) }.toMap()
 
 inline fun <reified K, reified V> Any.toDeclaredPropMapX(
         noinline config: (KProperty1FilterConfig.() -> Unit)? = null
-): Map<K, V> = toDeclaredPropIterableX<V>(config).run(::buildPropMap)
+): Map<K, V> = toDeclaredPropsX<Any, V>(config).run(::buildPropMap)
 
 
 // ==== Copy Prop Values ====
@@ -216,3 +215,12 @@ inline fun <reified T : Any> initInstance(noinline init: (T.() -> Unit)? = null,
     init?.invoke(instance)
     return instance
 }
+
+
+// ==== Generic ====
+
+fun Any.getActualTypeInSuperclass(index: Int = 0) =
+        (javaClass.genericSuperclass as? ParameterizedType ?: ierror("Generic superclass must be parameterized type!"))
+                .actualTypeArguments[index]
+
+fun <T> Any.getActualTypeInSuperclassX(index: Int = 0) = getActualTypeInSuperclass(index) as T

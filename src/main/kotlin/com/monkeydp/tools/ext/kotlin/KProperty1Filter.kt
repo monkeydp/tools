@@ -16,7 +16,7 @@ object KProperty1Filter {
             any: T,
             props: Iterable<KProperty1<T, *>>,
             config: (KProperty1FilterConfig.() -> Unit)? = null
-    ): Iterable<KProperty1<T, *>> =
+    ): List<KProperty1<T, *>> =
             with(KProperty1FilterConfig()) {
                 if (config != null) config(this)
                 var filteredProps = props
@@ -25,7 +25,7 @@ object KProperty1Filter {
                 if (ignoreUninitialized) filteredProps =
                         filterInvocationTargetException(any, props, PropertyUninitializedException::class)
                 filteredProps
-            }
+            }.toList()
     
     private fun <T : Any> filterException(
             any: T,

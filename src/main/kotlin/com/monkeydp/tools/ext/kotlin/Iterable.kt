@@ -1,6 +1,8 @@
 package com.monkeydp.tools.ext.kotlin
 
 import com.monkeydp.tools.ext.main.ierror
+import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * @author iPotato
@@ -41,6 +43,7 @@ fun <T> Iterable<T>.matchOneErrorMsg(size: Int) =
         StringBuilder("Element is matched $size times, not once!" +
                       "${lineSeparatorWithIndent}Elements are: ${linesln()}")
 
+
 // ==== Lines ====
 
 val Iterable<*>.indent get() = "|    "
@@ -50,3 +53,10 @@ val Iterable<*>.lineSeparatorWithIndent get() = "$lineSeparator$indent"
 fun Iterable<*>.lines() = "$indent${joinToString("$lineSeparatorWithIndent")}".trimMargin()
 
 fun Iterable<*>.linesln() = "$lineSeparator${lines()}"
+
+
+// ==== Filter Is Instance ====
+
+@Suppress("UNCHECKED_CAST")
+fun <T : Any> Iterable<*>.filterIsInstance(kClass: KClass<T>): List<T> =
+        filter { it != null && it::class.isSubclassOf(kClass) } as List<T>
