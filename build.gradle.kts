@@ -31,6 +31,7 @@ dependencies {
     implementation("org.apache.commons:commons-exec:1.3")
     // test
     testImplementation(kotlin("test-junit5"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
 }
 
 tasks.withType<KotlinCompile> {
