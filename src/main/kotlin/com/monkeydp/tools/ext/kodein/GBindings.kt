@@ -11,4 +11,8 @@ import org.kodein.di.generic
  * @date 2019/12/20
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <C, reified T: Any> Kodein.BindBuilder.WithScope<C>.singletonX(ref: RefMaker? = null, sync: Boolean = true, noinline creator: NoArgSimpleBindingKodein<C>.() -> Any) = Singleton(scope, contextType, generic(), ref, sync, creator as NoArgSimpleBindingKodein<C>.() -> T)
+inline fun <C, reified T : Any> Kodein.BindBuilder.WithScope<C>.singletonX(
+        ref: RefMaker? = null,
+        sync: Boolean = true,
+        noinline creator: NoArgSimpleBindingKodein<C>.() -> Any
+) = Singleton(scope, contextType, generic(), ref, sync, creator as NoArgSimpleBindingKodein<C>.() -> T)

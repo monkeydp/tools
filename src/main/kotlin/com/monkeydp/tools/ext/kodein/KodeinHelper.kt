@@ -11,7 +11,7 @@ import org.kodein.di.Kodein
 object KodeinHelper {
     
     fun Kodein.Builder.bindComps(comps: Collection<KodeinComp>): Unit =
-            comps.groupBy { it.annot::class }.values.forEach { bindCompsWithSameAnnot(it) }
+            comps.groupBy { it.annot.annotationClass }.values.forEach { bindCompsWithSameAnnot(it) }
     
     private fun Kodein.Builder.bindCompsWithSameAnnot(comps: Collection<KodeinComp>) {
         if (comps.isEmpty()) return

@@ -1,7 +1,6 @@
 package com.monkeydp.tools.gradle.wrapper
 
 import com.monkeydp.tools.enumeration.Symbol
-import com.monkeydp.tools.ext.kotlin.initInstance
 
 /**
  * @author iPotato
@@ -15,9 +14,9 @@ interface GradlewArguments {
     
     fun toCmdLine(): String
     
-    companion object{
+    companion object {
         operator fun invoke(init: (GradlewArguments.() -> Unit)? = null): GradlewArguments =
-                initInstance<StdGradlewArguments>(init)
+                StdGradlewArguments().apply { init?.invoke(this) }
     }
 }
 

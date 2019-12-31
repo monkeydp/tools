@@ -1,7 +1,6 @@
 package com.monkeydp.tools.gradle.wrapper
 
 import com.monkeydp.tools.config.kodein
-import com.monkeydp.tools.ext.kotlin.initInstance
 import com.monkeydp.tools.ext.logger.getLogger
 import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.util.SystemUtil
@@ -24,7 +23,8 @@ interface GradleWrapperExecutor {
         operator fun invoke(
                 rootDirpath: String,
                 init: (GradleWrapperExecutor.() -> Unit)? = null
-        ): GradleWrapperExecutor = initInstance<StdGradleWrapperExecutor>(init, rootDirpath)
+        ): GradleWrapperExecutor =
+                StdGradleWrapperExecutor(rootDirpath).apply { init?.invoke(this) }
     }
 }
 

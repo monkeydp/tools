@@ -84,17 +84,3 @@ fun Reflections.getAnnotatedFieldValueMap(
 ): Map<Field, Any> = getAnnotatedFields(annotClass).map {
     it to it.inClass.singleton().run { FieldUtil.getValue<Any>(this, it, forceAccess = forceAccess) }
 }.toMap()
-
-/**
- * The class where annotated field in, must be a singleton
- */
-@Deprecated("")
-fun Reflections.getAnnotatedFieldValues(
-        annotClass: KClass<out Annotation>,
-        forceAccess: Boolean = false
-): Collection<Any> =
-        getFieldsAnnotatedWith(annotClass.java).map {
-            val singleton = it.inClass.singleton()
-            val value: Any = FieldUtil.getValue(singleton, it, forceAccess = forceAccess)
-            value
-        }

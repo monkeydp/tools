@@ -1,7 +1,9 @@
 package com.monkeydp.tools.ext.kodein.component
 
 import com.monkeydp.tools.ext.kotlin.findAnnot
+import com.monkeydp.tools.ext.kotlin.findAnnotOrNull
 import com.monkeydp.tools.ext.logger.getLogger
+import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
 import com.monkeydp.tools.ext.reflections.getAnnotatedFieldValueMap
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
@@ -62,7 +64,9 @@ abstract class AbstractKodeinCompRepo : KodeinCompRepo {
     
     private fun findComps(annotKClass: KClass<out Annotation>): Collection<KodeinComp> {
         val comps = mutableListOf<KodeinComp>()
-        val target = annotKClass.findAnnot<Target>()
+        val target = annotKClass.findAnnotOrNull<Target>()
+        if (target == null) ierror("Kodein component annotation `${annotKClass.qualifiedName}` must contain at least one ${AnnotationTarget::class.qualifiedName}, like `@${Target::class.qualifiedName}(AnnotationTarget.CLASS)`")
+        
         target.allowedTargets.forEach { annotTarget ->
             val part = when (annotTarget) {
                 AnnotationTarget.CLASS -> compReflections.getAnnotatedKClasses(annotKClass).map {

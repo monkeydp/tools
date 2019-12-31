@@ -1,5 +1,6 @@
 package com.monkeydp.tools.ext.java
 
+import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.util.TypeUtil
 import org.apache.commons.lang3.reflect.ConstructorUtils
 
@@ -8,7 +9,7 @@ import org.apache.commons.lang3.reflect.ConstructorUtils
  * @date 2019/10/30
  */
 fun Class<*>.singleton() =
-        fields.first { it.name == "INSTANCE" }.get(this)
+        fields.firstOrNull() { it.name == "INSTANCE" }?.get(this) ?: ierror("${this.name} is not a singleton!")
 
 inline fun <reified C> Class<out C>.singletonX() = singleton() as C
 
