@@ -72,15 +72,15 @@ inline fun <reified T> Reflections.getTypesAnnotatedWithX(annotClass: Class<out 
         getTypesAnnotatedWith(annotClass).filter { it.kotlin.isSubclassOf(T::class) }.toSet() as Set<Class<T>>
 
 fun Reflections.getAnnotatedFields(
-        annotClass: KClass<out Annotation>
-): Collection<Field> = getFieldsAnnotatedWith(annotClass.java)
+        annotKClass: KClass<out Annotation>
+): Collection<Field> = getFieldsAnnotatedWith(annotKClass.java)
 
 /**
  * The class where annotated field in, must be a singleton
  */
 fun Reflections.getAnnotatedFieldValueMap(
-        annotClass: KClass<out Annotation>,
+        annotKClass: KClass<out Annotation>,
         forceAccess: Boolean = false
-): Map<Field, Any> = getAnnotatedFields(annotClass).map {
+): Map<Field, Any> = getAnnotatedFields(annotKClass).map {
     it to it.inClass.singleton().run { FieldUtil.getValue<Any>(this, it, forceAccess = forceAccess) }
 }.toMap()
