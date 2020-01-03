@@ -2,7 +2,6 @@
 
 package com.monkeydp.tools.ext.kotlin
 
-import com.monkeydp.tools.ext.java.newInstanceX
 import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.ext.reflections.reflections
 import com.monkeydp.tools.util.FieldUtil
