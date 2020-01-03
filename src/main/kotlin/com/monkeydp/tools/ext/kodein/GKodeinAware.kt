@@ -1,13 +1,13 @@
 package com.monkeydp.tools.ext.kodein
 
 import org.kodein.di.KodeinAware
-import org.kodein.di.generic.instance
+import org.kodein.di.generic.provider
 
 /**
  * @author iPotato
  * @date 2019/12/31
  */
-inline fun <reified T : Any> KodeinAware.findImpl(tag: Any? = null): T {
-    val instance: T by instance(tag)
-    return instance
+inline fun <reified T : Any> KodeinAware.providerX(tag: Any? = null): T {
+    val instance: () -> T by provider(tag)
+    return instance()
 }
