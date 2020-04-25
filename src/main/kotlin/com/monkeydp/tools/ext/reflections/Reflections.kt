@@ -67,6 +67,12 @@ fun Reflections.getAnnotatedAnnotClasses(annotKClass: KClass<out Annotation>, ho
 fun Reflections.getAnnotatedAnnotKClasses(annotKClass: KClass<out Annotation>, honorInherited: Boolean = false) =
         getAnnotatedAnnotClasses(annotKClass, honorInherited).map { it.kotlin }.toSet()
 
+fun Reflections.getAnnotatedInterfaces(annotKClass: KClass<out Annotation>, honorInherited: Boolean = false) =
+        getAnnotatedClasses(annotKClass, honorInherited).filter { it.isInterface }.toSet()
+
+fun Reflections.getAnnotatedKInterfaces(annotKClass: KClass<out Annotation>, honorInherited: Boolean = false) =
+        getAnnotatedInterfaces(annotKClass, honorInherited).map { it.kotlin }.toSet()
+
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> Reflections.getTypesAnnotatedWithX(annotClass: Class<out Annotation>) =
         getTypesAnnotatedWith(annotClass).filter { it.kotlin.isSubclassOf(T::class) }.toSet() as Set<Class<T>>
