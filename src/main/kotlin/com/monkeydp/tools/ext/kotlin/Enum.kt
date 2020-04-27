@@ -24,3 +24,5 @@ fun <E : Enum<E>> KClass<E>.valueOf(name: String, caseSensitive: Boolean = false
 
 fun transformEnumName(enumName: String, caseSensitive: Boolean = false) =
         if (caseSensitive) enumName else enumName.toUpperCase()
+
+fun <E : Enum<E>> KClass<E>.random(): E = java.enumConstants.toList().shuffled().first()
