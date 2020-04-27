@@ -9,17 +9,17 @@ import kotlin.reflect.KClass
  */
 @Suppress("UNCHECKED_CAST")
 fun <T : Annotation> KAnnotatedElement.findAnnot(annotKClass: KClass<out T>): T =
-        annotations.matchOne { it.annotationClass == annotKClass } as T
+        annotations.single() { it.annotationClass == annotKClass } as T
 
 inline fun <reified T : Annotation> KAnnotatedElement.findAnnot(): T =
-        annotations.matchOne { it is T } as T
+        annotations.single() { it is T } as T
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Annotation> KAnnotatedElement.findAnnotOrNull(annotKClass: KClass<out T>): T? =
-        annotations.matchOneOrNull { it.annotationClass == annotKClass } as T?
+        annotations.singleOrNull() { it.annotationClass == annotKClass } as T?
 
 inline fun <reified T : Annotation> KAnnotatedElement.findAnnotOrNull(): T? =
-        annotations.matchOneOrNull { it is T } as T?
+        annotations.singleOrNull { it is T } as T?
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Annotation> KAnnotatedElement.firstAnnot(annotKClass: KClass<out T>): T =

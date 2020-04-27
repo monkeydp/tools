@@ -20,39 +20,6 @@ fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean {
     return matched.size >= 1
 }
 
-
-// ==== Match ====
-
-/**
- * @see Iterable.single()
- */
-@Deprecated("Replace this with Iterable.single()")
-fun <T> Iterable<T>.matchOne(predicate: (T) -> Boolean): T {
-    val t = matchOneOrNull(predicate)
-    if (t != null) return t
-    ierror(matchOneErrorMsg(0))
-}
-
-/**
- * @see Iterable.singleOrNull()
- */
-@Deprecated("Replace this with Iterable.singleOrNull()")
-fun <T> Iterable<T>.matchOneOrNull(predicate: (T) -> Boolean): T? {
-    val matched = filter(predicate)
-    return when (val size = matched.size) {
-        0 -> null
-        1 -> matched.first()
-        else -> ierror("${matchOneErrorMsg(size)}" +
-                       "${lineSeparatorWithIndent}Following elements are matched: ${matched.linesln()}")
-    }
-}
-
-@Deprecated("Useless")
-fun <T> Iterable<T>.matchOneErrorMsg(size: Int) =
-        StringBuilder("Element is matched $size times, not once!" +
-                      "${lineSeparatorWithIndent}Elements are: ${linesln()}")
-
-
 // ==== Lines ====
 
 val Iterable<*>.indent get() = "|    "

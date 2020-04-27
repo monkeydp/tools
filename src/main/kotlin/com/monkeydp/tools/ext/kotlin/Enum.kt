@@ -17,10 +17,10 @@ inline fun <reified E : Enum<*>> E.toDeclaredPropMap() =
 
 fun <E : Enum<E>> KClass<E>.valueOfOrNull(name: String?, caseSensitive: Boolean = false) =
         if (name == null) null
-        else enumSet().matchOneOrNull { it.name == transformEnumName(name, caseSensitive) }
+        else enumSet().singleOrNull() { it.name == transformEnumName(name, caseSensitive) }
 
 fun <E : Enum<E>> KClass<E>.valueOf(name: String, caseSensitive: Boolean = false) =
-        enumSet().matchOne { it.name == transformEnumName(name, caseSensitive) }
+        enumSet().single { it.name == transformEnumName(name, caseSensitive) }
 
 fun transformEnumName(enumName: String, caseSensitive: Boolean = false) =
         if (caseSensitive) enumName else enumName.toUpperCase()
