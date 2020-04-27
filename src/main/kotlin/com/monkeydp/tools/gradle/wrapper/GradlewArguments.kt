@@ -1,6 +1,6 @@
 package com.monkeydp.tools.gradle.wrapper
 
-import com.monkeydp.tools.enumeration.Symbol
+import com.monkeydp.tools.constant.Symbol
 
 /**
  * @author iPotato

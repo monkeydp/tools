@@ -1,9 +1,9 @@
 package com.monkeydp.tools.ext.kotlin
 
-import com.monkeydp.tools.enumeration.Symbol.BACKSLASH
-import com.monkeydp.tools.enumeration.Symbol.SLASH
-import com.monkeydp.tools.enumeration.Symbol.SPACE
-import com.monkeydp.tools.enumeration.Symbol.UNDERSCORE
+import com.monkeydp.tools.constant.Symbol.BACKSLASH
+import com.monkeydp.tools.constant.Symbol.SLASH
+import com.monkeydp.tools.constant.Symbol.SPACE
+import com.monkeydp.tools.constant.Symbol.UNDERSCORE
 
 /**
  * @author iPotato

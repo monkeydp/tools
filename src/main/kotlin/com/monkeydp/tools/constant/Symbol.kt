@@ -1,4 +1,4 @@
-package com.monkeydp.tools.enumeration
+package com.monkeydp.tools.constant
 
 /**
  * @author iPotato
