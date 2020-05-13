@@ -38,23 +38,29 @@ fun String.toCamelCase(capitalize: Boolean? = null) =
                     else str.toLowerCase().capitalize()
                 }.joinToString("")
 
-fun String.toSnakeCase(): String {
-    var builder = StringBuilder()
+/**
+ * CamelCase to SnakeCase
+ */
+fun String.toSnakeCase(lowerCase: Boolean = true): String {
+    val builder = StringBuilder()
     var isFirst = true
     this.forEach {
         if (it.isUpperCase()) {
             if (isFirst) isFirst = false
             else builder.append(UNDERSCORE)
-            builder.append(it.toLowerCase())
+            if (lowerCase) builder.append(it.toLowerCase())
+            else builder.append(it)
         } else builder.append(it)
     }
     return builder.toString()
 }
 
+fun String.snakeCase2chain(joiner: String): String = split(UNDERSCORE).joinToString(joiner)
+
 fun String.camelCase2List(): List<String> {
-    
+
     if (isAllUpperCase()) return listOf(this)
-    
+
     val list = mutableListOf<String>()
     val builder = StringBuilder()
     this.forEach {
@@ -68,6 +74,8 @@ fun String.camelCase2List(): List<String> {
     if (list.first().isEmpty()) list.removeFirst()
     return list.toList()
 }
+
+fun String.camelCase2Chain(joiner: String) = camelCase2List().joinToString(joiner)
 
 fun String.isAllUpperCase(): Boolean {
     var bool = true
