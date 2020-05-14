@@ -23,7 +23,7 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
                 .registerModule(KotlinModule())
                 .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
-    bind<Locale>() with singleton { Locale.CHINESE }
+    bind<Locale>() with singleton { Locale.CHINA }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
     importAll(*ToolsKodeinModules.moduleArray, allowOverride = true)
 }

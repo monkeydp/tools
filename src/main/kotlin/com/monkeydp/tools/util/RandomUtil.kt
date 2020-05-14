@@ -1,5 +1,6 @@
 package com.monkeydp.tools.util
 
+import org.apache.commons.lang3.RandomStringUtils
 import java.util.*
 
 /**
@@ -19,4 +20,9 @@ object RandomUtil {
      * Random int between zero (inclusive) and max (exclusive)
      */
     fun nextInt(max: Int) = random.nextInt(max)
+
+    /**
+     * Random character and number
+     */
+    fun randomAlphanumeric(length: Int) = RandomStringUtils.randomAlphanumeric(length)
 }
