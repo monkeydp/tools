@@ -1,10 +1,12 @@
 package com.monkeydp.tools.i18n
 
+import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.constant.Symbol.DOT
 import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.ext.java.getStringX
 import com.monkeydp.tools.ext.kotlin.camelCase2Chain
 import com.monkeydp.tools.ext.kotlin.snakeCase2chain
+import org.kodein.di.generic.instance
 import java.util.*
 
 /**
@@ -19,9 +21,12 @@ interface I18nEnum<E>
         private const val JOINER = HYPHEN
     }
 
-    val locale get() = Locale.CHINESE
     val rbBaseName get() = "messages"
-    val resourceBundle get() = ResourceBundle.getBundle(rbBaseName, locale)
+    val resourceBundle: ResourceBundle
+        get() {
+            val locale by kodein.instance<Locale>()
+            return ResourceBundle.getBundle(rbBaseName, locale)
+        }
 
     @Suppress("UNCHECKED_CAST")
     fun asEnum() = this as Enum<E>

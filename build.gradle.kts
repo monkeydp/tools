@@ -27,6 +27,8 @@ dependencies {
     api("org.kodein.di:kodein-di-generic-jvm:6.4.1")
     // command line
     implementation("org.apache.commons:commons-exec:1.3")
+    // faker
+    api("com.github.javafaker:javafaker:1.0.2")
     // test
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
