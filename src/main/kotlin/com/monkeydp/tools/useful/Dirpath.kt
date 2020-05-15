@@ -15,3 +15,5 @@ interface Dirpath {
     val generated get() = "$src/generated"
     val kotlinGenerated get() = "$generated/kotlin"
 }
+
+abstract class AbstractDirpath : Dirpath
