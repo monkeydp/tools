@@ -17,10 +17,10 @@ dependencies {
     // yaml
     implementation("org.yaml:snakeyaml:1.23")
     // json
-    api("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7")
+    api("com.fasterxml.jackson.core:jackson-databind:2.10.4")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.4")
     // log
-    api("org.springframework.boot:spring-boot-starter-logging:2.1.9.RELEASE")
+    api("org.slf4j:jul-to-slf4j:1.7.30")
     // reflection
     api("org.reflections:reflections:0.9.11")
     // di
