@@ -15,24 +15,12 @@ import kotlin.reflect.KProperty1
  */
 @Suppress("UNCHECKED_CAST")
 object FieldUtil {
-    
-    /**
-     * Whether to force access not public field
-     */
-    private const val DEFAULT_FORCE_ACCESS = false
-    
-    /**
-     * Whether to override same name field in superclass
-     *
-     * true: the field in current class will override same name field in superclass
-     */
-    private const val DEFAULT_OVERRIDE_SAME_NAME_FIELD = true;
-    
+
     /**
      * Get field
      */
     fun getField(any: Any, fieldName: String): Field = getFieldOrNull(any, fieldName) ?: throw NoSuchFieldException()
-    
+
     /**
      * Get field or null
      */
@@ -40,13 +28,13 @@ object FieldUtil {
         val clazz = any.classX
         var fieldOrNull = getDeclaredFieldOrNull(clazz, fieldName)
         if (fieldOrNull != null) return fieldOrNull
-        
+
         val superclass = clazz.superclass
         return if (clazz.hasSuperclass(except = Object::class.java))
             getFieldOrNull(superclass, fieldName)
         else null
     }
-    
+
     /**
      * Raw method to get field
      *
@@ -55,7 +43,7 @@ object FieldUtil {
      * @return
      */
     fun rawGetField(any: Any, fieldName: String): Field = any.classX.getField(fieldName)
-    
+
     /**
      * Raw method to get field or null
      */
@@ -65,118 +53,142 @@ object FieldUtil {
             } catch (e: NoSuchFieldException) {
                 null
             }
-    
+
     /**
      * Get fields
      */
     fun getFields(
             any: Any,
-            override: Boolean = DEFAULT_OVERRIDE_SAME_NAME_FIELD
-    ): List<Field> {
-        
-        val clazz = any.classX
-        val fields = getDeclaredFields(clazz).toMutableList()
-        val fieldNames = mutableListOf<String>()
-        
-        fields.forEach { field -> fieldNames.add(field.name) }
-        
-        if (clazz.hasSuperclass(except = Object::class.java)) {
-            getFields(clazz.superclass, override).apply {
-                if (override)
-                    forEach {
-                        if (fieldNames.contains(it.name)) return@forEach
-                        fields.add(it)
-                        fieldNames.add(it.name)
-                    }
-                else fields.addAll(this)
+            configInit: (GetFieldsConfig.() -> Unit)? = null
+    ): List<Field> =
+            GetFieldsConfig().run {
+                if (configInit != null) configInit(this)
+                getFields(any, this)
             }
-        }
-        return fields
-    }
-    
+
+    /**
+     * Get fields
+     */
+    private fun getFields(
+            any: Any,
+            config: GetFieldsConfig
+    ): List<Field> =
+            config.run {
+                val clazz = any.classX
+                val fields = getDeclaredFields(clazz).toMutableList()
+                val fieldNames = mutableListOf<String>()
+
+                fields.forEach { field -> fieldNames.add(field.name) }
+
+                if (clazz.hasSuperclass(except = Object::class.java)) {
+                    getFields(clazz.superclass, config).apply {
+                        if (overrideSameNameField)
+                            forEach {
+                                if (fieldNames.contains(it.name)) return@forEach
+                                fields.add(it)
+                                fieldNames.add(it.name)
+                            }
+                        else fields.addAll(this)
+                    }
+                }
+                fields
+            }
+
     /**
      * Get field value
      */
     fun <T> getValue(
             any: Any,
             field: Field,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T = field.run {
-        if (forceAccess) isAccessible = true
-        get(any) as T
-    }
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): T =
+            GetValueConfig().run {
+                if (configInit != null) configInit(this)
+                if (forceAccess) field.isAccessible = true
+                field.get(any) as T
+            }
+
     /**
      * Get field value
      */
     fun <T> getValue(
             any: Any,
             fieldName: String,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T = getField(any, fieldName).run { getValue(any, this, forceAccess) }
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): T = getField(any, fieldName).run { getValue(any, this, configInit) }
+
     /**
      * Get field value
      */
     fun <T, R> getValue(
             any: Any,
             prop: KProperty1<T, R>,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): R = getValue(any, prop.name, forceAccess)
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): R = getValue(any, prop.name, configInit)
+
     /**
      * Get field value or null
      */
     fun <T> getValueOrNull(
             any: Any,
             field: Field,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
+            configInit: (GetValueConfig.() -> Unit)? = null
     ): T? =
             try {
-                getValue(any, field, forceAccess)
+                getValue(any, field, configInit)
             } catch (e: Exception) {
                 null
             }
-    
+
     /**
      * Get field value or null
      */
     fun <T> getValueOrNull(
             any: Any,
             fieldName: String,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T? = getValueOrNull(any, getField(any, fieldName), forceAccess)
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): T? = getValueOrNull(any, getField(any, fieldName), configInit)
+
     /**
      * Get field values
      */
     fun <T> getValues(
             any: Any,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS,
-            override: Boolean = DEFAULT_OVERRIDE_SAME_NAME_FIELD
-    ): List<T> {
-        val list = mutableListOf<T>()
-        getFields(any, override = override).forEach {
-            getValue<T>(any, it, forceAccess).apply { list.add(this) }
-        }
-        return list.toList()
-    }
-    
+            configInit: (GetValuesConfig.() -> Unit)? = null
+    ): List<T> =
+            GetValuesConfig().let { config ->
+                if (configInit != null) configInit(config)
+                val list = mutableListOf<T>()
+                getFields(any) {
+                    overrideSameNameField = config.overrideSameNameField
+                }.forEach {
+                    getValue<T>(any, it) {
+                        forceAccess = config.forceAccess
+                    }.apply { list.add(this) }
+                }
+                list.toList()
+            }
+
     /**
      * Get nullable field values
      */
     fun <T> getNullableValues(
             any: Any,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS,
-            override: Boolean = DEFAULT_OVERRIDE_SAME_NAME_FIELD
-    ): List<T?> {
-        val list = mutableListOf<T?>()
-        getFields(any, override = override).forEach {
-            getValueOrNull<T>(any, it, forceAccess).apply { list.add(this) }
-        }
-        return list.toList()
-    }
-    
+            configInit: (GetValuesConfig.() -> Unit)? = null
+    ): List<T?> =
+            GetValuesConfig().let { config ->
+                if (configInit != null) configInit(config)
+                val list = mutableListOf<T?>()
+                getFields(any) {
+                    overrideSameNameField = config.overrideSameNameField
+                }.forEach {
+                    getValueOrNull<T>(any, it) {
+                        forceAccess = config.forceAccess
+                    }.apply { list.add(this) }
+                }
+                list.toList()
+            }
+
     /**
      * Set field value
      */
@@ -184,9 +196,9 @@ object FieldUtil {
             any: Any,
             fieldName: String,
             value: Any,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = setValue(any, getField(any, fieldName), value, forceAccess)
-    
+            configInit: (SetValueConfig.() -> Unit)? = null
+    ) = setValue(any, getField(any, fieldName), value, configInit)
+
     /**
      * Set field value
      */
@@ -194,9 +206,9 @@ object FieldUtil {
             any: Any,
             field: Field,
             value: Any,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = setNullableValue(any, field, value, forceAccess)
-    
+            configInit: (SetValueConfig.() -> Unit)? = null
+    ) = setNullableValue(any, field, value, configInit)
+
     /**
      * Set nullable field value
      */
@@ -204,9 +216,9 @@ object FieldUtil {
             any: Any,
             fieldName: String,
             value: Any?,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = setNullableValue(any, getField(any, fieldName), value, forceAccess)
-    
+            configInit: (SetValueConfig.() -> Unit)? = null
+    ) = setNullableValue(any, getField(any, fieldName), value, configInit)
+
     /**
      * Set nullable field value
      */
@@ -214,17 +226,19 @@ object FieldUtil {
             any: Any,
             field: Field,
             value: Any?,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): Unit = field.run {
-        if (forceAccess) isAccessible = true
-        set(any, value)
-    }
-    
+            configInit: (SetValueConfig.() -> Unit)? = null
+    ): Unit =
+            SetValueConfig().run {
+                if (configInit != null) configInit(this)
+                if (forceAccess) field.isAccessible = true
+                field.set(any, value)
+            }
+
     /**
      * Get declared field
      */
     fun getDeclaredField(any: Any, fieldName: String): Field = any.classX.getDeclaredField(fieldName)
-    
+
     /**
      * Get declared field or null
      */
@@ -234,50 +248,53 @@ object FieldUtil {
     } catch (e: NoSuchFieldException) {
         null
     }
-    
+
     /**
      * Get declared fields
      */
-    fun getDeclaredFields(any: Any): List<Field> = any.classX.declaredFields.filter { it.name != "Companion" }.toList()
-    
+    fun getDeclaredFields(any: Any): List<Field> =
+            any.classX.declaredFields.filter { it.name != "Companion" }.toList()
+
     /**
      * Get declared field value
      */
     fun <T> getDeclaredValue(
             any: Any,
             fieldName: String,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T = getDeclaredField(any, fieldName).run {
-        getValue(any, this, forceAccess)
-    }
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): T =
+            getDeclaredField(any, fieldName).run {
+                getValue(any, this, configInit)
+            }
+
     /**
      * Get declared field value or null
      */
     fun <T> getDeclaredValueOrNull(
             any: Any,
             fieldName: String,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): T? = getDeclaredFieldOrNull(any, fieldName)?.run {
-        getValueOrNull(any, this, forceAccess)
-    }
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): T? =
+            getDeclaredFieldOrNull(any, fieldName)?.run {
+                getValueOrNull(any, this, configInit)
+            }
+
     /**
      * Get declared field values
      */
     fun <T> getDeclaredValues(
             any: Any,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): List<T> = getDeclaredFields(any).map { getValue<T>(any, it, forceAccess) }
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): List<T> = getDeclaredFields(any).map { getValue<T>(any, it, configInit) }
+
     /**
      * Get declared nullable field values
      */
     fun <T> getDeclaredNullableValues(
             any: Any,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): List<T?> = getDeclaredFields(any).map { getValueOrNull<T>(any, it, forceAccess) }
-    
+            configInit: (GetValueConfig.() -> Unit)? = null
+    ): List<T?> = getDeclaredFields(any).map { getValueOrNull<T>(any, it, configInit) }
+
     /**
      * Set declared field value
      */
@@ -285,9 +302,9 @@ object FieldUtil {
             any: Any,
             fieldName: String,
             value: Any,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ) = setDeclaredNullableValue(any, fieldName, value, forceAccess)
-    
+            configInit: (SetValueConfig.() -> Unit)? = null
+    ) = setDeclaredNullableValue(any, fieldName, value, configInit)
+
     /**
      * Set declared nullable field value
      */
@@ -295,8 +312,43 @@ object FieldUtil {
             any: Any,
             fieldName: String,
             value: Any?,
-            forceAccess: Boolean = DEFAULT_FORCE_ACCESS
-    ): Unit = getDeclaredField(any, fieldName).run {
-        setNullableValue(any, this, value, forceAccess)
-    }
+            configInit: (SetValueConfig.() -> Unit)? = null
+    ): Unit = getDeclaredField(any, fieldName).run { setNullableValue(any, this, value, configInit) }
+
+
+    data class GetFieldsConfig(
+            /**
+             * Whether to override same name field in superclass
+             *
+             * true: the field in current class will override same name field in superclass
+             */
+            var overrideSameNameField: Boolean = true
+    )
+
+    data class GetValueConfig(
+            /**
+             * Whether to force access non-public field
+             */
+            var forceAccess: Boolean = false
+    )
+
+    data class GetValuesConfig(
+            /**
+             * Whether to force access non-public field
+             */
+            var forceAccess: Boolean = false,
+            /**
+             * Whether to override same name field in superclass
+             *
+             * true: the field in current class will override same name field in superclass
+             */
+            var overrideSameNameField: Boolean = true
+    )
+
+    data class SetValueConfig(
+            /**
+             * Whether to force access non-public field
+             */
+            var forceAccess: Boolean = false
+    )
 }

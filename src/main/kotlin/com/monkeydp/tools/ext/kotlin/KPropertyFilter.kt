@@ -11,14 +11,19 @@ import kotlin.reflect.full.isSubclassOf
  * @date 2019/12/16
  */
 object KPropertyFilter {
-    
+
+    class FilterConfig {
+        var ignoreIllegalAccess: Boolean = true
+        var ignoreUninitialized: Boolean = true
+    }
+
     fun <R> filterProps(
             any: Any,
             props: Iterable<KProperty<R>>,
-            config: (KPropertyFilterConfig.() -> Unit)? = null
+            configInit: (FilterConfig.() -> Unit)? = null
     ): List<KProperty<R>> =
-            with(KPropertyFilterConfig()) {
-                if (config != null) config(this)
+            FilterConfig().run {
+                if (configInit != null) configInit(this)
                 var filteredProps = props
                 if (ignoreIllegalAccess) filteredProps =
                         filterException(any, props, IllegalCallableAccessException::class)
@@ -26,7 +31,7 @@ object KPropertyFilter {
                         filterInvocationTargetException(any, filteredProps, PropertyUninitializedException::class)
                 filteredProps
             }.toList()
-    
+
     private fun <R> filterException(
             any: Any,
             props: Iterable<KProperty<R>>,
@@ -40,7 +45,7 @@ object KPropertyFilter {
             else true
         }
     }
-    
+
     private fun <R> filterInvocationTargetException(
             any: Any,
             props: Iterable<KProperty<R>>,
@@ -54,9 +59,4 @@ object KPropertyFilter {
             else true
         }
     }
-}
-
-class KPropertyFilterConfig {
-    var ignoreIllegalAccess: Boolean = true
-    var ignoreUninitialized: Boolean = true
 }

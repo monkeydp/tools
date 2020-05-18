@@ -86,7 +86,7 @@ fun Reflections.getAnnotatedFields(
  */
 fun Reflections.getAnnotatedFieldValueMap(
         annotKClass: KClass<out Annotation>,
-        forceAccess: Boolean = false
+        configInit: (FieldUtil.GetValueConfig.() -> Unit)? = null
 ): Map<Field, Any> = getAnnotatedFields(annotKClass).map {
-    it to it.inClass.singleton().run { FieldUtil.getValue<Any>(this, it, forceAccess = forceAccess) }
+    it to it.inClass.singleton().run { FieldUtil.getValue<Any>(this, it, configInit) }
 }.toMap()
