@@ -170,6 +170,14 @@ fun <T : Any> T.copyPropValuesFrom(map: Map<String, Any?>) {
 }
 
 
+// ==== Field ====
+
+fun <T> Any.getFieldValue(
+        fieldName: String,
+        configInit: (FieldUtil.GetValueConfig.() -> Unit)? = null
+) = FieldUtil.getValue<T>(this, fieldName, configInit)
+
+
 // ==== Copy Field Values ====
 
 fun <T : Any, S : Any> T.copyFieldValuesFromX(

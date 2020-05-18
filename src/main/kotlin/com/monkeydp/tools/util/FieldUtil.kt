@@ -19,12 +19,13 @@ object FieldUtil {
     /**
      * Get field
      */
-    fun getField(any: Any, fieldName: String): Field = getFieldOrNull(any, fieldName) ?: throw NoSuchFieldException()
+    internal fun getField(any: Any, fieldName: String): Field = getFieldOrNull(any, fieldName)
+            ?: throw NoSuchFieldException()
 
     /**
      * Get field or null
      */
-    tailrec fun getFieldOrNull(any: Any, fieldName: String): Field? {
+    internal tailrec fun getFieldOrNull(any: Any, fieldName: String): Field? {
         val clazz = any.classX
         var fieldOrNull = getDeclaredFieldOrNull(clazz, fieldName)
         if (fieldOrNull != null) return fieldOrNull
@@ -42,12 +43,12 @@ object FieldUtil {
      *
      * @return
      */
-    fun rawGetField(any: Any, fieldName: String): Field = any.classX.getField(fieldName)
+    internal fun rawGetField(any: Any, fieldName: String): Field = any.classX.getField(fieldName)
 
     /**
      * Raw method to get field or null
      */
-    fun rawGetFieldOrNull(any: Any, fieldName: String) =
+    internal fun rawGetFieldOrNull(any: Any, fieldName: String) =
             try {
                 any.classX.getField(fieldName)
             } catch (e: NoSuchFieldException) {
@@ -57,7 +58,7 @@ object FieldUtil {
     /**
      * Get fields
      */
-    fun getFields(
+    internal fun getFields(
             any: Any,
             configInit: (GetFieldsConfig.() -> Unit)? = null
     ): List<Field> =
@@ -97,7 +98,7 @@ object FieldUtil {
     /**
      * Get field value
      */
-    fun <T> getValue(
+    internal fun <T> getValue(
             any: Any,
             field: Field,
             configInit: (GetValueConfig.() -> Unit)? = null
@@ -111,7 +112,7 @@ object FieldUtil {
     /**
      * Get field value
      */
-    fun <T> getValue(
+    internal fun <T> getValue(
             any: Any,
             fieldName: String,
             configInit: (GetValueConfig.() -> Unit)? = null
@@ -120,7 +121,7 @@ object FieldUtil {
     /**
      * Get field value
      */
-    fun <T, R> getValue(
+    internal fun <T, R> getValue(
             any: Any,
             prop: KProperty1<T, R>,
             configInit: (GetValueConfig.() -> Unit)? = null
@@ -129,7 +130,7 @@ object FieldUtil {
     /**
      * Get field value or null
      */
-    fun <T> getValueOrNull(
+    internal fun <T> getValueOrNull(
             any: Any,
             field: Field,
             configInit: (GetValueConfig.() -> Unit)? = null
@@ -143,7 +144,7 @@ object FieldUtil {
     /**
      * Get field value or null
      */
-    fun <T> getValueOrNull(
+    internal fun <T> getValueOrNull(
             any: Any,
             fieldName: String,
             configInit: (GetValueConfig.() -> Unit)? = null
@@ -152,7 +153,7 @@ object FieldUtil {
     /**
      * Get field values
      */
-    fun <T> getValues(
+    internal fun <T> getValues(
             any: Any,
             configInit: (GetValuesConfig.() -> Unit)? = null
     ): List<T> =
@@ -172,7 +173,7 @@ object FieldUtil {
     /**
      * Get nullable field values
      */
-    fun <T> getNullableValues(
+    internal fun <T> getNullableValues(
             any: Any,
             configInit: (GetValuesConfig.() -> Unit)? = null
     ): List<T?> =
@@ -192,7 +193,7 @@ object FieldUtil {
     /**
      * Set field value
      */
-    fun setValue(
+    internal fun setValue(
             any: Any,
             fieldName: String,
             value: Any,
@@ -202,7 +203,7 @@ object FieldUtil {
     /**
      * Set field value
      */
-    fun setValue(
+    internal fun setValue(
             any: Any,
             field: Field,
             value: Any,
@@ -212,7 +213,7 @@ object FieldUtil {
     /**
      * Set nullable field value
      */
-    fun setNullableValue(
+    internal fun setNullableValue(
             any: Any,
             fieldName: String,
             value: Any?,
@@ -222,7 +223,7 @@ object FieldUtil {
     /**
      * Set nullable field value
      */
-    fun setNullableValue(
+    internal fun setNullableValue(
             any: Any,
             field: Field,
             value: Any?,
@@ -237,12 +238,12 @@ object FieldUtil {
     /**
      * Get declared field
      */
-    fun getDeclaredField(any: Any, fieldName: String): Field = any.classX.getDeclaredField(fieldName)
+    internal fun getDeclaredField(any: Any, fieldName: String): Field = any.classX.getDeclaredField(fieldName)
 
     /**
      * Get declared field or null
      */
-    fun getDeclaredFieldOrNull(any: Any, fieldName: String
+    internal fun getDeclaredFieldOrNull(any: Any, fieldName: String
     ) = try {
         getDeclaredField(any, fieldName)
     } catch (e: NoSuchFieldException) {
@@ -252,13 +253,13 @@ object FieldUtil {
     /**
      * Get declared fields
      */
-    fun getDeclaredFields(any: Any): List<Field> =
+    internal fun getDeclaredFields(any: Any): List<Field> =
             any.classX.declaredFields.filter { it.name != "Companion" }.toList()
 
     /**
      * Get declared field value
      */
-    fun <T> getDeclaredValue(
+    internal fun <T> getDeclaredValue(
             any: Any,
             fieldName: String,
             configInit: (GetValueConfig.() -> Unit)? = null
@@ -270,7 +271,7 @@ object FieldUtil {
     /**
      * Get declared field value or null
      */
-    fun <T> getDeclaredValueOrNull(
+    internal fun <T> getDeclaredValueOrNull(
             any: Any,
             fieldName: String,
             configInit: (GetValueConfig.() -> Unit)? = null
@@ -282,7 +283,7 @@ object FieldUtil {
     /**
      * Get declared field values
      */
-    fun <T> getDeclaredValues(
+    internal fun <T> getDeclaredValues(
             any: Any,
             configInit: (GetValueConfig.() -> Unit)? = null
     ): List<T> = getDeclaredFields(any).map { getValue<T>(any, it, configInit) }
@@ -290,7 +291,7 @@ object FieldUtil {
     /**
      * Get declared nullable field values
      */
-    fun <T> getDeclaredNullableValues(
+    internal fun <T> getDeclaredNullableValues(
             any: Any,
             configInit: (GetValueConfig.() -> Unit)? = null
     ): List<T?> = getDeclaredFields(any).map { getValueOrNull<T>(any, it, configInit) }
@@ -298,7 +299,7 @@ object FieldUtil {
     /**
      * Set declared field value
      */
-    fun setDeclaredValue(
+    internal fun setDeclaredValue(
             any: Any,
             fieldName: String,
             value: Any,
@@ -308,7 +309,7 @@ object FieldUtil {
     /**
      * Set declared nullable field value
      */
-    fun setDeclaredNullableValue(
+    internal fun setDeclaredNullableValue(
             any: Any,
             fieldName: String,
             value: Any?,
