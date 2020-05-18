@@ -38,3 +38,10 @@ inline fun <reified T : Annotation> Field.firstAnnotOrNull(): T? =
 fun <T : Annotation> Field.hasAnnot(annotKClass: KClass<out T>) = firstAnnotOrNull(annotKClass) != null
 
 inline fun <reified T : Annotation> Field.hasAnnot() = firstAnnotOrNull<T>() != null
+
+inline fun <reified T : Annotation> Field.replaceAnnot(annot: T) {
+    val rootField = getFieldValue<Field>("root") { forceAccess = true }
+    val annotMap: MutableMap<Class<out Annotation>, Annotation> =
+            rootField.getFieldValue("declaredAnnotations") { forceAccess = true }
+    annotMap[T::class.java] = annot
+}
