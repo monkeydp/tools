@@ -27,6 +27,8 @@ dependencies {
     api("org.kodein.di:kodein-di-generic-jvm:6.4.1")
     // command line
     implementation("org.apache.commons:commons-exec:1.3")
+    // swagger
+    api("io.swagger:swagger-annotations:1.5.22")
     // faker
     api("com.github.javafaker:javafaker:1.0.2")
     // test
