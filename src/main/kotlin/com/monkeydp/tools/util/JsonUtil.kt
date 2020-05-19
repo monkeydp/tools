@@ -11,7 +11,7 @@ import org.kodein.di.generic.instance
  */
 object JsonUtil {
 
-    val mapper: ObjectMapper by kodein.instance()
+    val mapper by kodein.instance<ObjectMapper>()
 
     fun <T> toString(t: T) = mapper.writeValueAsString(t)
 

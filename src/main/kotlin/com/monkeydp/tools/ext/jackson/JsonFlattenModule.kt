@@ -37,7 +37,7 @@ annotation class JsonFlatten(val times: Times = ONE) {
     }
 }
 
-object JsonFlattenHandler {
+object JsonFlattener {
 
     private val objectMapper by kodein.instance<ObjectMapper>()
 
