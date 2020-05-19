@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PRO
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.github.javafaker.Faker
+import com.monkeydp.tools.ext.kodein.AbstractKodeinModuleContainer
 import org.apache.commons.exec.DefaultExecutor
 import org.apache.commons.exec.Executor
 import org.kodein.di.Kodein
@@ -25,9 +26,11 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
     }
     bind<Locale>() with singleton { Locale.CHINA }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
-    importAll(*ToolsKodeinModules.moduleArray, allowOverride = true)
+    importAll(*ToolsKodeinModuleContainer.moduleArray, allowOverride = true)
 }
 
 internal val kodein = Kodein {
     import(toolsKodeinModule, allowOverride = true)
 }
+
+object ToolsKodeinModuleContainer : AbstractKodeinModuleContainer()
