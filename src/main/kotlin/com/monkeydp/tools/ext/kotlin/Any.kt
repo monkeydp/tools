@@ -2,11 +2,11 @@
 
 package com.monkeydp.tools.ext.kotlin
 
+import com.monkeydp.tools.ext.jackson.convertValueX
 import com.monkeydp.tools.ext.kotlin.KPropertyFilter.FilterConfig
 import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.ext.reflections.reflections
 import com.monkeydp.tools.util.FieldUtil
-import com.monkeydp.tools.util.JsonUtil
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 import java.util.*
@@ -207,13 +207,13 @@ fun <T : Any, R : Any> T.copyFieldValuesFrom(
 
 // ==== Json ====
 
-fun <T : Any> T.toJson() = JsonUtil.toString(this)
+fun <T : Any> T.toJson() = objectMapper.writeValueAsString(this)
 
-inline fun <reified T> Any.convertTo() = JsonUtil.convertTo<T>(this)
+inline fun <reified T> Any.convertToX() = objectMapper.convertValueX<T>(this)
 
-fun <T> Any.convertTo(clazz: Class<T>) = JsonUtil.convertTo(this, clazz)
+fun <T> Any.convertTo(clazz: Class<T>) = objectMapper.convertValue(this, clazz)
 
-fun <T : Any> Any.convertTo(kClass: KClass<T>) = JsonUtil.convertTo(this, kClass.java)
+fun <T : Any> Any.convertTo(kClass: KClass<T>) = objectMapper.convertValue(this, kClass.java)
 
 
 // ==== Reflections ====

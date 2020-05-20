@@ -4,7 +4,6 @@ import com.monkeydp.tools.constant.Symbol.BACKSLASH
 import com.monkeydp.tools.constant.Symbol.SLASH
 import com.monkeydp.tools.constant.Symbol.SPACE
 import com.monkeydp.tools.constant.Symbol.UNDERSCORE
-import com.monkeydp.tools.util.JsonUtil
 
 /**
  * @author iPotato
@@ -106,6 +105,6 @@ fun String.camelCaseSeparated(capitalizeEveryWord: Boolean = false, symbol: Char
 
 // ==== Json ====
 
-fun String.toJsonNode() = JsonUtil.toJsonNode(this)
+fun String.toJsonNode() = objectMapper.readTree(this)!!
 
-inline fun <reified T> String.toObject() = JsonUtil.toObject<T>(this)
+inline fun <reified T> String.toObject() = objectMapper.readValue(this, T::class.java)
