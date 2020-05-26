@@ -1,6 +1,6 @@
 package com.monkeydp.tools.ext.kotlin
 
-import com.monkeydp.tools.ext.main.ierror
+import com.monkeydp.tools.ext.jackson.convertValueX
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -36,3 +36,9 @@ fun Iterable<*>.linesln() = "$lineSeparator${lines()}"
 @Suppress("UNCHECKED_CAST")
 fun <T : Any> Iterable<*>.filterIsInstance(kClass: KClass<T>): List<T> =
         filter { it != null && it::class.isSubclassOf(kClass) } as List<T>
+
+
+// ==== Json ====
+
+inline fun <reified T> Iterable<Any>.convertToX() =
+        map { objectMapper.convertValueX<T>(it) }.toList()
