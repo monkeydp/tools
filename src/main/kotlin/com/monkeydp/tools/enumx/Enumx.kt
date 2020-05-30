@@ -1,8 +1,9 @@
 package com.monkeydp.tools.enumx
 
+import com.monkeydp.tools.exception.ierror
+import com.monkeydp.tools.ext.kotlin.enumSet
 import com.monkeydp.tools.ext.kotlin.findAnnotOrNull
-import com.monkeydp.tools.ext.main.ierror
-import com.monkeydp.tools.ext.main.valueOfOrNullX
+import com.monkeydp.tools.ext.kotlin.transformEnumName
 import kotlin.reflect.KClass
 
 /**
@@ -31,9 +32,15 @@ tailrec fun <C : Enumx<*>, K : KClass<out C>> K.recurFindEnumOrNull(
 ): C? {
     var enum = valueOfOrNullX(enumName, caseSensitive)
     if (enum != null) return enum as C
-    
+
     val parent = findAnnotOrNull<EnumxOption>()?.parent
     if (parent == null || parent == Nothing::class) return null
-    
+
     return (parent as KClass<out C>).recurFindEnumOrNull(enumName, caseSensitive)
 }
+
+fun <E : Enumx<out E>> KClass<out E>.valueOfOrNullX(name: String, caseSensitive: Boolean = false) =
+        enumSet().singleOrNull() { it.asEnum().name == transformEnumName(name, caseSensitive) }
+
+fun <E : Enumx<out E>> KClass<out E>.valueOfX(name: String, caseSensitive: Boolean = false) =
+        enumSet().single() { it.asEnum().name == transformEnumName(name, caseSensitive) }

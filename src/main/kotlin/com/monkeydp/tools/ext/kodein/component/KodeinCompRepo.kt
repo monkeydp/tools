@@ -1,9 +1,9 @@
 package com.monkeydp.tools.ext.kodein.component
 
+import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.kotlin.findAnnot
 import com.monkeydp.tools.ext.kotlin.findAnnotOrNull
 import com.monkeydp.tools.ext.logger.getLogger
-import com.monkeydp.tools.ext.main.ierror
 import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
 import com.monkeydp.tools.ext.reflections.getAnnotatedFieldValueMap
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses

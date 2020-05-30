@@ -1,7 +1,7 @@
 package com.monkeydp.tools.ext.kodein.component
 
+import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.exception.inner.FunctionMustBeOverriddenException
-import com.monkeydp.tools.ext.main.ierror
 import org.kodein.di.Kodein
 
 /**

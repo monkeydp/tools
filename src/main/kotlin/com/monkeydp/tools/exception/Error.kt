@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext.main
+package com.monkeydp.tools.exception
 
 import com.monkeydp.tools.exception.inner.InnerException
 
