@@ -7,6 +7,7 @@ package com.monkeydp.tools.ext.logger
  * @date 2019/10/29
  */
 
+import com.monkeydp.tools.ext.logger.LogLevel.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.Marker
@@ -165,3 +166,42 @@ inline fun Logger.debug(throwable: Throwable?) {
 inline fun Logger.trace(throwable: Throwable?) {
     trace("", throwable)
 }
+
+enum class LogLevel {
+    TRACE, DEBUG, INFO, WARN, ERROR
+}
+
+@JvmSynthetic
+inline fun Logger.log(level: LogLevel, lazyMessage: () -> Any?) {
+    when (level) {
+        TRACE -> trace(lazyMessage)
+        DEBUG -> debug(lazyMessage)
+        INFO -> info(lazyMessage)
+        WARN -> warn(lazyMessage)
+        ERROR -> error(lazyMessage)
+    }
+}
+
+@JvmSynthetic
+inline fun Logger.log(level: LogLevel, throwable: Throwable?) {
+    when (level) {
+        TRACE -> trace(throwable)
+        DEBUG -> debug(throwable)
+        INFO -> info(throwable)
+        WARN -> warn(throwable)
+        ERROR -> error(throwable)
+    }
+}
+
+@JvmSynthetic
+inline fun Logger.log(level: LogLevel, throwable: Throwable?, lazyMessage: () -> Any?) {
+    when (level) {
+        TRACE -> trace(throwable, lazyMessage)
+        DEBUG -> debug(throwable, lazyMessage)
+        INFO -> info(throwable, lazyMessage)
+        WARN -> warn(throwable, lazyMessage)
+        ERROR -> error(throwable, lazyMessage)
+    }
+}
+
+
