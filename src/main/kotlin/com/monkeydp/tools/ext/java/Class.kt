@@ -30,3 +30,6 @@ fun Class<*>.hasAnnotation(annotClass: Class<out Annotation>) = getAnnotation(an
 inline fun <reified A : Annotation> Class<*>.hasAnnotation() = hasAnnotation(A::class.java)
 
 fun Class<*>.hasSuperclass(except: Class<*>? = null) = superclass != null && superclass != except
+
+fun Class<*>.inPackage(packageName: String): Boolean =
+        `package`.name.startsWith(packageName)
