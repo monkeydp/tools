@@ -8,8 +8,13 @@ abstract class AbstractKodeinModuleContainer {
 
     val moduleArray get() = modules.toTypedArray()
 
-    fun addModule(moduleName: String, init: Kodein.Builder.() -> Unit) {
-        val module = Kodein.Module(moduleName, init = init)
+    fun addModule(module: Kodein.Module) {
         modules.add(module)
+    }
+
+    fun addModule(moduleName: String, init: Kodein.Builder.() -> Unit) {
+        addModule(
+                Kodein.Module(moduleName, init = init)
+        )
     }
 }
