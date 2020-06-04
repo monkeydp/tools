@@ -7,6 +7,7 @@ abstract class AbstractKodeinModuleContainer {
     private val modules: MutableCollection<Kodein.Module> = mutableSetOf()
 
     val moduleArray get() = modules.toTypedArray()
+    val reverseModuleArray get() = moduleArray.reversedArray()
 
     fun addModule(module: Kodein.Module) {
         modules.add(module)
