@@ -211,15 +211,14 @@ fun <T : Any, R : Any> T.copyFieldValuesFrom(
 fun <T : Any> T.toJson() =
         objectMapper.writeValueAsString(this)
 
-inline fun <reified T> Any.convertTo() =
+inline fun <reified T> Any.convertValue() =
         objectMapper.convertValue<T>(this)
 
-fun <T> Any.convertTo(clazz: Class<T>) =
+fun <T> Any.convertValue(clazz: Class<T>) =
         objectMapper.convertValue(this, clazz)
 
-fun <T : Any> Any.convertTo(kClass: KClass<T>) =
+fun <T : Any> Any.convertValue(kClass: KClass<T>) =
         objectMapper.convertValue(this, kClass.java)
-
 
 // ==== Reflections ====
 

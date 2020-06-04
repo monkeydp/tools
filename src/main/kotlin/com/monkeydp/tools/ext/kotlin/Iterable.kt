@@ -40,5 +40,5 @@ fun <T : Any> Iterable<*>.filterIsInstance(kClass: KClass<T>): List<T> =
 
 // ==== Json ====
 
-inline fun <reified T> Iterable<Any>.convertTo() =
+inline fun <reified T> Iterable<Any>.convertValue() =
         map { objectMapper.convertValue<T>(it) }.toList()
