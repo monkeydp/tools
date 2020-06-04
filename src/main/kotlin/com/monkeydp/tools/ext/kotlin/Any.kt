@@ -202,28 +202,35 @@ fun <T : Any, S : Any> T.copyFieldValuesFrom(
 fun <T : Any, R : Any> T.copyFieldValuesFrom(
         vararg pairs: Pair<KProperty1<T, R>, R>,
         configInit: (FieldUtil.SetValueConfig.() -> Unit)? = null
-): Unit = pairs.forEach { FieldUtil.setValue(this, it.first.name, it.second, configInit = configInit) }
+): Unit =
+        pairs.forEach { FieldUtil.setValue(this, it.first.name, it.second, configInit = configInit) }
 
 
 // ==== Json ====
 
-fun <T : Any> T.toJson() = objectMapper.writeValueAsString(this)
+fun <T : Any> T.toJson() =
+        objectMapper.writeValueAsString(this)
 
-inline fun <reified T> Any.convertTo() = objectMapper.convertValue<T>(this)
+inline fun <reified T> Any.convertTo() =
+        objectMapper.convertValue<T>(this)
 
-fun <T> Any.convertTo(clazz: Class<T>) = objectMapper.convertValue(this, clazz)
+fun <T> Any.convertTo(clazz: Class<T>) =
+        objectMapper.convertValue(this, clazz)
 
-fun <T : Any> Any.convertTo(kClass: KClass<T>) = objectMapper.convertValue(this, kClass.java)
+fun <T : Any> Any.convertTo(kClass: KClass<T>) =
+        objectMapper.convertValue(this, kClass.java)
 
 
 // ==== Reflections ====
 
-fun <T : Any> T.getReflections() = reflections(this::class)
+fun <T : Any> T.getReflections() =
+        reflections(this::class)
 
 fun <T : Any> T.getPropValue(propName: String) =
         this::class.memberProperties.first { it.name == propName }.getter.call(this)
 
-fun <T : Any, U : Any> T.getPropValueX(propName: String) = getPropValue(propName) as U
+fun <T : Any, U : Any> T.getPropValueX(propName: String) =
+        getPropValue(propName) as U
 
 
 // ==== Generic ====
@@ -232,4 +239,5 @@ fun Any.getActualTypeInSuperclass(index: Int = 0) =
         (javaClass.genericSuperclass as? ParameterizedType ?: ierror("Generic superclass must be parameterized type!"))
                 .actualTypeArguments[index]
 
-fun <T> Any.getActualTypeInSuperclassX(index: Int = 0) = getActualTypeInSuperclass(index) as T
+fun <T> Any.getActualTypeInSuperclassX(index: Int = 0) =
+        getActualTypeInSuperclass(index) as T
