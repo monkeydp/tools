@@ -11,14 +11,9 @@ import org.reflections.Reflections
  * @author iPotato-Work
  * @date 2020/5/16
  */
-class ApiModelPropertyExt {
-
-    private val reflections: Reflections
-
-    constructor(reflections: Reflections) {
-        this.reflections = reflections
-    }
-
+class ApiModelPropertyExt(
+        private val reflections: Reflections
+) {
     constructor(packageName: String) : this(reflections(packageName))
 
     fun fixedPosition() {
