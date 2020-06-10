@@ -56,7 +56,7 @@ abstract class AbstractValidMessageAssigner(
 //            if (it.matches("^{.*\\\\.Size.message}\\\$".toRegex())) return
                 val annot = desc.annotation
                 val annotKClass = annot.annotationClass
-                val msgTmplKey = annotKClass.simpleName!!.stdFormat()
+                val msgTmplKey = annotKClass.simpleName!!
                 val messageTemplate =
                         vpWrapper.resourceBundle.getStringOrNullX(msgTmplKey)
                 ResourceBundle.clearCache()
