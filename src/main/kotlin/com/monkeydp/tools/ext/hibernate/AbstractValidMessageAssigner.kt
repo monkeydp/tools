@@ -40,6 +40,7 @@ abstract class AbstractValidMessageAssigner(
                             cstrDescs.forEach {
                                 it.changeMessageTemplate(
                                         it.customMessageTemplate(propDesc, kClass)
+                                                .run(::buildMessageTemplateString)
                                 )
                             }
                         }
@@ -69,12 +70,57 @@ abstract class AbstractValidMessageAssigner(
                 }
             }
 
+    private fun buildMessageTemplateString(messageTemplate: MessageTemplate): String =
+            messageTemplate.let {
+                val str = resourceBundlesWrapper.getResourceBundle().run {
+                    val (cstrName, objName, propName) = it
+                    when {
+                        containsKey(it.combinedKey) -> it.combinedKey.wrappedInCurlyBraces()
+                        !containsKey(cstrName) -> {
+                            val list = listOf(it.combinedKey, cstrName)
+                            ierror("Cannot find any following key in `$baseBundleName`: ${list.linesln()}")
+                        }
+                        containsKey(it.combinedKeyWithoutCstr) ->
+                            "{$objName.$propName}{$cstrName}"
+                        containsKey(objName) && containsKey(propName) ->
+                            "{$objName}{$propName}{$cstrName}"
+                        !containsKey(objName) && containsKey(propName) ->
+                            "{$propName}{$cstrName}"
+                        else -> {
+                            val list = listOf(it.combinedKey, "$objName & $propName", propName)
+                            ierror("Cannot find any following key in `$baseBundleName`: ${list.linesln()}")
+                        }
+                    }
+                }
+                ResourceBundle.clearCache()
+                str
+            }
+
     private fun ConstraintDescriptor<*>.customMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>) =
-            "${annotation.annotationClass.simpleName}.${propDesc.messageKey(kClass)}"
-                    .wrappedInCurlyBraces()
+            MessageTemplate(
+                    constraintName = annotation.annotationClass.simpleName!!,
+                    objectName = kClass.simpleName!!.stdFormat(),
+                    propertyName = propDesc.propertyName.stdFormat()
+            )
 
     private fun String.stdFormat() =
             camelCase2Chain(HYPHEN).toLowerCase()
+}
+
+private class MessageTemplate(
+        val constraintName: String,
+        val objectName: String,
+        val propertyName: String
+) {
+    val combinedKeyWithoutCstr: String =
+            "$objectName.$propertyName"
+
+    val combinedKey: String =
+            "$constraintName.$combinedKeyWithoutCstr"
+
+    operator fun component1() = constraintName
+    operator fun component2() = objectName
+    operator fun component3() = propertyName
 }
 
 private val validator: Validator by lazy {
