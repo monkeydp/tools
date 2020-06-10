@@ -5,8 +5,6 @@ import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.java.getStringOrNullX
 import com.monkeydp.tools.ext.kotlin.camelCase2Chain
-import com.monkeydp.tools.ext.kotlin.getFieldValueByPath
-import com.monkeydp.tools.ext.kotlin.setFieldValueByPath
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
 import com.monkeydp.tools.ext.reflections.reflections
 import org.kodein.di.generic.instance
@@ -21,7 +19,7 @@ import kotlin.reflect.KClass
  * @author iPotato-Work
  * @date 2020/6/8
  */
-class ValidMessageAssigner(
+abstract class AbstractValidMessageAssigner(
         private val reflections: Reflections,
         private val fieldPlaceholder: String = DEFAULT_FIELD_PLACEHOLDER
 ) {
@@ -48,35 +46,22 @@ class ValidMessageAssigner(
         }
     }
 
-    private fun ConstraintDescriptor<*>.changeMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>) {
-        customMessageTemplate(this, propDesc.getFieldReplacement(kClass))
-                .also {
-                    val attrsPath = "annotationDescriptor.attributes"
-                    val attrMap: Map<String, Any> =
-                            getFieldValueByPath(attrsPath) { forceAccess = true }
-                    val attrMutableMap = attrMap.toMutableMap()
-                    attrMutableMap["message"] = it
-                    setFieldValueByPath(attrsPath, attrMutableMap.toMap())
-                    { forceAccess = true }
-                }
-    }
+    protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>)
 
-    private fun PropertyDescriptor.getFieldReplacement(kClass: KClass<*>) =
+    protected fun PropertyDescriptor.getFieldReplacement(kClass: KClass<*>) =
             "${kClass.simpleName!!}.$propertyName".stdFormat()
 
-
-    private fun customMessageTemplate(desc: ConstraintDescriptor<*>, fieldReplacement: String): String =
+    protected fun customMessageTemplate(desc: ConstraintDescriptor<*>, fieldReplacement: String): String =
             desc.messageTemplate.run {
 //            if (it.matches("^{.*\\\\.Size.message}\\\$".toRegex())) return
                 val annot = desc.annotation
                 val annotKClass = annot.annotationClass
-                val patternKey = annotKClass.simpleName!!.stdFormat()
+                val msgTmplKey = annotKClass.simpleName!!.stdFormat()
                 val messageTemplate =
-                        vpWrapper.resourceBundle.getStringOrNullX(patternKey)
+                        vpWrapper.resourceBundle.getStringOrNullX(msgTmplKey)
                 if (messageTemplate == null)
-                    ierror("You must add constraint pattern for $annotKClass, like $patternKey=?")
+                    ierror("You must add message template for $annotKClass, like $msgTmplKey=?")
                 messageTemplate.replace(fieldPlaceholder, "{$fieldReplacement}")
-//            annot.changeAttrs("message" to customMessageTemplate, path = "descriptor.attributes")
             }
 
     private fun String.stdFormat() =
