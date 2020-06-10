@@ -3,7 +3,6 @@ package com.monkeydp.tools.ext.hibernate
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.java.getStringOrNullX
 import com.monkeydp.tools.ext.kotlin.camelCase2Chain
 import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
@@ -23,14 +22,9 @@ import kotlin.reflect.KClass
  * @date 2020/6/8
  */
 abstract class AbstractValidMessageAssigner(
-        private val reflections: Reflections,
-        private val fieldPlaceholder: String = DEFAULT_FIELD_PLACEHOLDER
+        private val reflections: Reflections
 ) {
     constructor(packageName: String) : this(reflections(packageName))
-
-    companion object {
-        private const val DEFAULT_FIELD_PLACEHOLDER = "{field}"
-    }
 
     fun assignValidMessages() {
         val autoValidMessageKClasses = reflections.getAnnotatedKClasses(AutoValidMessage::class)
@@ -39,17 +33,21 @@ abstract class AbstractValidMessageAssigner(
                     .constrainedProperties
                     .forEach { propDesc ->
                         propDesc.constraintDescriptors.forEach { cstrDesc ->
-                            if (cstrDesc.composingConstraints.isEmpty())
-                                cstrDesc.changeMessageTemplate(propDesc, kClass)
-                            else cstrDesc.composingConstraints.forEach {
-                                it.changeMessageTemplate(propDesc, kClass)
+                            val cstrDescs =
+                                    if (cstrDesc.composingConstraints.isEmpty())
+                                        setOf(cstrDesc)
+                                    else cstrDesc.composingConstraints
+                            cstrDescs.forEach {
+                                it.changeMessageTemplate(
+                                        it.customMessageTemplate(propDesc, kClass)
+                                )
                             }
                         }
                     }
         }
     }
 
-    protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>)
+    protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(messageTemplate: String)
 
     protected fun PropertyDescriptor.messageKey(kClass: KClass<*>): String =
             "${kClass.simpleName!!}.$propertyName".stdFormat()
@@ -71,18 +69,9 @@ abstract class AbstractValidMessageAssigner(
                 }
             }
 
-    protected fun customMessageTemplate(desc: ConstraintDescriptor<*>, fieldReplacement: String): String =
-            desc.messageTemplate.let {
-                val annot = desc.annotation
-                val annotKClass = annot.annotationClass
-                val cstrKey = annotKClass.simpleName!!
-                val messageTemplate =
-                        resourceBundlesWrapper.getResourceBundle().getStringOrNullX(cstrKey)
-                ResourceBundle.clearCache()
-                if (messageTemplate == null)
-                    ierror("You must add message template for $annotKClass, like $cstrKey=?")
-                messageTemplate.replace(fieldPlaceholder, fieldReplacement)
-            }
+    private fun ConstraintDescriptor<*>.customMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>) =
+            "${annotation.annotationClass.simpleName}.${propDesc.messageKey(kClass)}"
+                    .wrappedInCurlyBraces()
 
     private fun String.stdFormat() =
             camelCase2Chain(HYPHEN).toLowerCase()
