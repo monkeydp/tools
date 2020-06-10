@@ -6,8 +6,10 @@ import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.java.getStringOrNullX
 import com.monkeydp.tools.ext.kotlin.camelCase2Chain
 import com.monkeydp.tools.ext.kotlin.linesln
+import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
 import com.monkeydp.tools.ext.reflections.reflections
+import com.monkeydp.tools.global.locale
 import org.kodein.di.generic.instance
 import org.reflections.Reflections
 import java.util.*
@@ -49,9 +51,12 @@ abstract class AbstractValidMessageAssigner(
 
     protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>)
 
+    protected fun PropertyDescriptor.messageKey(kClass: KClass<*>): String =
+            "${kClass.simpleName!!}.$propertyName".stdFormat()
+
     protected fun PropertyDescriptor.getFieldReplacement(kClass: KClass<*>): String =
-            "${kClass.simpleName!!}.$propertyName".stdFormat().let {
-                vpWrapper.resourceBundle.run {
+            messageKey(kClass).let {
+                resourceBundlesWrapper.getResourceBundle().run {
                     val (objName, propName) = it.split(".")
                     when {
                         containsKey(it) -> it.wrappedInCurlyBraces()
@@ -66,15 +71,13 @@ abstract class AbstractValidMessageAssigner(
                 }
             }
 
-    private fun String.wrappedInCurlyBraces() = "{$this}"
-
     protected fun customMessageTemplate(desc: ConstraintDescriptor<*>, fieldReplacement: String): String =
             desc.messageTemplate.let {
                 val annot = desc.annotation
                 val annotKClass = annot.annotationClass
                 val cstrKey = annotKClass.simpleName!!
                 val messageTemplate =
-                        vpWrapper.resourceBundle.getStringOrNullX(cstrKey)
+                        resourceBundlesWrapper.getResourceBundle().getStringOrNullX(cstrKey)
                 ResourceBundle.clearCache()
                 if (messageTemplate == null)
                     ierror("You must add message template for $annotKClass, like $cstrKey=?")
@@ -90,21 +93,30 @@ private val validator: Validator by lazy {
     validator
 }
 
-private val vpWrapper by lazy {
-    val vpWrapper by kodein.instance<ValidationResourceBundleWrapper>()
-    vpWrapper
+private val resourceBundlesWrapper by lazy {
+    val resourceBundlesWrapper by kodein.instance<ValidationResourceBundlesWrapper>()
+    resourceBundlesWrapper
 }
 
 
-interface ValidationResourceBundleWrapper {
-    val resourceBundle: ResourceBundle
+interface ValidationResourceBundlesWrapper {
+    val resourceBundleMap: Map<Locale, ResourceBundle>
+
+    fun getResourceBundle() =
+            getResourceBundle(locale)
+
+    fun getResourceBundle(locale: Locale) =
+            resourceBundleMap.getValue(locale)
 
     companion object {
-        operator fun invoke(resourceBundle: ResourceBundle): ValidationResourceBundleWrapper =
-                StdValidationResourceBundleWrapper(resourceBundle)
+        operator fun invoke(resourceBundleMap: Map<Locale, ResourceBundle>): ValidationResourceBundlesWrapper =
+                StdValidationResourceBundlesWrapper(resourceBundleMap)
+
+        operator fun invoke(vararg pairs: Pair<Locale, ResourceBundle>): ValidationResourceBundlesWrapper =
+                invoke(pairs.toMap())
     }
 }
 
-private class StdValidationResourceBundleWrapper(
-        override val resourceBundle: ResourceBundle
-) : ValidationResourceBundleWrapper
+private class StdValidationResourceBundlesWrapper(
+        override val resourceBundleMap: Map<Locale, ResourceBundle>
+) : ValidationResourceBundlesWrapper

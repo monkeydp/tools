@@ -121,3 +121,8 @@ inline fun <reified T> String.toObject() = objectMapper.readValue(this, T::class
 fun String.asResource(): URL = asResourceOrNull()!!
 
 fun String.asResourceOrNull(): URL? = object {}.javaClass.getResource(this)
+
+
+// ==== Wrapped ====
+
+fun String.wrappedInCurlyBraces() = "{$this}"
