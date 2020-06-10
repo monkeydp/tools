@@ -1,8 +1,8 @@
 package com.monkeydp.tools.ext.kotlin
 
+import com.monkeydp.tools.exception.ierror
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Proxy
-import kotlin.reflect.KProperty1
 
 /**
  * @author iPotato-Work
@@ -11,13 +11,22 @@ import kotlin.reflect.KProperty1
 
 /**
  * Change annotation attributes
+ * @param path example: path.to.attrMap
  */
-fun <T : Annotation, R : Any> T.changeAttrs(vararg pairs: Pair<KProperty1<T, R>, R>) {
+fun <T : Annotation, R : Any> T.changeAttrs(vararg pairs: Pair<String, R>, path: String = "") {
     if (this !is Proxy) throw RuntimeException("Require proxy of annotation!")
-    val h: InvocationHandler = this.getFieldValue("h") { forceAccess = true }
-    val memberValues: MutableMap<String, Any> = h.getFieldValue("memberValues") { forceAccess = true }
+    val h: InvocationHandler = getFieldValue("h") { forceAccess = true }
+    val realPath =
+            if (h.javaClass.name == "sun.reflect.annotation.AnnotationInvocationHandler")
+                "memberValues"
+            else path
+    if (realPath.isBlank()) ierror("Real path must not be empty!")
+
+    val attrMap: Map<String, Any> = h.getFieldValueByPath(realPath) { forceAccess = true }
+    val attrMutableMap = attrMap.toMutableMap()
     pairs.forEach {
-        val (kProperty1, propertyValue) = it
-        memberValues[kProperty1.name] = propertyValue
+        val (name, propertyValue) = it
+        attrMutableMap[name] = propertyValue
     }
+    h.setFieldValueByPath(realPath, attrMutableMap) { forceAccess = true }
 }

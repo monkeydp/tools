@@ -2,6 +2,7 @@ package com.monkeydp.tools.util
 
 import com.monkeydp.tools.ext.java.hasSuperclass
 import com.monkeydp.tools.ext.kotlin.classX
+import com.monkeydp.tools.ext.kotlin.kClassX
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty1
 
@@ -20,7 +21,7 @@ object FieldUtil {
      * Get field
      */
     internal fun getField(any: Any, fieldName: String): Field = getFieldOrNull(any, fieldName)
-            ?: throw NoSuchFieldException()
+            ?: throw NoSuchFieldException("Cannot find field `$fieldName` in `${any.kClassX}`")
 
     /**
      * Get field or null

@@ -7,6 +7,8 @@ import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.kotlin.KPropertyFilter.FilterConfig
 import com.monkeydp.tools.ext.reflections.reflections
 import com.monkeydp.tools.util.FieldUtil
+import com.monkeydp.tools.util.FieldUtil.GetValueConfig
+import com.monkeydp.tools.util.FieldUtil.SetValueConfig
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 import java.util.*
@@ -172,10 +174,55 @@ fun <T : Any> T.copyPropValuesFrom(map: Map<String, Any?>) {
 
 // ==== Field ====
 
+fun Any.getField(fieldName: String): Field =
+        FieldUtil.getField(this, fieldName)
+
 fun <T> Any.getFieldValue(
         fieldName: String,
-        configInit: (FieldUtil.GetValueConfig.() -> Unit)? = null
+        configInit: (GetValueConfig.() -> Unit)? = null
 ) = FieldUtil.getValue<T>(this, fieldName, configInit)
+
+fun <T> Any.getFieldValue(
+        field: Field,
+        configInit: (GetValueConfig.() -> Unit)? = null
+) = FieldUtil.getValue<T>(this, field, configInit)
+
+fun Any.setFieldValue(
+        fieldName: String,
+        value: Any,
+        configInit: (SetValueConfig.() -> Unit)? = null
+) = FieldUtil.setValue(this, fieldName, value, configInit)
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Any.getFieldValueByPath(
+        path: String,
+        configInit: (GetValueConfig.() -> Unit)? = null
+): T {
+    val parts = path.split(".")
+    if (parts.isEmpty()) return this as T
+    else if (parts.size == 1) return getFieldValue(path, configInit)
+
+    var value: Any = this
+    parts.forEach {
+        value = value.getFieldValue<Any>(it, configInit)
+    }
+    return value as T
+}
+
+fun Any.setFieldValueByPath(
+        path: String,
+        value: Any,
+        configInit: (SetValueConfig.() -> Unit)? = null
+) {
+    val parts = path.split(".")
+    if (parts.size == 1) {
+        setFieldValue(path, value, configInit)
+        return
+    }
+    val pathWithoutLast = parts.toMutableList().removeLast().joinToString(".")
+    val any = getFieldValueByPath<Any>(pathWithoutLast) { forceAccess = true }
+    any.setFieldValue(parts.last(), value, configInit)
+}
 
 
 // ==== Copy Field Values ====
@@ -183,13 +230,13 @@ fun <T> Any.getFieldValue(
 fun <T : Any, S : Any> T.copyFieldValuesFromX(
         source: S,
         vararg ignoreProps: KProperty<T>,
-        configInit: (FieldUtil.SetValueConfig.() -> Unit)? = null
+        configInit: (SetValueConfig.() -> Unit)? = null
 ) = copyFieldValuesFrom(source, *ignoreProps.map { it.javaField!! }.toTypedArray(), configInit = configInit)
 
 fun <T : Any, S : Any> T.copyFieldValuesFrom(
         source: S,
         vararg ignoreFields: Field,
-        configInit: (FieldUtil.SetValueConfig.() -> Unit)? = null
+        configInit: (SetValueConfig.() -> Unit)? = null
 ): Unit =
         FieldUtil.getFields(source).forEach { sourceField ->
             val field = FieldUtil.getField(this, sourceField.name)
@@ -201,7 +248,7 @@ fun <T : Any, S : Any> T.copyFieldValuesFrom(
 
 fun <T : Any, R : Any> T.copyFieldValuesFrom(
         vararg pairs: Pair<KProperty1<T, R>, R>,
-        configInit: (FieldUtil.SetValueConfig.() -> Unit)? = null
+        configInit: (SetValueConfig.() -> Unit)? = null
 ): Unit =
         pairs.forEach { FieldUtil.setValue(this, it.first.name, it.second, configInit = configInit) }
 

@@ -11,3 +11,6 @@ import java.util.*
  */
 fun ResourceBundle.getStringX(key: String, charset: Charset = UTF_8) =
         String(getString(key).toByteArray(ISO_8859_1), charset)
+
+fun ResourceBundle.getStringOrNullX(key: String, charset: Charset = UTF_8): String? =
+        getStringX(key, charset)

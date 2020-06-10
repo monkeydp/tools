@@ -23,7 +23,7 @@ class ApiModelPropertyExt(
             apiModelKClass.java.declaredFields
                     .mapNotNull { it.findAnnotOrNull<ApiModelProperty>() }
                     .forEach start@{
-                        it.changeAttrs(ApiModelProperty::position to position++)
+                        it.changeAttrs(ApiModelProperty::position.name to position++)
                     }
         }
     }

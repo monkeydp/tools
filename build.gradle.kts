@@ -27,6 +27,8 @@ dependencies {
     api("org.kodein.di:kodein-di-generic-jvm:6.4.1")
     // command line
     implementation("org.apache.commons:commons-exec:1.3")
+    // jakarta
+    api("jakarta.validation:jakarta.validation-api:2.0.2")
     // swagger
     api("io.swagger:swagger-annotations:1.5.22")
     // faker
