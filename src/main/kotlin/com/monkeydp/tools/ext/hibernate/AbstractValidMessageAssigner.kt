@@ -5,6 +5,7 @@ import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.java.getStringOrNullX
 import com.monkeydp.tools.ext.kotlin.camelCase2Chain
+import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
 import com.monkeydp.tools.ext.reflections.reflections
 import org.kodein.di.generic.instance
@@ -48,21 +49,36 @@ abstract class AbstractValidMessageAssigner(
 
     protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>)
 
-    protected fun PropertyDescriptor.getFieldReplacement(kClass: KClass<*>) =
-            "${kClass.simpleName!!}.$propertyName".stdFormat()
+    protected fun PropertyDescriptor.getFieldReplacement(kClass: KClass<*>): String =
+            "${kClass.simpleName!!}.$propertyName".stdFormat().let {
+                vpWrapper.resourceBundle.run {
+                    val (objName, propName) = it.split(".")
+                    when {
+                        containsKey(it) -> it.wrappedInCurlyBraces()
+                        containsKey(objName) && containsKey(propName) ->
+                            "${objName.wrappedInCurlyBraces()}${propName.wrappedInCurlyBraces()}"
+                        !containsKey(objName) && containsKey(propName) -> propName.wrappedInCurlyBraces()
+                        else -> {
+                            val list = listOf(it, "$objName & $propName", propName)
+                            ierror("Cannot find any following key in `$baseBundleName`: ${list.linesln()}")
+                        }
+                    }
+                }
+            }
+
+    private fun String.wrappedInCurlyBraces() = "{$this}"
 
     protected fun customMessageTemplate(desc: ConstraintDescriptor<*>, fieldReplacement: String): String =
-            desc.messageTemplate.run {
-//            if (it.matches("^{.*\\\\.Size.message}\\\$".toRegex())) return
+            desc.messageTemplate.let {
                 val annot = desc.annotation
                 val annotKClass = annot.annotationClass
-                val msgTmplKey = annotKClass.simpleName!!
+                val cstrKey = annotKClass.simpleName!!
                 val messageTemplate =
-                        vpWrapper.resourceBundle.getStringOrNullX(msgTmplKey)
+                        vpWrapper.resourceBundle.getStringOrNullX(cstrKey)
                 ResourceBundle.clearCache()
                 if (messageTemplate == null)
-                    ierror("You must add message template for $annotKClass, like $msgTmplKey=?")
-                messageTemplate.replace(fieldPlaceholder, "{$fieldReplacement}")
+                    ierror("You must add message template for $annotKClass, like $cstrKey=?")
+                messageTemplate.replace(fieldPlaceholder, fieldReplacement)
             }
 
     private fun String.stdFormat() =
