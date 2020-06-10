@@ -59,6 +59,7 @@ abstract class AbstractValidMessageAssigner(
                 val msgTmplKey = annotKClass.simpleName!!.stdFormat()
                 val messageTemplate =
                         vpWrapper.resourceBundle.getStringOrNullX(msgTmplKey)
+                ResourceBundle.clearCache()
                 if (messageTemplate == null)
                     ierror("You must add message template for $annotKClass, like $msgTmplKey=?")
                 messageTemplate.replace(fieldPlaceholder, "{$fieldReplacement}")
