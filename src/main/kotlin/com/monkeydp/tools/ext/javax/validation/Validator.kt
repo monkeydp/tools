@@ -35,7 +35,7 @@ fun Validator.getBeanRuleMap(parameters: Set<Parameter>): Map<Parameter, BeanRul
                     propDesc.constraintDescriptorsNeedValid.forEach { cstrDesc ->
                         ConstraintRule(
                                 cstrDesc = cstrDesc,
-                                attrs = getExposedAttrMap(cstrDesc)
+                                cstrAttrs = getExposedAttrMap(cstrDesc)
                         ).run(constraints::add)
                     }
                     PropertyRule(propDesc = propDesc, cstrRules = constraints)
@@ -72,7 +72,7 @@ class PropertyRule(
 
 class ConstraintRule(
         val cstrDesc: ConstraintDescriptor<*>,
-        val attrs: Map<String, Any>
+        val cstrAttrs: Map<String, Any>
 ) {
     val constraint: Annotation = cstrDesc.annotation
     val annotationClass = constraint.annotationClass
@@ -110,13 +110,13 @@ class SimplePropertyRule(
 
 class SimpleConstraintRule(
         constraint: Annotation,
-        val attrs: Map<String, Any>
+        val cstrAttrs: Map<String, Any>
 ) {
     private val annotationClass = constraint.annotationClass
     val fullCstrClassname: String = annotationClass.qualifiedName!!
     val cstrClassname: String = annotationClass.simpleName!!
 
-    constructor(rule: ConstraintRule) : this(rule.constraint, rule.attrs)
+    constructor(rule: ConstraintRule) : this(rule.constraint, rule.cstrAttrs)
 
     override fun toString() = fullCstrClassname
 }

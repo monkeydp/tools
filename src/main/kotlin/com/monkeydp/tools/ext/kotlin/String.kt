@@ -5,6 +5,7 @@ import com.monkeydp.tools.constant.Symbol.SLASH
 import com.monkeydp.tools.constant.Symbol.SPACE
 import com.monkeydp.tools.constant.Symbol.UNDERSCORE
 import java.net.URL
+import java.nio.charset.Charset
 
 /**
  * @author iPotato
@@ -121,3 +122,9 @@ fun String.asResourceOrNull(): URL? = object {}.javaClass.getResource(this)
 // ==== Wrapped ====
 
 fun String.wrappedInCurlyBraces() = "{$this}"
+
+
+// ==== Charset ====
+
+fun String.changeCharset(from: Charset, to: Charset) =
+        String(this.toByteArray(from), to)

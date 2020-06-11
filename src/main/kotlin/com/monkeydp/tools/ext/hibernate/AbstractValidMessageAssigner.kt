@@ -8,7 +8,7 @@ import com.monkeydp.tools.ext.kotlin.snakeToLowerCamel
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
 import com.monkeydp.tools.ext.reflections.reflections
-import com.monkeydp.tools.global.locale
+import com.monkeydp.tools.global.defaultLocale
 import org.kodein.di.generic.instance
 import org.reflections.Reflections
 import java.util.*
@@ -132,7 +132,7 @@ interface ValidResourceBundleMapWrapper {
     val resourceBundleMap: Map<Locale, ResourceBundle>
 
     fun getResourceBundle() =
-            getResourceBundle(locale)
+            getResourceBundle(defaultLocale)
 
     fun getResourceBundle(locale: Locale) =
             resourceBundleMap.getValue(locale)

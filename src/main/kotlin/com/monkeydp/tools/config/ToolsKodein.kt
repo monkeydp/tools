@@ -14,6 +14,8 @@ import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
 
 /**
@@ -23,13 +25,14 @@ import java.util.*
 val logger = getLogger()
 
 val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
+    bind<Charset>() with singleton { UTF_8 }
+    bind<Locale>() with singleton { Locale.CHINESE }
     bind<Executor>() with singleton { DefaultExecutor() }
     bind<ObjectMapper>() with singleton {
         ObjectMapper()
                 .registerModule(KotlinModule())
                 .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
-    bind<Locale>() with singleton { Locale.CHINA }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
 
     importAll(*moduleArray, allowOverride = true)

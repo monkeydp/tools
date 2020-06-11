@@ -4,7 +4,7 @@ import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.constant.Symbol.DOT
 import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.enumx.Enumx
-import com.monkeydp.tools.ext.java.getStringX
+import com.monkeydp.tools.ext.java.getMessage
 import com.monkeydp.tools.ext.kotlin.camelToChain
 import com.monkeydp.tools.ext.kotlin.snakeToChain
 import org.kodein.di.generic.instance
@@ -43,5 +43,5 @@ interface I18nEnum<E> : Enumx<E>
                 it.toString()
             }
 
-    val i18nValue get() = resourceBundle.getStringX(i18nKey)
+    val i18nValue get() = resourceBundle.getMessage(i18nKey)
 }
