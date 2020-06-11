@@ -21,8 +21,8 @@ fun Validator.getExposedAttrMap(
     }
 }
 
-fun Validator.getValidObjects(parameters: Iterable<Parameter>): List<ValidObject> {
-    val validObjs = mutableListOf<ValidObject>()
+fun Validator.getValidClasses(parameters: Iterable<Parameter>): List<ValidClass> {
+    val validClasses = mutableListOf<ValidClass>()
     parameters.forEach { param ->
         val clazz = param.parameterizedType as Class<*>
         val properties = mutableListOf<ValidProperty>()
@@ -43,17 +43,17 @@ fun Validator.getValidObjects(parameters: Iterable<Parameter>): List<ValidObject
                             .run(properties::add)
                 }
         clazz.apply {
-            ValidObject(
+            ValidClass(
                     name = name,
                     simpleName = simpleName,
                     properties = properties
-            ).run(validObjs::add)
+            ).run(validClasses::add)
         }
     }
-    return validObjs.toList()
+    return validClasses.toList()
 }
 
-class ValidObject(
+class ValidClass(
         val name: String,
         val simpleName: String,
         val properties: List<ValidProperty>
