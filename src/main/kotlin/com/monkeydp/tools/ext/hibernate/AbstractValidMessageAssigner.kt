@@ -2,7 +2,7 @@ package com.monkeydp.tools.ext.hibernate
 
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.javax.validation.constraintDescriptorsNeedValid
+import com.monkeydp.tools.ext.kotlin.getAnnotatedField
 import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.kotlin.snakeToLowerCamel
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
@@ -32,11 +32,32 @@ abstract class AbstractValidMessageAssigner(
             validator.getConstraintsForClass(kClass.java)
                     .constrainedProperties
                     .forEach { propDesc ->
-                        propDesc.constraintDescriptorsNeedValid.forEach {
-                            it.changeMessageTemplate(
-                                    it.customMsgTmplStruct(propDesc, kClass)
-                                            .run(::buildMessageTemplate)
-                            )
+                        propDesc.constraintDescriptors.forEach { cstrDesc ->
+                            if (cstrDesc.composingConstraints.isEmpty())
+                                cstrDesc.changeMessageTemplate(
+                                        MsgTmplStruct(
+                                                cstrClassname = cstrDesc.annotation.annotationClass.simpleName!!,
+                                                classname = kClass.simpleName!!.toStdFormat(),
+                                                propName = propDesc.propertyName.toStdFormat()
+                                        ).run(::buildMessageTemplate)
+                                )
+                            else {
+                                val annotationClass = cstrDesc.annotation.annotationClass
+                                val enclosingClass = annotationClass.java.enclosingClass
+                                val classname = enclosingClass.simpleName.toStdFormat()
+                                val propName = enclosingClass.kotlin
+                                        .getAnnotatedField(annotationClass)
+                                        .name.toStdFormat()
+                                cstrDesc.composingConstraints.forEach {
+                                    it.changeMessageTemplate(
+                                            MsgTmplStruct(
+                                                    cstrClassname = it.annotation.annotationClass.simpleName!!,
+                                                    classname = classname,
+                                                    propName = propName
+                                            ).run(::buildMessageTemplate)
+                                    )
+                                }
+                            }
                         }
                     }
         }
@@ -45,7 +66,7 @@ abstract class AbstractValidMessageAssigner(
     protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(messageTemplate: String)
 
     protected fun PropertyDescriptor.messageKey(kClass: KClass<*>): String =
-            "${kClass.simpleName!!}.$propertyName".stdFormat()
+            "${kClass.simpleName!!}.$propertyName".toStdFormat()
 
     protected fun PropertyDescriptor.getFieldReplacement(kClass: KClass<*>): String =
             messageKey(kClass).let {
@@ -90,31 +111,24 @@ abstract class AbstractValidMessageAssigner(
                 str
             }
 
-    private fun ConstraintDescriptor<*>.customMsgTmplStruct(propDesc: PropertyDescriptor, kClass: KClass<*>) =
-            MsgTmplStruct(
-                    constraintName = annotation.annotationClass.simpleName!!,
-                    objectName = kClass.simpleName!!.stdFormat(),
-                    propertyName = propDesc.propertyName.stdFormat()
-            )
-
-    protected fun String.stdFormat() =
+    protected fun String.toStdFormat() =
             snakeToLowerCamel()
 }
 
 private class MsgTmplStruct(
-        val constraintName: String,
-        val objectName: String,
-        val propertyName: String
+        val cstrClassname: String,
+        val classname: String,
+        val propName: String
 ) {
     val combinedKeyWithoutCstr: String =
-            "$objectName.$propertyName"
+            "$classname.$propName"
 
     val combinedKey: String =
-            "$constraintName.$combinedKeyWithoutCstr"
+            "$cstrClassname.$combinedKeyWithoutCstr"
 
-    operator fun component1() = constraintName
-    operator fun component2() = objectName
-    operator fun component3() = propertyName
+    operator fun component1() = cstrClassname
+    operator fun component2() = classname
+    operator fun component3() = propName
 }
 
 private val validator: Validator by lazy {

@@ -177,6 +177,9 @@ fun <T : Any> T.copyPropValuesFrom(map: Map<String, Any?>) {
 fun Any.getField(fieldName: String): Field =
         FieldUtil.getField(this, fieldName)
 
+fun Any.getFields(): List<Field> =
+        FieldUtil.getFields(this)
+
 fun <T> Any.getFieldValue(
         fieldName: String,
         configInit: (GetValueConfig.() -> Unit)? = null
@@ -224,6 +227,13 @@ fun Any.setFieldValueByPath(
     any.setFieldValue(parts.last(), value, configInit)
 }
 
+fun Any.getAnnotatedField(annotKClass: KClass<out Annotation>) =
+        getFields().single {
+            it.hasAnnot(annotKClass)
+        }
+
+inline fun <reified A : Annotation> Any.getAnnotatedField() =
+        getAnnotatedField(A::class)
 
 // ==== Copy Field Values ====
 
