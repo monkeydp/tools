@@ -38,13 +38,13 @@ fun Validator.getBeanRuleMap(parameters: Set<Parameter>): Map<Parameter, BeanRul
                                 attrs = getExposedAttrMap(cstrDesc)
                         ).run(constraints::add)
                     }
-                    PropertyRule(propDesc = propDesc, constraintRules = constraints)
+                    PropertyRule(propDesc = propDesc, cstrRules = constraints)
                             .run(properties::add)
                 }
         clazz.apply {
             BeanRule(
                     kClass = clazz.kotlin,
-                    propertyRules = properties
+                    propRules = properties
             ).apply {
                 beanRuleMap[param] = this
             }
@@ -55,7 +55,7 @@ fun Validator.getBeanRuleMap(parameters: Set<Parameter>): Map<Parameter, BeanRul
 
 class BeanRule(
         val kClass: KClass<*>,
-        val propertyRules: List<PropertyRule>
+        val propRules: List<PropertyRule>
 ) {
     val qualifiedClassname: String = kClass.qualifiedName!!
     val classname: String = kClass.simpleName!!
@@ -64,7 +64,7 @@ class BeanRule(
 
 class PropertyRule(
         val propDesc: PropertyDescriptor,
-        val constraintRules: List<ConstraintRule>
+        val cstrRules: List<ConstraintRule>
 ) {
     val propName = propDesc.propertyName
     override fun toString() = propName
@@ -78,6 +78,45 @@ class ConstraintRule(
     val annotationClass = constraint.annotationClass
     val qualifiedCstrName: String = annotationClass.qualifiedName!!
     val cstrName: String = annotationClass.simpleName!!
+
+    override fun toString() = qualifiedCstrName
+}
+
+fun Validator.getSimpleBeanRuleMap(parameters: Set<Parameter>): Map<Parameter, SimpleBeanRule> =
+        getBeanRuleMap(parameters)
+                .map { it.key to SimpleBeanRule(it.value) }
+                .toMap()
+
+class SimpleBeanRule(
+        val qualifiedClassname: String,
+        val classname: String,
+        val propRules: List<SimplePropertyRule>
+) {
+    constructor(rule: BeanRule)
+            : this(rule.qualifiedClassname, rule.classname, rule.propRules.map { SimplePropertyRule(it) })
+
+    override fun toString() = qualifiedClassname
+}
+
+class SimplePropertyRule(
+        val propName: String,
+        val cstrRules: List<SimpleConstraintRule>
+) {
+    constructor(rule: PropertyRule)
+            : this(rule.propName, rule.cstrRules.map { SimpleConstraintRule(it) })
+
+    override fun toString() = propName
+}
+
+class SimpleConstraintRule(
+        constraint: Annotation,
+        val attrs: Map<String, Any>
+) {
+    private val annotationClass = constraint.annotationClass
+    val qualifiedCstrName: String = annotationClass.qualifiedName!!
+    val cstrName: String = annotationClass.simpleName!!
+
+    constructor(rule: ConstraintRule) : this(rule.constraint, rule.attrs)
 
     override fun toString() = qualifiedCstrName
 }
