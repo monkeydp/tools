@@ -1,11 +1,10 @@
 package com.monkeydp.tools.ext.hibernate
 
 import com.monkeydp.tools.config.kodein
-import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.javax.validation.constraintDescriptorsNeedValid
-import com.monkeydp.tools.ext.kotlin.camelCase2Chain
 import com.monkeydp.tools.ext.kotlin.linesln
+import com.monkeydp.tools.ext.kotlin.snakeToLowerCamel
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
 import com.monkeydp.tools.ext.reflections.reflections
@@ -98,8 +97,8 @@ abstract class AbstractValidMessageAssigner(
                     propertyName = propDesc.propertyName.stdFormat()
             )
 
-    private fun String.stdFormat() =
-            camelCase2Chain(HYPHEN).toLowerCase()
+    protected fun String.stdFormat() =
+            snakeToLowerCamel()
 }
 
 private class MsgTmplStruct(

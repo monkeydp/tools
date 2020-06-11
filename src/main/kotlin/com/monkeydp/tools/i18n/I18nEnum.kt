@@ -5,8 +5,8 @@ import com.monkeydp.tools.constant.Symbol.DOT
 import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.enumx.Enumx
 import com.monkeydp.tools.ext.java.getStringX
-import com.monkeydp.tools.ext.kotlin.camelCase2Chain
-import com.monkeydp.tools.ext.kotlin.snakeCase2chain
+import com.monkeydp.tools.ext.kotlin.camelToChain
+import com.monkeydp.tools.ext.kotlin.snakeToChain
 import org.kodein.di.generic.instance
 import java.util.*
 
@@ -37,9 +37,9 @@ interface I18nEnum<E> : Enumx<E>
                     it.append(i18nKeyPrefix)
                             .append(DELIMITER)
 
-                it.append(javaClass.simpleName.camelCase2Chain(JOINER).toLowerCase())
+                it.append(javaClass.simpleName.camelToChain(JOINER).toLowerCase())
                         .append(DELIMITER)
-                        .append(asEnum().name.snakeCase2chain(JOINER).toLowerCase())
+                        .append(asEnum().name.snakeToChain(JOINER).toLowerCase())
                 it.toString()
             }
 

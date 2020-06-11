@@ -12,9 +12,9 @@ import java.net.URL
  */
 fun String.replaceAt(index: Int, replacement: CharSequence) = this.replaceRange(index, index + 1, replacement)
 
-fun String.toUpperCamelCase() = toCamelCase(true)
+fun String.snakeToUpperCamel() = snakeToCamel(true)
 
-fun String.toLowerCamelCase() = toCamelCase(false)
+fun String.snakeToLowerCamel() = snakeToCamel(false)
 
 /**
  * @param capitalize
@@ -22,9 +22,9 @@ fun String.toLowerCamelCase() = toCamelCase(false)
  * true -> upper camel case
  * false -> lower camel case
  */
-fun String.toCamelCase(capitalize: Boolean? = null) =
+fun String.snakeToCamel(capitalize: Boolean? = null) =
         this.split(UNDERSCORE)
-                .map { it.camelCase2List() }
+                .map { it.camelToList() }
                 .flatten()
                 .mapIndexed { index, str ->
                     if (index == 0)
@@ -39,10 +39,7 @@ fun String.toCamelCase(capitalize: Boolean? = null) =
                     else str.toLowerCase().capitalize()
                 }.joinToString("")
 
-/**
- * CamelCase to SnakeCase
- */
-fun String.toSnakeCase(lowerCase: Boolean = true): String {
+fun String.camelCaseToSnakeCase(lowerCase: Boolean = true): String {
     val builder = StringBuilder()
     var isFirst = true
     this.forEach {
@@ -56,9 +53,9 @@ fun String.toSnakeCase(lowerCase: Boolean = true): String {
     return builder.toString()
 }
 
-fun String.snakeCase2chain(joiner: String): String = split(UNDERSCORE).joinToString(joiner)
+fun String.snakeToChain(joiner: String): String = split(UNDERSCORE).joinToString(joiner)
 
-fun String.camelCase2List(): List<String> {
+fun String.camelToList(): List<String> {
 
     if (isAllUpperCase()) return listOf(this)
 
@@ -76,7 +73,7 @@ fun String.camelCase2List(): List<String> {
     return list.toList()
 }
 
-fun String.camelCase2Chain(joiner: String) = camelCase2List().joinToString(joiner)
+fun String.camelToChain(joiner: String) = camelToList().joinToString(joiner)
 
 fun String.isAllUpperCase(): Boolean {
     var bool = true
@@ -89,16 +86,14 @@ fun String.isAllUpperCase(): Boolean {
     return bool
 }
 
-fun String.camelCaseFirst() = camelCase2List().first()
-
 fun String.toStdPath() = this.replace(BACKSLASH, SLASH)
 
 fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")
 
-fun String.firstOfSnackCase() = this.split(UNDERSCORE).first()
+fun String.firstOfSnack() = this.split(UNDERSCORE).first()
 
-fun String.camelCaseSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequence = SPACE): String {
-    var strings = camelCase2List()
+fun String.camelSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequence = SPACE): String {
+    var strings = camelToList()
     if (capitalizeEveryWord) strings = strings.map { it.capitalize() }.toList()
     return strings.joinToString(symbol)
 }

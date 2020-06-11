@@ -28,7 +28,7 @@ fun KClass<*>.getInterfaces(): Set<KClass<*>> {
 
 fun KClass<*>.getJavaInterfaces() = getInterfaces().map { it.java }.toSet()
 
-fun KClass<*>.lowerCameCaseName() = java.simpleName.toLowerCamelCase()
+fun KClass<*>.lowerCameCaseName() = java.simpleName.snakeToLowerCamel()
 
 fun <T : Any> KClass<out T>.enumArray() = java.enumConstants
 
