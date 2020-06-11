@@ -3,6 +3,8 @@ package com.monkeydp.tools.ext.javax.validation
 import java.lang.reflect.Parameter
 import javax.validation.Validator
 import javax.validation.metadata.ConstraintDescriptor
+import javax.validation.metadata.PropertyDescriptor
+import kotlin.reflect.KClass
 
 /**
  * @author iPotato-Work
@@ -21,57 +23,59 @@ fun Validator.getExposedAttrMap(
     }
 }
 
-fun Validator.getValidClasses(parameters: Iterable<Parameter>): List<ValidClass> {
-    val validClasses = mutableListOf<ValidClass>()
+fun Validator.getBeanRules(parameters: Iterable<Parameter>): List<BeanRule> {
+    val beanRules = mutableListOf<BeanRule>()
     parameters.forEach { param ->
         val clazz = param.parameterizedType as Class<*>
-        val properties = mutableListOf<ValidProperty>()
+        val properties = mutableListOf<PropertyRule>()
         getConstraintsForClass(clazz)
                 .constrainedProperties
                 .forEach { propDesc ->
-                    val constraints = mutableListOf<ValidConstraint>()
+                    val constraints = mutableListOf<ConstraintRule>()
                     propDesc.constraintDescriptorsNeedValid.forEach { cstrDesc ->
-                        cstrDesc.annotation.annotationClass.apply {
-                            ValidConstraint(
-                                    name = qualifiedName!!,
-                                    simpleName = simpleName!!,
-                                    attrs = getExposedAttrMap(cstrDesc)
-                            ).run(constraints::add)
-                        }
+                        ConstraintRule(
+                                cstrDesc = cstrDesc,
+                                attrs = getExposedAttrMap(cstrDesc)
+                        ).run(constraints::add)
                     }
-                    ValidProperty(name = propDesc.propertyName, constraints = constraints)
+                    PropertyRule(propDesc = propDesc, constraintRules = constraints)
                             .run(properties::add)
                 }
         clazz.apply {
-            ValidClass(
-                    name = name,
-                    simpleName = simpleName,
-                    properties = properties
-            ).run(validClasses::add)
+            BeanRule(
+                    kClass = clazz.kotlin,
+                    propertyRules = properties
+            ).run(beanRules::add)
         }
     }
-    return validClasses.toList()
+    return beanRules.toList()
 }
 
-class ValidClass(
-        val name: String,
-        val simpleName: String,
-        val properties: List<ValidProperty>
+class BeanRule(
+        val kClass: KClass<*>,
+        val propertyRules: List<PropertyRule>
 ) {
-    override fun toString() = name
+    val qualifiedClassname: String = kClass.qualifiedName!!
+    val classname: String = kClass.simpleName!!
+    override fun toString() = qualifiedClassname
 }
 
-class ValidProperty(
-        val name: String,
-        val constraints: List<ValidConstraint>
+class PropertyRule(
+        val propDesc: PropertyDescriptor,
+        val constraintRules: List<ConstraintRule>
 ) {
-    override fun toString() = name
+    val propName = propDesc.propertyName
+    override fun toString() = propName
 }
 
-class ValidConstraint(
-        val name: String,
-        val simpleName: String,
+class ConstraintRule(
+        val cstrDesc: ConstraintDescriptor<*>,
         val attrs: Map<String, Any>
 ) {
-    override fun toString() = name
+    val constraint: Annotation = cstrDesc.annotation
+    val annotationClass = constraint.annotationClass
+    val qualifiedCstrName: String = annotationClass.qualifiedName!!
+    val cstrName: String = annotationClass.simpleName!!
+
+    override fun toString() = qualifiedCstrName
 }
