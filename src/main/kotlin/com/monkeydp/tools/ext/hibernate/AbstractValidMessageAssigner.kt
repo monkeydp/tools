@@ -123,12 +123,12 @@ private val validator: Validator by lazy {
 }
 
 private val resourceBundlesWrapper by lazy {
-    val resourceBundlesWrapper by kodein.instance<ValidationResourceBundlesWrapper>()
+    val resourceBundlesWrapper by kodein.instance<ValidResourceBundleMapWrapper>()
     resourceBundlesWrapper
 }
 
 
-interface ValidationResourceBundlesWrapper {
+interface ValidResourceBundleMapWrapper {
     val resourceBundleMap: Map<Locale, ResourceBundle>
 
     fun getResourceBundle() =
@@ -138,14 +138,14 @@ interface ValidationResourceBundlesWrapper {
             resourceBundleMap.getValue(locale)
 
     companion object {
-        operator fun invoke(resourceBundleMap: Map<Locale, ResourceBundle>): ValidationResourceBundlesWrapper =
-                StdValidationResourceBundlesWrapper(resourceBundleMap)
+        operator fun invoke(resourceBundleMap: Map<Locale, ResourceBundle>): ValidResourceBundleMapWrapper =
+                StdValidResourceBundleMapWrapper(resourceBundleMap)
 
-        operator fun invoke(vararg pairs: Pair<Locale, ResourceBundle>): ValidationResourceBundlesWrapper =
+        operator fun invoke(vararg pairs: Pair<Locale, ResourceBundle>): ValidResourceBundleMapWrapper =
                 invoke(pairs.toMap())
     }
 }
 
-private class StdValidationResourceBundlesWrapper(
+private class StdValidResourceBundleMapWrapper(
         override val resourceBundleMap: Map<Locale, ResourceBundle>
-) : ValidationResourceBundlesWrapper
+) : ValidResourceBundleMapWrapper
