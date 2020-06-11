@@ -88,14 +88,14 @@ fun Validator.getSimpleBeanRuleMap(parameters: Set<Parameter>): Map<Parameter, S
                 .toMap()
 
 class SimpleBeanRule(
-        val qualifiedClassname: String,
+        val fullClassname: String,
         val classname: String,
         val propRules: List<SimplePropertyRule>
 ) {
     constructor(rule: BeanRule)
             : this(rule.qualifiedClassname, rule.classname, rule.propRules.map { SimplePropertyRule(it) })
 
-    override fun toString() = qualifiedClassname
+    override fun toString() = fullClassname
 }
 
 class SimplePropertyRule(
@@ -113,10 +113,10 @@ class SimpleConstraintRule(
         val attrs: Map<String, Any>
 ) {
     private val annotationClass = constraint.annotationClass
-    val qualifiedCstrName: String = annotationClass.qualifiedName!!
-    val cstrName: String = annotationClass.simpleName!!
+    val fullCstrClassname: String = annotationClass.qualifiedName!!
+    val cstrClassname: String = annotationClass.simpleName!!
 
     constructor(rule: ConstraintRule) : this(rule.constraint, rule.attrs)
 
-    override fun toString() = qualifiedCstrName
+    override fun toString() = fullCstrClassname
 }
