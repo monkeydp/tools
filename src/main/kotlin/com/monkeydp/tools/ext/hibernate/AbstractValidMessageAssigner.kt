@@ -3,6 +3,7 @@ package com.monkeydp.tools.ext.hibernate
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.constant.Symbol.HYPHEN
 import com.monkeydp.tools.exception.ierror
+import com.monkeydp.tools.ext.javax.validation.constraintDescriptorsNeedValid
 import com.monkeydp.tools.ext.kotlin.camelCase2Chain
 import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
@@ -32,17 +33,11 @@ abstract class AbstractValidMessageAssigner(
             validator.getConstraintsForClass(kClass.java)
                     .constrainedProperties
                     .forEach { propDesc ->
-                        propDesc.constraintDescriptors.forEach { cstrDesc ->
-                            val cstrDescs =
-                                    if (cstrDesc.composingConstraints.isEmpty())
-                                        setOf(cstrDesc)
-                                    else cstrDesc.composingConstraints
-                            cstrDescs.forEach {
-                                it.changeMessageTemplate(
-                                        it.customMessageTemplate(propDesc, kClass)
-                                                .run(::buildMessageTemplateString)
-                                )
-                            }
+                        propDesc.constraintDescriptorsNeedValid.forEach {
+                            it.changeMessageTemplate(
+                                    it.customMsgTmplStruct(propDesc, kClass)
+                                            .run(::buildMessageTemplate)
+                            )
                         }
                     }
         }
@@ -70,8 +65,8 @@ abstract class AbstractValidMessageAssigner(
                 }
             }
 
-    private fun buildMessageTemplateString(messageTemplate: MessageTemplate): String =
-            messageTemplate.let {
+    private fun buildMessageTemplate(msgTmplStruct: MsgTmplStruct): String =
+            msgTmplStruct.let {
                 val str = resourceBundlesWrapper.getResourceBundle().run {
                     val (cstrName, objName, propName) = it
                     when {
@@ -96,8 +91,8 @@ abstract class AbstractValidMessageAssigner(
                 str
             }
 
-    private fun ConstraintDescriptor<*>.customMessageTemplate(propDesc: PropertyDescriptor, kClass: KClass<*>) =
-            MessageTemplate(
+    private fun ConstraintDescriptor<*>.customMsgTmplStruct(propDesc: PropertyDescriptor, kClass: KClass<*>) =
+            MsgTmplStruct(
                     constraintName = annotation.annotationClass.simpleName!!,
                     objectName = kClass.simpleName!!.stdFormat(),
                     propertyName = propDesc.propertyName.stdFormat()
@@ -107,7 +102,7 @@ abstract class AbstractValidMessageAssigner(
             camelCase2Chain(HYPHEN).toLowerCase()
 }
 
-private class MessageTemplate(
+private class MsgTmplStruct(
         val constraintName: String,
         val objectName: String,
         val propertyName: String

@@ -25,9 +25,9 @@ fun <T> Class<T>.newInstanceX(vararg args: Any): T {
             .newInstance(*args)
 }
 
-fun Class<*>.hasAnnotation(annotClass: Class<out Annotation>) = getAnnotation(annotClass) != null
+fun Class<*>.hasAnnot(annotClass: Class<out Annotation>) = getAnnotation(annotClass) != null
 
-inline fun <reified A : Annotation> Class<*>.hasAnnotation() = hasAnnotation(A::class.java)
+inline fun <reified A : Annotation> Class<*>.hasAnnot() = hasAnnot(A::class.java)
 
 fun Class<*>.hasSuperclass(except: Class<*>? = null) = superclass != null && superclass != except
 

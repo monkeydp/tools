@@ -1,5 +1,6 @@
 package com.monkeydp.tools.ext.reflections
 
+import com.monkeydp.tools.ext.java.hasAnnot
 import com.monkeydp.tools.ext.java.inClass
 import com.monkeydp.tools.ext.java.singleton
 import com.monkeydp.tools.util.FieldUtil
@@ -17,30 +18,34 @@ import kotlin.reflect.full.isSubclassOf
  * @author iPotato
  * @date 2019/11/8
  */
-val reflectionsDefaultScanners = arrayOf<Scanner>(TypeAnnotationsScanner(), SubTypesScanner())
+val defaultScanners = arrayOf<Scanner>(TypeAnnotationsScanner(), SubTypesScanner())
+
+val defaultScannerList = defaultScanners.toList()
 
 fun reflections(any: Any) = reflections(any::class)
 
 fun reflections(kClass: KClass<*>) = reflections(kClass.java)
 
 fun reflections(clazz: Class<*>) =
-        reflections(clazz.`package`.name, clazz.classLoader)
+        reflections(clazz.`package`.name, defaultScannerList, clazz.classLoader)
 
 fun reflections(
         packageName: String,
+        scanners: Iterable<Scanner> = defaultScannerList,
         classLoader: ClassLoader = Thread.currentThread().contextClassLoader
-) = reflections(listOf(packageName), classLoader)
+) = reflections(listOf(packageName), scanners, classLoader)
 
 fun reflections(
         packageNames: Iterable<String>,
+        scanners: Iterable<Scanner> = defaultScannerList,
         classLoader: ClassLoader = Thread.currentThread().contextClassLoader
 ): Reflections {
     val urls = packageNames.map { ClasspathHelper.forPackage(it, classLoader) }.toList().flatten()
     return Reflections(ConfigurationBuilder()
             .setUrls(urls)
+            .setScanners(*scanners.toList().toTypedArray())
             .addClassLoader(classLoader))
 }
-
 
 inline fun <reified T> Reflections.getSubTypesOf() = getSubTypesOf(T::class.java)
 
@@ -90,3 +95,10 @@ fun Reflections.getAnnotatedFieldValueMap(
 ): Map<Field, Any> = getAnnotatedFields(annotKClass).map {
     it to it.inClass.singleton().run { FieldUtil.getValue<Any>(this, it, configInit) }
 }.toMap()
+
+fun Reflections.getAnnotatedParameters(annotKClass: KClass<out Annotation>) =
+        getMethodsWithAnyParamAnnotated(annotKClass.java).map { method ->
+            method.parameters.filter {
+                it.hasAnnot(annotKClass)
+            }
+        }.flatten()

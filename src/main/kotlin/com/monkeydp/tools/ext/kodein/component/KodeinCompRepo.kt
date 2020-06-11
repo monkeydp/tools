@@ -4,10 +4,10 @@ import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.kotlin.findAnnot
 import com.monkeydp.tools.ext.kotlin.findAnnotOrNull
 import com.monkeydp.tools.ext.logger.getLogger
+import com.monkeydp.tools.ext.reflections.defaultScanners
 import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
 import com.monkeydp.tools.ext.reflections.getAnnotatedFieldValueMap
 import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
-import com.monkeydp.tools.ext.reflections.reflectionsDefaultScanners
 import org.kodein.di.Kodein
 import org.reflections.Reflections
 import org.reflections.scanners.FieldAnnotationsScanner
@@ -33,12 +33,12 @@ abstract class AbstractKodeinCompRepo : KodeinCompRepo {
 
     private val compAnnotKClass = KodeinComponent::class
 
-    private val defaultScanners: Array<Scanner> = arrayOf(*reflectionsDefaultScanners, FieldAnnotationsScanner())
+    private val dfltScanners: Array<Scanner> = arrayOf(*defaultScanners, FieldAnnotationsScanner())
 
     protected fun reflections(
             packageNames: List<String> = listOf(javaClass.`package`.name),
             classLoader: ClassLoader = javaClass.classLoader,
-            vararg scanners: Scanner = defaultScanners
+            vararg scanners: Scanner = dfltScanners
     ) = Reflections(
             packageNames,
             classLoader,
