@@ -23,8 +23,8 @@ fun Validator.getExposedAttrMap(
     }
 }
 
-fun Validator.getBeanRules(parameters: Iterable<Parameter>): List<BeanRule> {
-    val beanRules = mutableListOf<BeanRule>()
+fun Validator.getBeanRuleMap(parameters: Set<Parameter>): Map<Parameter, BeanRule> {
+    val beanRuleMap = mutableMapOf<Parameter, BeanRule>()
     parameters.forEach { param ->
         val clazz = param.parameterizedType as Class<*>
         val properties = mutableListOf<PropertyRule>()
@@ -45,10 +45,12 @@ fun Validator.getBeanRules(parameters: Iterable<Parameter>): List<BeanRule> {
             BeanRule(
                     kClass = clazz.kotlin,
                     propertyRules = properties
-            ).run(beanRules::add)
+            ).apply {
+                beanRuleMap[param] = this
+            }
         }
     }
-    return beanRules.toList()
+    return beanRuleMap.toMap()
 }
 
 class BeanRule(
