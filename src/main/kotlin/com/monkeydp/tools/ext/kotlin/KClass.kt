@@ -2,6 +2,8 @@ package com.monkeydp.tools.ext.kotlin
 
 import com.monkeydp.tools.ext.java.singleton
 import com.monkeydp.tools.ext.java.singletonX
+import com.monkeydp.tools.util.FieldUtil
+import java.lang.reflect.Field
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.superclasses
@@ -37,3 +39,23 @@ fun <T : Any> KClass<out T>.enumSet() = enumArray().toSet()
 fun KClass<*>.singletonOrNull() = java.singleton()
 
 inline fun <reified C : Any> KClass<out C>.singletonX() = java.singletonX()
+
+// ==== Field ====
+
+fun KClass<*>.getField(fieldName: String): Field =
+        FieldUtil.getField(this, fieldName)
+
+fun KClass<*>.getFields(): List<Field> =
+        FieldUtil.getFields(this)
+
+fun KClass<*>.getAnnotatedField(annotKClass: KClass<out Annotation>) =
+        getFields().single { it.hasAnnot(annotKClass) }
+
+fun KClass<*>.getAnnotatedFields(annotKClass: KClass<out Annotation>) =
+        getFields().filter { it.hasAnnot(annotKClass) }
+
+inline fun <reified A : Annotation> KClass<*>.getAnnotatedField() =
+        getAnnotatedField(A::class)
+
+inline fun <reified A : Annotation> KClass<*>.getAnnotatedFields() =
+        getAnnotatedFields(A::class)

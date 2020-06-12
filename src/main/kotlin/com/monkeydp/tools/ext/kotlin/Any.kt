@@ -25,15 +25,15 @@ import kotlin.reflect.jvm.javaField
  */
 // ==== Class X ====
 
-val <T : Any> T.classX
+val <T : Any> T.classX: Class<T>
     get() =
         when (this) {
             is Class<*> -> this
             is KClass<*> -> this.java
             else -> this.javaClass
-        }
+        } as Class<T>
 
-val <T : Any> T.kClassX
+val <T : Any> T.kClassX: KClass<T>
     get() = classX.kotlin
 
 
@@ -227,13 +227,17 @@ fun Any.setFieldValueByPath(
     any.setFieldValue(parts.last(), value, configInit)
 }
 
-fun Any.getAnnotatedField(annotKClass: KClass<out Annotation>) =
-        getFields().single {
-            it.hasAnnot(annotKClass)
-        }
+fun Any.getAnnotatedField(annotClass: KClass<out Annotation>) =
+        kClassX.getAnnotatedField(annotClass)
 
 inline fun <reified A : Annotation> Any.getAnnotatedField() =
         getAnnotatedField(A::class)
+
+fun Any.getAnnotatedFields(annotClass: KClass<out Annotation>) =
+        kClassX.getAnnotatedFields(annotClass)
+
+inline fun <reified A : Annotation> Any.getAnnotatedFields() =
+        getAnnotatedFields(A::class)
 
 // ==== Copy Field Values ====
 

@@ -2,7 +2,9 @@ package com.monkeydp.tools.ext.hibernate
 
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.kotlin.getAnnotatedField
+import com.monkeydp.tools.ext.javax.validation.isComposing
+import com.monkeydp.tools.ext.javax.validation.refField
+import com.monkeydp.tools.ext.javax.validation.refKClass
 import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.kotlin.snakeToLowerCamel
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
@@ -31,9 +33,9 @@ abstract class AbstractValidMessageAssigner(
         autoValidMessageKClasses.forEach outer@{ kClass ->
             validator.getConstraintsForClass(kClass.java)
                     .constrainedProperties
-                    .forEach { propDesc ->
+                    .forEach middle@{ propDesc ->
                         propDesc.constraintDescriptors.forEach { cstrDesc ->
-                            if (cstrDesc.composingConstraints.isEmpty())
+                            if (!cstrDesc.isComposing) {
                                 cstrDesc.changeMessageTemplate(
                                         MsgTmplStruct(
                                                 cstrClassname = cstrDesc.annotation.annotationClass.simpleName!!,
@@ -41,22 +43,19 @@ abstract class AbstractValidMessageAssigner(
                                                 propName = propDesc.propertyName.toStdFormat()
                                         ).run(::buildMessageTemplate)
                                 )
-                            else {
-                                val annotationClass = cstrDesc.annotation.annotationClass
-                                val enclosingClass = annotationClass.java.enclosingClass
-                                val classname = enclosingClass.simpleName.toStdFormat()
-                                val propName = enclosingClass.kotlin
-                                        .getAnnotatedField(annotationClass)
-                                        .name.toStdFormat()
-                                cstrDesc.composingConstraints.forEach {
-                                    it.changeMessageTemplate(
-                                            MsgTmplStruct(
-                                                    cstrClassname = it.annotation.annotationClass.simpleName!!,
-                                                    classname = classname,
-                                                    propName = propName
-                                            ).run(::buildMessageTemplate)
-                                    )
-                                }
+                                return@forEach
+                            }
+
+                            val classname = cstrDesc.refKClass.simpleName!!.toStdFormat()
+                            val propName = cstrDesc.refField.name.toStdFormat()
+                            cstrDesc.composingConstraints.forEach {
+                                it.changeMessageTemplate(
+                                        MsgTmplStruct(
+                                                cstrClassname = it.annotation.annotationClass.simpleName!!,
+                                                classname = classname,
+                                                propName = propName
+                                        ).run(::buildMessageTemplate)
+                                )
                             }
                         }
                     }
