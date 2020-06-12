@@ -108,3 +108,6 @@ fun Reflections.getAnnotatedParameters(annotKClass: KClass<out Annotation>) =
                 it.hasAnnot(annotKClass)
             }
         }.flatten()
+
+fun Reflections.getAnnotatedParameters(vararg annotKClasses: KClass<out Annotation>) =
+        annotKClasses.map { getAnnotatedParameters(it) }
