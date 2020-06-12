@@ -39,7 +39,9 @@ abstract class AbstractValidMessageAssigner(
     fun assignValidMessages(init: (AssignValidMessagesConfig.() -> AssignValidMessagesConfig)? = null) {
         val config = AssignValidMessagesConfig().apply { init?.invoke(this) }
         val annotKClasses = reflections.getAnnotatedAnnotKClasses<CarrierConstraint>()
-        val annotatedFields = reflections.getAnnotatedFields(annotKClasses.first())
+        val annotatedFields = annotKClasses.map {
+            reflections.getAnnotatedFields(it)
+        }.flatten()
         annotatedFields.map { it.inKClass }.toSet().forEach outer@{ kClass ->
             validator.getConstraintsForClass(kClass.java)
                     .constrainedProperties
