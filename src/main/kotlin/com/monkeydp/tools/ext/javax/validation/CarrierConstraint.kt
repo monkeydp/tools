@@ -7,4 +7,13 @@ import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
  * @date 2020/6/12
  */
 @Target(ANNOTATION_CLASS)
-annotation class CarrierConstraint
+annotation class CarrierConstraint(
+        /**
+         * Message before constraint message
+         * For example:
+         *      value = "{user.name}"
+         *      cstrMsg = "must not be blank"
+         *      fullMessage = "{user.name} must not be blank"
+         */
+        val value: String = ""
+)

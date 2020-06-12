@@ -6,6 +6,7 @@ import com.monkeydp.tools.ext.javax.validation.CarrierConstraint
 import com.monkeydp.tools.ext.javax.validation.NotCarrierConstraintEx
 import com.monkeydp.tools.ext.javax.validation.buildMsgTmpl
 import com.monkeydp.tools.ext.javax.validation.isCarrierCstr
+import com.monkeydp.tools.ext.kotlin.findAnnot
 import com.monkeydp.tools.ext.reflections.defaultScannerList
 import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
 import com.monkeydp.tools.ext.reflections.getAnnotatedFields
@@ -51,9 +52,11 @@ abstract class AbstractValidMessageAssigner(
                                 if (config.ignoreNotCarrierCstrEx) return@forEach
                                 throw NotCarrierConstraintEx(cstrDesc, propDesc, kClass)
                             }
+                            val carrierCstr =
+                                    cstrDesc.annotation.annotationClass.findAnnot<CarrierConstraint>()
                             cstrDesc.composingConstraints.forEach {
                                 it.changeMessageTemplate(
-                                        it.buildMsgTmpl(cstrDesc)
+                                        it.buildMsgTmpl(carrierCstr)
                                 )
                             }
                         }

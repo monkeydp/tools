@@ -22,5 +22,5 @@ fun ConstraintDescriptor<*>.getExposedAttrMap() =
             }
         }
 
-fun ConstraintDescriptor<*>.buildMsgTmpl(carrierCstr: ConstraintDescriptor<*>) =
-        "${carrierCstr.messageTemplate}{${annotation.annotationClass.simpleName!!}}"
+fun ConstraintDescriptor<*>.buildMsgTmpl(carrierCstr: CarrierConstraint) =
+        "${carrierCstr.value}{${annotation.annotationClass.simpleName!!}}"

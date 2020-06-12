@@ -1,5 +1,6 @@
 package com.monkeydp.tools.ext.javax.validation
 
+import com.monkeydp.tools.ext.kotlin.findAnnot
 import java.lang.reflect.Parameter
 import javax.validation.Validator
 import javax.validation.metadata.ConstraintDescriptor
@@ -39,21 +40,25 @@ private fun PropertyDescriptor.getPropertyRule(clazz: Class<*>): PropertyRule {
         when {
             !cstrDesc.isCarrierCstr ->
                 throw NotCarrierConstraintEx(cstrDesc, this, clazz.kotlin)
-            else -> cstrDesc.composingConstraints
-                    .forEach {
-                        it.getCstrRule(cstrDesc)
-                                .run(constraints::add)
-                    }
+            else -> {
+                val carrierCstr =
+                        cstrDesc.annotation.annotationClass.findAnnot<CarrierConstraint>()
+                cstrDesc.composingConstraints
+                        .forEach {
+                            it.getCstrRule(carrierCstr)
+                                    .run(constraints::add)
+                        }
+            }
         }
     }
     return PropertyRule(propDesc = this, cstrRules = constraints)
 }
 
-private fun ConstraintDescriptor<*>.getCstrRule(carrier: ConstraintDescriptor<*>) =
+private fun ConstraintDescriptor<*>.getCstrRule(carrierCstr: CarrierConstraint) =
         ConstraintRule(
                 cstrDesc = this,
                 cstrAttrs = getExposedAttrMap(),
-                msgTmpl = buildMsgTmpl(carrier)
+                msgTmpl = buildMsgTmpl(carrierCstr)
         )
 
 class BeanRule(
