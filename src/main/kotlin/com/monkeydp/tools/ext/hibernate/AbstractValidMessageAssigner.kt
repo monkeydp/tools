@@ -2,9 +2,9 @@ package com.monkeydp.tools.ext.hibernate
 
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.javax.validation.isComposing
-import com.monkeydp.tools.ext.javax.validation.refField
-import com.monkeydp.tools.ext.javax.validation.refKClass
+import com.monkeydp.tools.ext.javax.validation.NotCarrierConstraintDescriptorEx
+import com.monkeydp.tools.ext.javax.validation.buildMsgTmpl
+import com.monkeydp.tools.ext.javax.validation.isCarrier
 import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.kotlin.snakeToLowerCamel
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
@@ -28,38 +28,31 @@ abstract class AbstractValidMessageAssigner(
 ) {
     constructor(packageName: String) : this(reflections(packageName))
 
-    fun assignValidMessages() {
+    class AssignValidMessagesConfig() {
+        var ignoreNotCarrierCstrEx = false
+    }
+
+    fun assignValidMessages(init: (AssignValidMessagesConfig.() -> AssignValidMessagesConfig)? = null) {
+        val config = AssignValidMessagesConfig().apply { init?.invoke(this) }
         val autoValidMessageKClasses = reflections.getAnnotatedKClasses(AutoValidMessage::class)
         autoValidMessageKClasses.forEach outer@{ kClass ->
             validator.getConstraintsForClass(kClass.java)
                     .constrainedProperties
                     .forEach middle@{ propDesc ->
                         propDesc.constraintDescriptors.forEach { cstrDesc ->
-                            if (!cstrDesc.isComposing) {
-                                cstrDesc.changeMessageTemplate(
-                                        MsgTmplStruct(
-                                                cstrClassname = cstrDesc.annotation.annotationClass.simpleName!!,
-                                                classname = kClass.simpleName!!.toStdFormat(),
-                                                propName = propDesc.propertyName.toStdFormat()
-                                        ).run(::buildMessageTemplate)
-                                )
-                                return@forEach
+                            if (!cstrDesc.isCarrier) {
+                                if (config.ignoreNotCarrierCstrEx) return@forEach
+                                throw NotCarrierConstraintDescriptorEx(cstrDesc, propDesc, kClass)
                             }
-
-                            val classname = cstrDesc.refKClass.simpleName!!.toStdFormat()
-                            val propName = cstrDesc.refField.name.toStdFormat()
                             cstrDesc.composingConstraints.forEach {
                                 it.changeMessageTemplate(
-                                        MsgTmplStruct(
-                                                cstrClassname = it.annotation.annotationClass.simpleName!!,
-                                                classname = classname,
-                                                propName = propName
-                                        ).run(::buildMessageTemplate)
+                                        it.buildMsgTmpl(cstrDesc)
                                 )
                             }
                         }
                     }
         }
+        ResourceBundle.clearCache()
     }
 
     protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(messageTemplate: String)
@@ -84,31 +77,6 @@ abstract class AbstractValidMessageAssigner(
                 }
             }
 
-    private fun buildMessageTemplate(msgTmplStruct: MsgTmplStruct): String =
-            msgTmplStruct.let {
-                val str = resourceBundlesWrapper.getResourceBundle().run {
-                    val (cstrName, objName, propName) = it
-                    when {
-                        containsKey(it.combinedKey) -> it.combinedKey.wrappedInCurlyBraces()
-                        !containsKey(cstrName) -> {
-                            val list = listOf(it.combinedKey, cstrName)
-                            ierror("Cannot find any following key in `$baseBundleName`: ${list.linesln()}")
-                        }
-                        containsKey(it.combinedKeyWithoutCstr) ->
-                            "{$objName.$propName}{$cstrName}"
-                        containsKey(objName) && containsKey(propName) ->
-                            "{$objName}{$propName}{$cstrName}"
-                        !containsKey(objName) && containsKey(propName) ->
-                            "{$propName}{$cstrName}"
-                        else -> {
-                            val list = listOf(it.combinedKey, "$objName & $propName", propName)
-                            ierror("Cannot find any following key in `$baseBundleName`: ${list.linesln()}")
-                        }
-                    }
-                }
-                ResourceBundle.clearCache()
-                str
-            }
 
     protected fun String.toStdFormat() =
             snakeToLowerCamel()

@@ -7,7 +7,7 @@ import javax.validation.metadata.ConstraintDescriptor
  * @author iPotato-Work
  * @date 2020/6/12
  */
-val ConstraintDescriptor<*>.isComposing
+val ConstraintDescriptor<*>.isCarrier
     get() = composingConstraints.isNotEmpty()
 
 private val internalAnnotationAttributes: Set<String> =
@@ -23,7 +23,7 @@ fun ConstraintDescriptor<*>.getExposedAttrMap() =
         }
 
 fun ConstraintDescriptor<*>.isRef(clazz: Class<*>) =
-        isComposing &&
+        isCarrier &&
                 annotation.annotationClass.java.enclosingClass != clazz
 
 val ConstraintDescriptor<*>.refKClass
@@ -33,3 +33,6 @@ val ConstraintDescriptor<*>.refKClass
 val ConstraintDescriptor<*>.refField
     get() =
         refKClass.getAnnotatedField(annotation.annotationClass)
+
+fun ConstraintDescriptor<*>.buildMsgTmpl(carrierCstr: ConstraintDescriptor<*>) =
+        "${carrierCstr.messageTemplate}{${annotation.annotationClass.simpleName!!}}"

@@ -30,43 +30,18 @@ fun Validator.getBeanRuleMap(parameters: Iterable<Parameter>): Map<Parameter, Be
                     }
                 }
             }
-            beanRuleMap.assignPropRuleRef()
         }.toMap()
 
-private fun MutableMap<Parameter, BeanRule>.assignPropRuleRef() {
-    forEach { param, beanRule ->
-        val clazz = param.parameterizedType as Class<*>
-        beanRule.propRules.forEach outer@{ propRule ->
-            propRule.propDesc.constraintDescriptors
-                    .filter { it.isRef(clazz) }
-                    .forEach { cstrDesc ->
-                        values.single { it.fullClassname == cstrDesc.refKClass.qualifiedName }
-                                .also { beanRule ->
-                                    beanRule.propRules.single { it.propName == cstrDesc.refField.name }
-                                            .let {
-                                                PropertyRuleRef(
-                                                        kClass = beanRule.kClass,
-                                                        propRule = it
-                                                )
-                                            }
-                                            .run(propRule::addRef)
-                                }
-                    }
-        }
-    }
-}
 
 private fun PropertyDescriptor.getPropertyRule(clazz: Class<*>): PropertyRule {
     val constraints = mutableListOf<ConstraintRule>()
     constraintDescriptors.forEach { cstrDesc ->
         when {
-            !cstrDesc.isComposing ->
-                cstrDesc.getCstrRule()
-                        .run(constraints::add)
-            cstrDesc.isRef(clazz) -> return@forEach
+            !cstrDesc.isCarrier ->
+                throw NotCarrierConstraintDescriptorEx(cstrDesc, this, clazz.kotlin)
             else -> cstrDesc.composingConstraints
                     .forEach {
-                        it.getCstrRule()
+                        it.getCstrRule(cstrDesc)
                                 .run(constraints::add)
                     }
         }
@@ -74,10 +49,11 @@ private fun PropertyDescriptor.getPropertyRule(clazz: Class<*>): PropertyRule {
     return PropertyRule(propDesc = this, cstrRules = constraints)
 }
 
-private fun ConstraintDescriptor<*>.getCstrRule() =
+private fun ConstraintDescriptor<*>.getCstrRule(carrier: ConstraintDescriptor<*>) =
         ConstraintRule(
                 cstrDesc = this,
-                cstrAttrs = getExposedAttrMap()
+                cstrAttrs = getExposedAttrMap(),
+                msgTmpl = buildMsgTmpl(carrier)
         )
 
 class BeanRule(
@@ -95,23 +71,12 @@ class PropertyRule(
 ) {
     val propName = propDesc.propertyName
     override fun toString() = propName
-
-    private val _refs = mutableListOf<PropertyRuleRef>()
-    val refs: List<PropertyRuleRef> get() = _refs.toList()
-
-    fun addRef(ref: PropertyRuleRef) {
-        _refs.add(ref)
-    }
 }
-
-class PropertyRuleRef(
-        val kClass: KClass<*>,
-        val propRule: PropertyRule
-)
 
 open class ConstraintRule(
         val cstrDesc: ConstraintDescriptor<*>,
-        val cstrAttrs: Map<String, Any>
+        val cstrAttrs: Map<String, Any>,
+        val msgTmpl: String
 ) {
     val constraint: Annotation = cstrDesc.annotation
     val annotationClass = constraint.annotationClass
@@ -139,37 +104,25 @@ class SimpleBeanRule(
 
 class SimplePropertyRule(
         val propName: String,
-        val cstrRules: List<SimpleConstraintRule>,
-        val refs: List<SimplePropertyRuleRef>
+        val cstrRules: List<SimpleConstraintRule>
 ) {
     constructor(rule: PropertyRule) : this(
             propName = rule.propName,
-            cstrRules = rule.cstrRules.map { SimpleConstraintRule(it) },
-            refs = rule.refs.map { SimplePropertyRuleRef(it) }
+            cstrRules = rule.cstrRules.map { SimpleConstraintRule(it) }
     )
 
     override fun toString() = propName
 }
 
-class SimplePropertyRuleRef(
-        val fullClassname: String,
-        val propName: String
-) {
-    constructor(ref: PropertyRuleRef) : this(
-            fullClassname = ref.kClass.qualifiedName!!,
-            propName = ref.propRule.propName
-    )
-}
-
 class SimpleConstraintRule(
         constraint: Annotation,
-        val cstrAttrs: Map<String, Any>
+        val cstrAttrs: Map<String, Any>,
+        val msgTmpl: String
 ) {
     private val annotationClass = constraint.annotationClass
-    val cstrFullClassname: String = annotationClass.qualifiedName!!
     val cstrClassname: String = annotationClass.simpleName!!
 
-    constructor(rule: ConstraintRule) : this(rule.constraint, rule.cstrAttrs)
+    constructor(rule: ConstraintRule) : this(rule.constraint, rule.cstrAttrs, rule.msgTmpl)
 
-    override fun toString() = cstrFullClassname
+    override fun toString() = annotationClass.qualifiedName!!
 }
