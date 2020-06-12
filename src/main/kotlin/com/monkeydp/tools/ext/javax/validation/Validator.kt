@@ -60,9 +60,8 @@ class BeanRule(
         val kClass: KClass<*>,
         val propRules: List<PropertyRule>
 ) {
-    val fullClassname: String = kClass.qualifiedName!!
-    val classname: String = kClass.simpleName!!
-    override fun toString() = fullClassname
+    val classname: String = kClass.qualifiedName!!
+    override fun toString() = classname
 }
 
 class PropertyRule(
@@ -92,14 +91,13 @@ fun Validator.getSimpleBeanRuleMap(parameters: Iterable<Parameter>): Map<Paramet
                 .toMap()
 
 class SimpleBeanRule(
-        val fullClassname: String,
         val classname: String,
         val propRules: List<SimplePropertyRule>
 ) {
     constructor(rule: BeanRule)
-            : this(rule.fullClassname, rule.classname, rule.propRules.map { SimplePropertyRule(it) })
+            : this(rule.classname, rule.propRules.map { SimplePropertyRule(it) })
 
-    override fun toString() = fullClassname
+    override fun toString() = classname
 }
 
 class SimplePropertyRule(
