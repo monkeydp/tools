@@ -69,8 +69,14 @@ fun Reflections.getAnnotatedAnnotClasses(annotKClass: KClass<out Annotation>, ho
             it as Class<out Annotation>
         }.toSet()
 
+inline fun <reified A : Annotation> Reflections.getAnnotatedAnnotClasses(honorInherited: Boolean = false) =
+        getAnnotatedAnnotClasses(A::class, honorInherited)
+
 fun Reflections.getAnnotatedAnnotKClasses(annotKClass: KClass<out Annotation>, honorInherited: Boolean = false) =
         getAnnotatedAnnotClasses(annotKClass, honorInherited).map { it.kotlin }.toSet()
+
+inline fun <reified A : Annotation> Reflections.getAnnotatedAnnotKClasses(honorInherited: Boolean = false) =
+        getAnnotatedAnnotKClasses(A::class, honorInherited)
 
 fun Reflections.getAnnotatedInterfaces(annotKClass: KClass<out Annotation>, honorInherited: Boolean = false) =
         getAnnotatedClasses(annotKClass, honorInherited).filter { it.isInterface }.toSet()

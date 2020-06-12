@@ -1,14 +1,14 @@
 package com.monkeydp.tools.ext.javax.validation
 
-import com.monkeydp.tools.ext.kotlin.getAnnotatedField
+import com.monkeydp.tools.ext.kotlin.hasAnnot
 import javax.validation.metadata.ConstraintDescriptor
 
 /**
  * @author iPotato-Work
  * @date 2020/6/12
  */
-val ConstraintDescriptor<*>.isCarrier
-    get() = composingConstraints.isNotEmpty()
+val ConstraintDescriptor<*>.isCarrierCstr
+    get() = annotation.annotationClass.hasAnnot<CarrierConstraint>()
 
 private val internalAnnotationAttributes: Set<String> =
         setOf("message", "groups", "payload")
@@ -21,18 +21,6 @@ fun ConstraintDescriptor<*>.getExposedAttrMap() =
                 }
             }
         }
-
-fun ConstraintDescriptor<*>.isRef(clazz: Class<*>) =
-        isCarrier &&
-                annotation.annotationClass.java.enclosingClass != clazz
-
-val ConstraintDescriptor<*>.refKClass
-    get() =
-        annotation.annotationClass.java.enclosingClass.kotlin
-
-val ConstraintDescriptor<*>.refField
-    get() =
-        refKClass.getAnnotatedField(annotation.annotationClass)
 
 fun ConstraintDescriptor<*>.buildMsgTmpl(carrierCstr: ConstraintDescriptor<*>) =
         "${carrierCstr.messageTemplate}{${annotation.annotationClass.simpleName!!}}"

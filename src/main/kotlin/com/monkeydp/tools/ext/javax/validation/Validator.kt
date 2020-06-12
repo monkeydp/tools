@@ -37,8 +37,8 @@ private fun PropertyDescriptor.getPropertyRule(clazz: Class<*>): PropertyRule {
     val constraints = mutableListOf<ConstraintRule>()
     constraintDescriptors.forEach { cstrDesc ->
         when {
-            !cstrDesc.isCarrier ->
-                throw NotCarrierConstraintDescriptorEx(cstrDesc, this, clazz.kotlin)
+            !cstrDesc.isCarrierCstr ->
+                throw NotCarrierConstraintEx(cstrDesc, this, clazz.kotlin)
             else -> cstrDesc.composingConstraints
                     .forEach {
                         it.getCstrRule(cstrDesc)

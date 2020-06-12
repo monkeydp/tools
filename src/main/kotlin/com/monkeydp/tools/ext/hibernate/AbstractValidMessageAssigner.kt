@@ -2,17 +2,22 @@ package com.monkeydp.tools.ext.hibernate
 
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.javax.validation.NotCarrierConstraintDescriptorEx
+import com.monkeydp.tools.ext.java.inKClass
+import com.monkeydp.tools.ext.javax.validation.CarrierConstraint
+import com.monkeydp.tools.ext.javax.validation.NotCarrierConstraintEx
 import com.monkeydp.tools.ext.javax.validation.buildMsgTmpl
-import com.monkeydp.tools.ext.javax.validation.isCarrier
+import com.monkeydp.tools.ext.javax.validation.isCarrierCstr
 import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.kotlin.snakeToLowerCamel
 import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
-import com.monkeydp.tools.ext.reflections.getAnnotatedKClasses
+import com.monkeydp.tools.ext.reflections.defaultScannerList
+import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
+import com.monkeydp.tools.ext.reflections.getAnnotatedFields
 import com.monkeydp.tools.ext.reflections.reflections
 import com.monkeydp.tools.global.defaultLocale
 import org.kodein.di.generic.instance
 import org.reflections.Reflections
+import org.reflections.scanners.FieldAnnotationsScanner
 import java.util.*
 import javax.validation.Validator
 import javax.validation.metadata.ConstraintDescriptor
@@ -26,7 +31,12 @@ import kotlin.reflect.KClass
 abstract class AbstractValidMessageAssigner(
         private val reflections: Reflections
 ) {
-    constructor(packageName: String) : this(reflections(packageName))
+    constructor(packageName: String) : this(
+            reflections(
+                    packageName = packageName,
+                    scanners = defaultScannerList.plusElement(FieldAnnotationsScanner())
+            )
+    )
 
     class AssignValidMessagesConfig() {
         var ignoreNotCarrierCstrEx = false
@@ -34,15 +44,16 @@ abstract class AbstractValidMessageAssigner(
 
     fun assignValidMessages(init: (AssignValidMessagesConfig.() -> AssignValidMessagesConfig)? = null) {
         val config = AssignValidMessagesConfig().apply { init?.invoke(this) }
-        val autoValidMessageKClasses = reflections.getAnnotatedKClasses(AutoValidMessage::class)
-        autoValidMessageKClasses.forEach outer@{ kClass ->
+        val annotKClasses = reflections.getAnnotatedAnnotKClasses<CarrierConstraint>()
+        val annotatedFields = reflections.getAnnotatedFields(annotKClasses.first())
+        annotatedFields.map { it.inKClass }.toSet().forEach outer@{ kClass ->
             validator.getConstraintsForClass(kClass.java)
                     .constrainedProperties
                     .forEach middle@{ propDesc ->
                         propDesc.constraintDescriptors.forEach { cstrDesc ->
-                            if (!cstrDesc.isCarrier) {
+                            if (!cstrDesc.isCarrierCstr) {
                                 if (config.ignoreNotCarrierCstrEx) return@forEach
-                                throw NotCarrierConstraintDescriptorEx(cstrDesc, propDesc, kClass)
+                                throw NotCarrierConstraintEx(cstrDesc, propDesc, kClass)
                             }
                             cstrDesc.composingConstraints.forEach {
                                 it.changeMessageTemplate(

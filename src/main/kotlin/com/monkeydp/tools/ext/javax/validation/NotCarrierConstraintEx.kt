@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  * @author iPotato-Work
  * @date 2020/6/12
  */
-class NotCarrierConstraintDescriptorEx(
+class NotCarrierConstraintEx(
         val cstrDesc: ConstraintDescriptor<*>,
         val propDesc: PropertyDescriptor,
         val kClass: KClass<*>
