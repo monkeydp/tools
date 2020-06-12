@@ -1,15 +1,11 @@
 package com.monkeydp.tools.ext.hibernate
 
 import com.monkeydp.tools.config.kodein
-import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.java.inKClass
 import com.monkeydp.tools.ext.javax.validation.CarrierConstraint
 import com.monkeydp.tools.ext.javax.validation.NotCarrierConstraintEx
 import com.monkeydp.tools.ext.javax.validation.buildMsgTmpl
 import com.monkeydp.tools.ext.javax.validation.isCarrierCstr
-import com.monkeydp.tools.ext.kotlin.linesln
-import com.monkeydp.tools.ext.kotlin.snakeToLowerCamel
-import com.monkeydp.tools.ext.kotlin.wrappedInCurlyBraces
 import com.monkeydp.tools.ext.reflections.defaultScannerList
 import com.monkeydp.tools.ext.reflections.getAnnotatedAnnotKClasses
 import com.monkeydp.tools.ext.reflections.getAnnotatedFields
@@ -21,8 +17,6 @@ import org.reflections.scanners.FieldAnnotationsScanner
 import java.util.*
 import javax.validation.Validator
 import javax.validation.metadata.ConstraintDescriptor
-import javax.validation.metadata.PropertyDescriptor
-import kotlin.reflect.KClass
 
 /**
  * @author iPotato-Work
@@ -31,9 +25,9 @@ import kotlin.reflect.KClass
 abstract class AbstractValidMessageAssigner(
         private val reflections: Reflections
 ) {
-    constructor(packageName: String) : this(
+    constructor(vararg packageNames: String) : this(
             reflections(
-                    packageName = packageName,
+                    packageNames = packageNames.toList(),
                     scanners = defaultScannerList.plusElement(FieldAnnotationsScanner())
             )
     )
@@ -67,30 +61,6 @@ abstract class AbstractValidMessageAssigner(
     }
 
     protected abstract fun ConstraintDescriptor<*>.changeMessageTemplate(messageTemplate: String)
-
-    protected fun PropertyDescriptor.messageKey(kClass: KClass<*>): String =
-            "${kClass.simpleName!!}.$propertyName".toStdFormat()
-
-    protected fun PropertyDescriptor.getFieldReplacement(kClass: KClass<*>): String =
-            messageKey(kClass).let {
-                resourceBundlesWrapper.getResourceBundle().run {
-                    val (objName, propName) = it.split(".")
-                    when {
-                        containsKey(it) -> it.wrappedInCurlyBraces()
-                        containsKey(objName) && containsKey(propName) ->
-                            "${objName.wrappedInCurlyBraces()}${propName.wrappedInCurlyBraces()}"
-                        !containsKey(objName) && containsKey(propName) -> propName.wrappedInCurlyBraces()
-                        else -> {
-                            val list = listOf(it, "$objName & $propName", propName)
-                            ierror("Cannot find any following key in `$baseBundleName`: ${list.linesln()}")
-                        }
-                    }
-                }
-            }
-
-
-    protected fun String.toStdFormat() =
-            snakeToLowerCamel()
 }
 
 private class MsgTmplStruct(
