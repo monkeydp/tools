@@ -171,6 +171,39 @@ fun <T : Any> T.copyPropValuesFrom(map: Map<String, Any?>) {
     }
 }
 
+// ==== Compare Prop Values ====
+
+/**
+ * Example:
+ *  object Dog {
+ *      val name = "Tom"
+ *      val age = 5
+ *      val color = "Grey"
+ *  }
+
+ *  object Cat {
+ *      val age = 5
+ *      val color = "Grey"
+ *  }
+
+ *  object Mouse {
+ *      val name = "Bob"
+ *      val age = 5
+ *      val color = "Grey"
+ *  }
+ *
+ *  Dog has the same `age` and `color` as Cat, Dog.sameNamePropsEqual(Cat) return true
+ *  Cat does't have `name`, Cat.sameNamePropsEqual(Dog) return false
+ *  Dog has the diff `name` as Mouse, Dog.sameNamePropsEqual(Mouse) return false, vice versa
+ */
+fun Any.sameNamePropsEqual(any: Any): Boolean {
+    val propMap = toPropMapX<String, Any?>()
+    any.toPropMapX<String, Any?>().forEach {
+        if (!propMap.containsKey(it.key)) return false
+        if (propMap.getValue(it.key) != it.value) return false
+    }
+    return true
+}
 
 // ==== Field ====
 
