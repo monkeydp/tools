@@ -1,8 +1,16 @@
 package com.monkeydp.tools.ext.kodein
 
+import com.monkeydp.tools.ext.kotlin.linesln
+import com.monkeydp.tools.ext.logger.getLogger
 import org.kodein.di.Kodein
 
-abstract class AbstractKodeinModuleContainer {
+abstract class AbstractKodeinModuleContainer(
+        private val kodeinName: String
+) {
+
+    companion object {
+        private val logger = getLogger()
+    }
 
     private val modules: MutableCollection<Kodein.Module> = mutableSetOf()
 
@@ -17,5 +25,11 @@ abstract class AbstractKodeinModuleContainer {
         addModule(
                 Kodein.Module(moduleName, init = init)
         )
+    }
+
+    fun logRegistered(vararg modules: Kodein.Module = this.moduleArray) {
+        if (modules.isEmpty())
+            logger.info("No kodein module register to $kodeinName.")
+        else logger.info("Following kodein modules register to $kodeinName: ${modules.map { it.name }.linesln()}")
     }
 }
