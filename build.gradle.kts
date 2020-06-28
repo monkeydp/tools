@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.monkeydp"
-version = "1.1.0-SNAPSHOT"
+version = "1.1.0.RELEASE"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
