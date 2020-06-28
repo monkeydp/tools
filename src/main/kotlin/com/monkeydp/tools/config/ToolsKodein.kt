@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.github.javafaker.Faker
 import com.monkeydp.tools.config.ToolsKodeinModuleContainer.moduleArray
 import com.monkeydp.tools.ext.kodein.AbstractKodeinModuleContainer
-import com.monkeydp.tools.ext.kotlin.linesln
 import com.monkeydp.tools.ext.logger.getLogger
 import org.apache.commons.exec.DefaultExecutor
 import org.apache.commons.exec.Executor
@@ -40,9 +39,7 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
 
 internal val kodein = Kodein {
     import(toolsKodeinModule, allowOverride = true)
-
-    if (moduleArray.isEmpty()) logger.info("No kodein module register to Tools Kodein.")
-    else logger.info("Following kodein modules register to Tools Kodein: ${moduleArray.map { it.name }.linesln()}")
+    ToolsKodeinModuleContainer.logRegistered()
 }
 
-object ToolsKodeinModuleContainer : AbstractKodeinModuleContainer()
+object ToolsKodeinModuleContainer : AbstractKodeinModuleContainer("ToolsKodein")
