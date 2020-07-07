@@ -14,5 +14,6 @@ object RandomUtil {
     /**
      * Random character and number
      */
-    fun randomAlphanumeric(length: Int) = RandomStringUtils.randomAlphanumeric(length)
+    fun randomAlphanumeric(length: Int): String =
+            RandomStringUtils.randomAlphanumeric(length)
 }
