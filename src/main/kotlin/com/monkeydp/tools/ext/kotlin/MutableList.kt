@@ -21,3 +21,7 @@ fun <E> MutableList<E>.removeFirst() {
     this.removeAt(0)
 }
 
+fun <T> MutableList<T>.removeLast(): MutableList<T> {
+    removeAt(lastIndex)
+    return this
+}

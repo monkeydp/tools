@@ -42,3 +42,12 @@ fun <T : Any> Iterable<*>.filterIsInstance(kClass: KClass<T>): List<T> =
 
 inline fun <reified T> Iterable<Any>.convertValue() =
         map { objectMapper.convertValue<T>(it) }.toList()
+
+// ==== Group ====
+
+public inline fun <T, K> Iterable<T>.groupById(
+        keySelector: (T) -> K
+): Map<K, T> =
+        groupBy(keySelector)
+                .map { it.key to it.value.first() }
+                .toMap()
