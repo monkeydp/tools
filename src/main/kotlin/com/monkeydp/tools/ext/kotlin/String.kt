@@ -40,19 +40,16 @@ fun String.snakeToCamel(capitalize: Boolean? = null) =
                     else str.toLowerCase().capitalize()
                 }.joinToString("")
 
-fun String.camelCaseToSnakeCase(lowerCase: Boolean = true): String {
-    val builder = StringBuilder()
-    var isFirst = true
-    this.forEach {
-        if (it.isUpperCase()) {
-            if (isFirst) isFirst = false
-            else builder.append(UNDERSCORE)
-            if (lowerCase) builder.append(it.toLowerCase())
-            else builder.append(it)
-        } else builder.append(it)
-    }
-    return builder.toString()
-}
+fun String.camelToSnake(): String =
+        StringBuilder()
+                .also { builder ->
+                    forEachIndexed { index, it ->
+                        if (it.isUpperCase() && index != 0)
+                            builder.append(UNDERSCORE)
+                                    .append(it.toLowerCase())
+                        else builder.append(it)
+                    }
+                }.toString()
 
 fun String.snakeToChain(joiner: String): String = split(UNDERSCORE).joinToString(joiner)
 
