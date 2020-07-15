@@ -3,6 +3,7 @@ package com.monkeydp.tools.config
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.javafaker.Faker
 import com.monkeydp.tools.config.ToolsKodeinModuleContainer.moduleArray
 import com.monkeydp.tools.ext.kodein.AbstractKodeinModuleContainer
@@ -29,7 +30,7 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
     bind<Executor>() with singleton { DefaultExecutor() }
     bind<ObjectMapper>() with singleton {
         ObjectMapper()
-                .registerModule(KotlinModule())
+                .registerKotlinModule()
                 .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
