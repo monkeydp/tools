@@ -26,3 +26,6 @@ fun transformEnumName(enumName: String, caseSensitive: Boolean = false) =
         if (caseSensitive) enumName else enumName.toUpperCase()
 
 fun <E : Enum<E>> KClass<E>.random(): E = java.enumConstants.toList().shuffled().first()
+
+fun <E : Enum<E>, ID> KClass<E>.groupById(getId: (E) -> ID): Map<ID, E> =
+        java.enumConstants.map { getId(it) to it }.toMap()
