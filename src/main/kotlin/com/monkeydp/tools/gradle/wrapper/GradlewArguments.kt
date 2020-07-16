@@ -48,4 +48,4 @@ abstract class AbstractGradlewArguments : GradlewArguments {
     }
 }
 
-internal class StdGradlewArguments : AbstractGradlewArguments()
+private class StdGradlewArguments : AbstractGradlewArguments()

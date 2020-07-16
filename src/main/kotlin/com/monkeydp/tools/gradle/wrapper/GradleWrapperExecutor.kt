@@ -66,5 +66,5 @@ abstract class AbstractGradleWrapperExecutor(
     }
 }
 
-internal class StdGradleWrapperExecutor(rootDirpath: String) :
+private class StdGradleWrapperExecutor(rootDirpath: String) :
         AbstractGradleWrapperExecutor(rootDirpath)
