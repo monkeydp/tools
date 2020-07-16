@@ -1,6 +1,7 @@
 package com.monkeydp.tools.ext.kotlin
 
 import com.fasterxml.jackson.module.kotlin.convertValue
+import com.monkeydp.tools.global.objectMapper
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 

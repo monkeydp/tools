@@ -1,6 +1,6 @@
 package com.monkeydp.tools.ext.java
 
-import com.monkeydp.tools.ext.kotlin.objectMapper
+import com.monkeydp.tools.global.objectMapper
 import java.net.URL
 import kotlin.reflect.KClass
 

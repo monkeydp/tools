@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.ext.jackson.JsonFlatten.Times.ONE
 import com.monkeydp.tools.ext.jackson.JsonFlatten.Times.TWO
+import com.monkeydp.tools.global.objectMapper
 import org.kodein.di.generic.instance
 
 /**
@@ -38,8 +39,6 @@ annotation class JsonFlatten(val times: Times = ONE) {
 }
 
 object JsonFlattener {
-
-    private val objectMapper by kodein.instance<ObjectMapper>()
 
     fun flattenData(objectNode: ObjectNode, dataName: String, jsonFlatten: JsonFlatten?): ObjectNode =
             objectNode.deepCopy().apply {

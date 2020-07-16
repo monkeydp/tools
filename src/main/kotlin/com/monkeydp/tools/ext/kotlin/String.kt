@@ -4,6 +4,7 @@ import com.monkeydp.tools.constant.Symbol.BACKSLASH
 import com.monkeydp.tools.constant.Symbol.SLASH
 import com.monkeydp.tools.constant.Symbol.SPACE
 import com.monkeydp.tools.constant.Symbol.UNDERSCORE
+import com.monkeydp.tools.global.objectMapper
 import java.net.URL
 import java.nio.charset.Charset
 
@@ -102,7 +103,6 @@ fun String.camelSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequ
 fun String.toJsonNode() = objectMapper.readTree(this)!!
 
 inline fun <reified T> String.toObject() = objectMapper.readValue(this, T::class.java)
-
 
 // ==== Resource ====
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.convertValue
 import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.kotlin.KPropertyFilter.FilterConfig
 import com.monkeydp.tools.ext.reflections.reflections
+import com.monkeydp.tools.global.objectMapper
 import com.monkeydp.tools.util.FieldUtil
 import com.monkeydp.tools.util.FieldUtil.GetValueConfig
 import com.monkeydp.tools.util.FieldUtil.SetValueConfig
