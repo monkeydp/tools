@@ -31,7 +31,6 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
     bind<ObjectMapper>() with singleton {
         ObjectMapper()
                 .registerKotlinModule()
-                .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
 
