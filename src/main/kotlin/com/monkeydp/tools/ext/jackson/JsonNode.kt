@@ -1,12 +1,10 @@
 package com.monkeydp.tools.ext.jackson
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ContainerNode
-import com.monkeydp.tools.config.kodein
+import com.fasterxml.jackson.module.kotlin.treeToValue
 import com.monkeydp.tools.global.objectMapper
-import org.kodein.di.generic.instance
 
 /**
  * @author iPotato-Work
@@ -28,3 +26,6 @@ private fun JsonNode.recurRemoveKey(node: JsonNode): JsonNode =
             }
             else -> node
         }
+
+inline fun <reified T> JsonNode.convertValue(): T =
+        objectMapper.treeToValue<T>(this)!!
