@@ -7,6 +7,7 @@ import com.monkeydp.tools.constant.Symbol.UNDERSCORE
 import com.monkeydp.tools.global.objectMapper
 import java.net.URL
 import java.nio.charset.Charset
+import kotlin.reflect.KClass
 
 /**
  * @author iPotato
@@ -100,9 +101,17 @@ fun String.camelSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequ
 
 // ==== Json ====
 
-fun String.toJsonNode() = objectMapper.readTree(this)!!
+fun String.toJsonNode() =
+        objectMapper.readTree(this)!!
 
-inline fun <reified T> String.toObject() = objectMapper.readValue(this, T::class.java)
+fun <T> String.toObject(clazz: Class<T>): T =
+        objectMapper.readValue(this, clazz)
+
+fun <T : Any> String.toObject(kClass: KClass<T>): T =
+        objectMapper.readValue(this, kClass.java)
+
+inline fun <reified T> String.toObject(): T =
+        toObject(T::class.java)
 
 // ==== Resource ====
 
