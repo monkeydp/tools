@@ -306,33 +306,19 @@ fun <T : Any, R : Any> T.copyFieldValuesFrom(
 
 // ==== Method ====
 
-fun Any.invoke(
+fun <T> Any.invoke(
         methodName: String,
         vararg params: Any,
         config: (MethodUtilConfig.() -> Unit)? = null
-): Any? =
+): T =
         MethodUtil.invoke(this, methodName, *params, config = config)
 
-fun Any.invoke(
+fun <T> Any.invoke(
         method: Method,
         vararg params: Any,
         config: (MethodUtilConfig.() -> Unit)? = null
-): Any? =
+): T =
         MethodUtil.invoke(this, method, *params, config = config)
-
-inline fun <reified T> Any.invokeX(
-        methodName: String,
-        vararg params: Any,
-        noinline config: (MethodUtilConfig.() -> Unit)? = null
-): T =
-        MethodUtil.invokeX(this, methodName, *params, config = config)
-
-inline fun <reified T> Any.invokeX(
-        method: Method,
-        vararg params: Any,
-        noinline config: (MethodUtilConfig.() -> Unit)? = null
-): T =
-        MethodUtil.invokeX(this, method, *params, config = config)
 
 // ==== Json ====
 

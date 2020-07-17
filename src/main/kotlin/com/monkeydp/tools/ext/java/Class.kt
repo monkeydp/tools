@@ -13,11 +13,8 @@ fun Class<*>.singleton() =
 
 inline fun <reified C> Class<out C>.singletonX() = singleton() as C
 
-fun Class<*>.newInstance(vararg args: Any): Any {
-    val argClasses = TypeUtil.getTypes(*args)
-    return ConstructorUtils.getMatchingAccessibleConstructor(this, *argClasses)
-            .newInstance(*args)
-}
+fun Class<*>.newInstance(vararg args: Any): Any =
+        newInstanceX(*args)
 
 fun <T> Class<T>.newInstanceX(vararg args: Any): T {
     val argClasses = TypeUtil.getTypes(*args)
