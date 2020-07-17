@@ -25,3 +25,9 @@ fun <T> MutableList<T>.removeLast(): MutableList<T> {
     removeAt(lastIndex)
     return this
 }
+
+fun <T> MutableList<T>.removeAllAt(vararg indexes: Int): List<T> =
+        indexes.run {
+            toSet().sortedDescending()
+                    .map { removeAt(it) }
+        }
