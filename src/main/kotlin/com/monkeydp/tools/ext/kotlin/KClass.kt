@@ -1,9 +1,11 @@
 package com.monkeydp.tools.ext.kotlin
 
+import com.monkeydp.tools.ext.java.hasAnnot
 import com.monkeydp.tools.ext.java.singleton
 import com.monkeydp.tools.ext.java.singletonX
 import com.monkeydp.tools.util.FieldUtil
 import java.lang.reflect.Field
+import java.lang.reflect.Method
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.superclasses
@@ -48,14 +50,25 @@ fun KClass<*>.getField(fieldName: String): Field =
 fun KClass<*>.getFields(): List<Field> =
         FieldUtil.getFields(this)
 
-fun KClass<*>.getAnnotatedField(annotKClass: KClass<out Annotation>) =
+fun KClass<*>.getAnnotField(annotKClass: KClass<out Annotation>) =
         getFields().single { it.hasAnnot(annotKClass) }
 
-fun KClass<*>.getAnnotatedFields(annotKClass: KClass<out Annotation>) =
+fun KClass<*>.getAnnotFields(annotKClass: KClass<out Annotation>) =
         getFields().filter { it.hasAnnot(annotKClass) }
 
-inline fun <reified A : Annotation> KClass<*>.getAnnotatedField() =
-        getAnnotatedField(A::class)
+inline fun <reified A : Annotation> KClass<*>.getAnnotField() =
+        getAnnotField(A::class)
 
-inline fun <reified A : Annotation> KClass<*>.getAnnotatedFields() =
-        getAnnotatedFields(A::class)
+inline fun <reified A : Annotation> KClass<*>.getAnnotFields() =
+        getAnnotFields(A::class)
+
+// ==== Method ====
+
+fun KClass<*>.getMethods(): List<Method> =
+        java.methods.toList()
+
+fun KClass<*>.getAnnotMethods(annotKClass: KClass<out Annotation>): List<Method> =
+        getMethods().filter { it.hasAnnot(annotKClass) }
+
+inline fun <reified A : Annotation> KClass<*>.getAnnotMethods(): List<Method> =
+        getAnnotMethods(A::class)

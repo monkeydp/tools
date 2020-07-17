@@ -261,17 +261,17 @@ fun Any.setFieldValueByPath(
     any.setFieldValue(parts.last(), value, configInit)
 }
 
-fun Any.getAnnotatedField(annotClass: KClass<out Annotation>) =
-        kClassX.getAnnotatedField(annotClass)
+fun Any.getAnnotField(annotClass: KClass<out Annotation>) =
+        kClassX.getAnnotField(annotClass)
 
-inline fun <reified A : Annotation> Any.getAnnotatedField() =
-        getAnnotatedField(A::class)
+inline fun <reified A : Annotation> Any.getAnnotField() =
+        getAnnotField(A::class)
 
-fun Any.getAnnotatedFields(annotClass: KClass<out Annotation>) =
-        kClassX.getAnnotatedFields(annotClass)
+fun Any.getAnnotFields(annotClass: KClass<out Annotation>) =
+        kClassX.getAnnotFields(annotClass)
 
-inline fun <reified A : Annotation> Any.getAnnotatedFields() =
-        getAnnotatedFields(A::class)
+inline fun <reified A : Annotation> Any.getAnnotFields() =
+        getAnnotFields(A::class)
 
 // ==== Copy Field Values ====
 
