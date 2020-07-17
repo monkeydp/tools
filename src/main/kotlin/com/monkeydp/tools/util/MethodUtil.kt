@@ -1,6 +1,7 @@
 package com.monkeydp.tools.util
 
 import com.monkeydp.tools.ext.kotlin.classX
+import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
 /**
@@ -9,12 +10,44 @@ import kotlin.reflect.KClass
  */
 object MethodUtil {
 
+    fun getMethod(
+            any: Any,
+            methodName: String,
+            vararg params: Any
+    ): Method =
+            any.classX.getMethod(
+                    methodName,
+                    *params.map { it.javaClass }
+                            .toTypedArray()
+            )
+
+    fun getMethodOrNull(
+            any: Any,
+            methodName: String,
+            vararg params: Any
+    ): Method? =
+            try {
+                getMethod(any, methodName, *params)
+            } catch (ex: NoSuchMethodException) {
+                null
+            }
+
+    fun getMethods(any: Any): List<Method> =
+            any.classX.methods.toList()
+
     fun invoke(
             any: Any,
             methodName: String,
             vararg params: Any,
             config: (MethodUtilConfig.() -> Unit)? = null
-    ): Unit = invokeX(any, methodName, *params, config = config)
+    ): Any? = invokeX(any, methodName, *params, config = config)
+
+    fun invoke(
+            any: Any,
+            method: Method,
+            vararg params: Any,
+            config: (MethodUtilConfig.() -> Unit)? = null
+    ): Any? = invokeX(any, method, *params, config = config)
 
     inline fun <reified T> invokeX(
             any: Any,
@@ -22,9 +55,18 @@ object MethodUtil {
             vararg params: Any,
             noinline config: (MethodUtilConfig.() -> Unit)? = null
     ): T {
+        val method = getMethod(any, methodName, params)
+        return invokeX(any, method, *params, config = config)
+    }
+
+    inline fun <reified T> invokeX(
+            any: Any,
+            method: Method,
+            vararg params: Any,
+            noinline config: (MethodUtilConfig.() -> Unit)? = null
+    ): T {
         with(MethodUtilConfig()) {
             if (config != null) config(this)
-            val method = any.javaClass.getMethod(methodName, *params.map { it.javaClass }.toTypedArray())
             if (forceAccess) method.isAccessible = true
             return method.invoke(any, *params) as T
         }

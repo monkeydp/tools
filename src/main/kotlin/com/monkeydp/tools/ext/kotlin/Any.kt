@@ -10,7 +10,10 @@ import com.monkeydp.tools.global.objectMapper
 import com.monkeydp.tools.util.FieldUtil
 import com.monkeydp.tools.util.FieldUtil.GetValueConfig
 import com.monkeydp.tools.util.FieldUtil.SetValueConfig
+import com.monkeydp.tools.util.MethodUtil
+import com.monkeydp.tools.util.MethodUtilConfig
 import java.lang.reflect.Field
+import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 import java.util.*
 import kotlin.reflect.KClass
@@ -300,6 +303,36 @@ fun <T : Any, R : Any> T.copyFieldValuesFrom(
 ): Unit =
         pairs.forEach { FieldUtil.setValue(this, it.first.name, it.second, configInit = configInit) }
 
+
+// ==== Method ====
+
+fun Any.invoke(
+        methodName: String,
+        vararg params: Any,
+        config: (MethodUtilConfig.() -> Unit)? = null
+): Any? =
+        MethodUtil.invoke(this, methodName, *params, config = config)
+
+fun Any.invoke(
+        method: Method,
+        vararg params: Any,
+        config: (MethodUtilConfig.() -> Unit)? = null
+): Any? =
+        MethodUtil.invoke(this, method, *params, config = config)
+
+inline fun <reified T> Any.invokeX(
+        methodName: String,
+        vararg params: Any,
+        noinline config: (MethodUtilConfig.() -> Unit)? = null
+): T =
+        MethodUtil.invokeX(this, methodName, *params, config = config)
+
+inline fun <reified T> Any.invokeX(
+        method: Method,
+        vararg params: Any,
+        noinline config: (MethodUtilConfig.() -> Unit)? = null
+): T =
+        MethodUtil.invokeX(this, method, *params, config = config)
 
 // ==== Json ====
 

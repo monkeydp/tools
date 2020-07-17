@@ -4,6 +4,7 @@ import com.monkeydp.tools.ext.java.hasAnnot
 import com.monkeydp.tools.ext.java.singleton
 import com.monkeydp.tools.ext.java.singletonX
 import com.monkeydp.tools.util.FieldUtil
+import com.monkeydp.tools.util.MethodUtil
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
@@ -64,8 +65,14 @@ inline fun <reified A : Annotation> KClass<*>.getAnnotFields() =
 
 // ==== Method ====
 
+fun KClass<*>.getMethod(name: String, vararg params: Any): Method =
+        MethodUtil.getMethod(this, name, *params)
+
+fun KClass<*>.getMethodOrNull(name: String, vararg params: Any): Method? =
+        MethodUtil.getMethodOrNull(this, name, *params)
+
 fun KClass<*>.getMethods(): List<Method> =
-        java.methods.toList()
+        MethodUtil.getMethods(this)
 
 fun KClass<*>.getAnnotMethods(annotKClass: KClass<out Annotation>): List<Method> =
         getMethods().filter { it.hasAnnot(annotKClass) }
