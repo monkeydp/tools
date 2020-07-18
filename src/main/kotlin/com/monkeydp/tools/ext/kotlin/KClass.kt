@@ -75,6 +75,30 @@ fun KClass<*>.getMethod(name: String, vararg paramKClasses: KClass<*>): Method =
 fun KClass<*>.getMethodOrNull(name: String, vararg paramKClasses: KClass<*>): Method? =
         MethodUtil.getMethodOrNull(this, name, *paramKClasses.map { it.java }.toTypedArray())
 
+fun KClass<*>.smartGetMethod(
+        methodName: String,
+        vararg args: Any
+): Method =
+        MethodUtil.smartGetMethod(this, methodName, *args)
+
+fun KClass<*>.smartGetMethodOrNull(
+        methodName: String,
+        vararg args: Any
+): Method? =
+        MethodUtil.smartGetMethodOrNull(this, methodName, *args)
+
+fun KClass<*>.smartGetMethod(
+        methodName: String,
+        vararg paramClasses: Class<*>
+): Method =
+        MethodUtil.smartGetMethod(this, methodName, *paramClasses)
+
+fun KClass<*>.smartGetMethodOrNull(
+        methodName: String,
+        vararg paramClasses: Class<*>
+): Method? =
+        MethodUtil.smartGetMethodOrNull(this, methodName, *paramClasses)
+
 fun KClass<*>.getMethods(): List<Method> =
         MethodUtil.getMethods(this)
 

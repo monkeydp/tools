@@ -1,8 +1,8 @@
 package com.monkeydp.tools.ext.java
 
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.kotlin.getMethodOrNull
 import com.monkeydp.tools.ext.kotlin.invoke
+import com.monkeydp.tools.ext.kotlin.smartGetMethodOrNull
 import kotlin.reflect.full.companionObjectInstance
 
 /**
@@ -20,7 +20,7 @@ fun <T : Any> Class<T>.newIInstanceX(vararg args: Any, constructName: String = "
     checkIsInterface()
     kotlin.companionObjectInstance.also {
         if (it != null) {
-            val invokeMethod = it::class.getMethodOrNull(constructName, *args)
+            val invokeMethod = it::class.smartGetMethodOrNull(constructName, *args)
             if (invokeMethod != null)
                 return it.invoke(invokeMethod, *args)
         }
