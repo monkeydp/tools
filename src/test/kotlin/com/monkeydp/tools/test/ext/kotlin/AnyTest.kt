@@ -1,6 +1,6 @@
 package com.monkeydp.tools.test.ext.kotlin
 
-import com.monkeydp.tools.ext.kotlin.sameNamePropsEqual
+import com.monkeydp.tools.ext.kotlin.sameNameMemberPropsEqual
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -29,9 +29,9 @@ class AnyTest {
 
     @Test
     fun sameNamePropsEqualTest() {
-        assertTrue(Dog.sameNamePropsEqual(Cat))
-        assertFalse(Cat.sameNamePropsEqual(Dog))
-        assertFalse(Dog.sameNamePropsEqual(Mouse))
-        assertFalse(Mouse.sameNamePropsEqual(Dog))
+        assertTrue(Dog.sameNameMemberPropsEqual(Cat))
+        assertFalse(Cat.sameNameMemberPropsEqual(Dog))
+        assertFalse(Dog.sameNameMemberPropsEqual(Mouse))
+        assertFalse(Mouse.sameNameMemberPropsEqual(Dog))
     }
 }

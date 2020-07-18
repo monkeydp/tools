@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty1
  */
 object KProperty1Filter {
 
-    fun <T : Any, R> filterProps(
+    fun <T : Any, R> filterMemberProps(
             any: T,
             props: Iterable<KProperty1<out T, R>>,
             config: (FilterConfig.() -> Unit)? = null

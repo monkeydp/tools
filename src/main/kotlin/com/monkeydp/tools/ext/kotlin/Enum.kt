@@ -8,7 +8,7 @@ import kotlin.reflect.full.memberProperties
  * @author iPotato
  * @date 2019/10/29
  */
-inline fun <reified E : Enum<*>> E.toPropMap() =
+inline fun <reified E : Enum<*>> E.toMemberPropMap() =
         E::class.memberProperties.map { it.name to it.get(this) }.toMap()
 
 inline fun <reified E : Enum<*>> E.toDeclaredPropMap() =
