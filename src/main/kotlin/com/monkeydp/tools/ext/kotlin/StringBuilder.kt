@@ -10,3 +10,8 @@ package com.monkeydp.tools.ext.kotlin
 fun StringBuilder.clear() {
     this.setLength(0)
 }
+
+fun StringBuilder.removeSuffix(suffix: CharSequence) {
+    val index = lastIndexOf(suffix.toString())
+    delete(index, index + suffix.length)
+}

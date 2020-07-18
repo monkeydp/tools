@@ -13,6 +13,7 @@ import com.monkeydp.tools.util.FieldUtil.SetValueConfig
 import com.monkeydp.tools.util.MethodUtil
 import com.monkeydp.tools.util.MethodUtilConfig
 import java.lang.reflect.Field
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 import java.util.*
@@ -370,20 +371,25 @@ fun Array<out Any>.getClasses(): Array<Class<out Any>> =
 
 // ==== toString ====
 
-/**
- * TODO handle uninitialized property
- */
 fun Any.toDataString(): String =
         StringBuilder()
                 .also {
+                    val separator = ", "
                     it.append(this::class)
                     it.append("(")
-                    toMemberPropMapX<String, Any>().forEach { (k, v) ->
-                        it.append(k)
+                    toMemberProps().forEach { prop ->
+                        val value = try {
+                            prop.call(this)
+                        } catch (ex: InvocationTargetException) {
+                            if (ex.targetException is UninitializedPropertyAccessException)
+                                "<uninitialized>"
+                            else throw ex.targetException
+                        }
+                        it.append(prop.name)
                         it.append(": ")
-                        it.append(v)
-                        it.append(", ")
+                        it.append(value)
+                        it.append(separator)
                     }
-                    it.removeSuffix(", ")
+                    it.removeSuffix(separator)
                     it.append(")")
                 }.toString()
