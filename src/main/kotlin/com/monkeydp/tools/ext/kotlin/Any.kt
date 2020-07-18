@@ -115,15 +115,6 @@ inline fun <K, reified V> Any.toPropMap(
         noinline config: (FilterConfig.() -> Unit)? = null
 ): Map<K, V> = toPropsX<Any, V>(config).map { key(it) to it.get(this) }.toMap()
 
-inline fun <reified K, reified V> Any.buildPropMap(props: Iterable<KProperty1<Any, *>>): Map<K, V> =
-        K::class.let { kClass ->
-            when {
-                kClass.isSubclassOf(String::class) -> props.map { it.name to it.get(this) }.toMap() as Map<K, V>
-                kClass.isSubclassOf(KProperty1::class) -> props.map { it to it.get(this) }.toMap() as Map<K, V>
-                else -> ierror("Unsupported type: $kClass!")
-            }
-        }
-
 inline fun <reified K, reified V> Any.toPropMapX(
         noinline config: (FilterConfig.() -> Unit)? = null
 ): Map<K, V> = toPropsX<Any, V>(config).run(::buildPropMap)
@@ -137,6 +128,14 @@ inline fun <reified K, reified V> Any.toDeclaredPropMapX(
         noinline config: (FilterConfig.() -> Unit)? = null
 ): Map<K, V> = toDeclaredPropsX<Any, V>(config).run(::buildPropMap)
 
+inline fun <reified K, reified V> Any.buildPropMap(props: Iterable<KProperty1<Any, *>>): Map<K, V> =
+        K::class.let { kClass ->
+            when {
+                kClass.isSubclassOf(String::class) -> props.map { it.name to it.get(this) }.toMap() as Map<K, V>
+                kClass.isSubclassOf(KProperty1::class) -> props.map { it to it.get(this) }.toMap() as Map<K, V>
+                else -> ierror("Unsupported type: $kClass!")
+            }
+        }
 
 // ==== Copy Prop Values ====
 
@@ -367,3 +366,20 @@ fun Iterable<Any>.getClasses(): Array<Class<out Any>> =
 
 fun Array<out Any>.getClasses(): Array<Class<out Any>> =
         toList().getClasses()
+
+// ==== toString ====
+
+fun Any.toDataString(): String =
+        StringBuilder()
+                .also {
+                    it.append(this::class)
+                    it.append("(")
+                    toPropMapX<String, Any>().forEach { (k, v) ->
+                        it.append(k)
+                        it.append(": ")
+                        it.append(v)
+                        it.append(", ")
+                    }
+                    it.removeSuffix(", ")
+                    it.append(")")
+                }.toString()
