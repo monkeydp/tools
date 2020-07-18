@@ -12,12 +12,6 @@ import java.lang.reflect.Type
 object TypeUtil {
 
     /**
-     * Returns an array of the given object types
-     */
-    fun getTypes(vararg anyArray: Any): Array<Class<*>> =
-            anyArray.map { it.javaClass }.toTypedArray()
-
-    /**
      * Get class of generic type in the Any
      *
      * @param object

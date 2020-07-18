@@ -1,6 +1,7 @@
 package com.monkeydp.tools.util
 
 import com.monkeydp.tools.ext.kotlin.classX
+import com.monkeydp.tools.ext.kotlin.getClasses
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
@@ -13,21 +14,31 @@ object MethodUtil {
     fun getMethod(
             any: Any,
             methodName: String,
-            vararg params: Any
+            vararg args: Any
     ): Method =
-            any.classX.getMethod(
-                    methodName,
-                    *params.map { it.javaClass }
-                            .toTypedArray()
-            )
+            getMethod(any, methodName, *args.getClasses())
+
+    fun getMethod(
+            any: Any,
+            methodName: String,
+            vararg paramClasses: Class<*>
+    ): Method =
+            any.classX.getMethod(methodName, *paramClasses)
 
     fun getMethodOrNull(
             any: Any,
             methodName: String,
-            vararg params: Any
+            vararg args: Any
+    ): Method? =
+            getMethodOrNull(any, methodName, *args.getClasses())
+
+    fun getMethodOrNull(
+            any: Any,
+            methodName: String,
+            vararg paramClasses: Class<*>
     ): Method? =
             try {
-                getMethod(any, methodName, *params)
+                getMethod(any, methodName, *paramClasses)
             } catch (ex: NoSuchMethodException) {
                 null
             }
@@ -38,24 +49,24 @@ object MethodUtil {
     fun <T> invoke(
             any: Any,
             methodName: String,
-            vararg params: Any,
+            vararg args: Any,
             config: (MethodUtilConfig.() -> Unit)? = null
     ): T =
-            getMethod(any, methodName, *params).let {
-                invoke(any, it, *params, config = config)
+            getMethod(any, methodName, *args).let {
+                invoke(any, it, *args, config = config)
             }
 
     @Suppress("UNCHECKED_CAST")
     fun <T> invoke(
             any: Any,
             method: Method,
-            vararg params: Any,
+            vararg args: Any,
             config: (MethodUtilConfig.() -> Unit)? = null
     ): T =
             MethodUtilConfig().run {
                 if (config != null) config(this)
                 if (forceAccess) method.isAccessible = true
-                return method.invoke(any, *params) as T
+                return method.invoke(any, *args) as T
             }
 
     fun invokeWithMap(
@@ -82,21 +93,21 @@ object MethodUtil {
     fun invokeDeclared(
             any: Any,
             methodName: String,
-            vararg params: Any,
+            vararg args: Any,
             config: (MethodUtilConfig.() -> Unit)? = null
-    ): Unit = invokeDeclaredX(any, methodName, *params, config = config)
+    ): Unit = invokeDeclaredX(any, methodName, *args, config = config)
 
     inline fun <reified T> invokeDeclaredX(
             any: Any,
             methodName: String,
-            vararg params: Any,
+            vararg args: Any,
             noinline config: (MethodUtilConfig.() -> Unit)? = null
     ): T {
         with(MethodUtilConfig()) {
             if (config != null) config(this)
-            val method = any.javaClass.getDeclaredMethod(methodName, *params.map { it.javaClass }.toTypedArray())
+            val method = any.javaClass.getDeclaredMethod(methodName, *args.map { it.javaClass }.toTypedArray())
             if (forceAccess) method.isAccessible = true
-            return method.invoke(any, *params) as T
+            return method.invoke(any, *args) as T
         }
     }
 

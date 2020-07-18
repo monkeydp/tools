@@ -345,7 +345,6 @@ fun <T : Any> T.getPropValue(propName: String) =
 fun <T : Any, U : Any> T.getPropValueX(propName: String) =
         getPropValue(propName) as U
 
-
 // ==== Generic ====
 
 fun Any.getActualTypeInSuperclass(index: Int = 0) =
@@ -354,3 +353,17 @@ fun Any.getActualTypeInSuperclass(index: Int = 0) =
 
 fun <T> Any.getActualTypeInSuperclassX(index: Int = 0) =
         getActualTypeInSuperclass(index) as T
+
+// ==== Iterable and Class/KClass ====
+
+fun Iterable<Any>.getKClasses(): Array<KClass<out Any>> =
+        map { it::class }.toTypedArray()
+
+fun Array<out Any>.getKClasses(): Array<KClass<out Any>> =
+        toList().getKClasses()
+
+fun Iterable<Any>.getClasses(): Array<Class<out Any>> =
+        map { it::class.java }.toTypedArray()
+
+fun Array<out Any>.getClasses(): Array<Class<out Any>> =
+        toList().getClasses()

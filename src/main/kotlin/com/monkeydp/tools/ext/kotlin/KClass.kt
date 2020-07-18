@@ -1,8 +1,6 @@
 package com.monkeydp.tools.ext.kotlin
 
-import com.monkeydp.tools.ext.java.hasAnnot
-import com.monkeydp.tools.ext.java.singleton
-import com.monkeydp.tools.ext.java.singletonX
+import com.monkeydp.tools.ext.java.*
 import com.monkeydp.tools.util.FieldUtil
 import com.monkeydp.tools.util.MethodUtil
 import java.lang.reflect.Field
@@ -65,11 +63,17 @@ inline fun <reified A : Annotation> KClass<*>.getAnnotFields() =
 
 // ==== Method ====
 
-fun KClass<*>.getMethod(name: String, vararg params: Any): Method =
-        MethodUtil.getMethod(this, name, *params)
+fun KClass<*>.getMethod(name: String, vararg args: Any): Method =
+        MethodUtil.getMethod(this, name, *args)
 
-fun KClass<*>.getMethodOrNull(name: String, vararg params: Any): Method? =
-        MethodUtil.getMethodOrNull(this, name, *params)
+fun KClass<*>.getMethodOrNull(name: String, vararg args: Any): Method? =
+        MethodUtil.getMethodOrNull(this, name, *args)
+
+fun KClass<*>.getMethod(name: String, vararg paramKClasses: KClass<*>): Method =
+        MethodUtil.getMethod(this, name, *paramKClasses.map { it.java }.toTypedArray())
+
+fun KClass<*>.getMethodOrNull(name: String, vararg paramKClasses: KClass<*>): Method? =
+        MethodUtil.getMethodOrNull(this, name, *paramKClasses.map { it.java }.toTypedArray())
 
 fun KClass<*>.getMethods(): List<Method> =
         MethodUtil.getMethods(this)
@@ -79,3 +83,11 @@ fun KClass<*>.getAnnotMethods(annotKClass: KClass<out Annotation>): List<Method>
 
 inline fun <reified A : Annotation> KClass<*>.getAnnotMethods(): List<Method> =
         getAnnotMethods(A::class)
+
+// ==== new Instance ====
+
+fun KClass<*>.newInstance(vararg args: Any): Any =
+        java.newInstance(*args)
+
+fun <T : Any> KClass<T>.newInstanceX(vararg args: Any): T =
+        java.newInstanceX(*args)

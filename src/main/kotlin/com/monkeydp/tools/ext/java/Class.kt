@@ -1,26 +1,40 @@
 package com.monkeydp.tools.ext.java
 
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.util.TypeUtil
+import com.monkeydp.tools.ext.kotlin.getClasses
 import org.apache.commons.lang3.reflect.ConstructorUtils
 
 /**
  * @author iPotato
  * @date 2019/10/30
  */
+// ==== singleton ====
+
 fun Class<*>.singleton() =
         fields.firstOrNull() { it.name == "INSTANCE" }?.get(this) ?: ierror("${this.name} is not a singleton!")
 
 inline fun <reified C> Class<out C>.singletonX() = singleton() as C
 
-fun Class<*>.newInstance(vararg args: Any): Any =
-        newInstanceX(*args)
+// ==== new instance ====
 
-fun <T> Class<T>.newInstanceX(vararg args: Any): T {
-    val argClasses = TypeUtil.getTypes(*args)
-    return ConstructorUtils.getMatchingAccessibleConstructor(this, *argClasses)
-            .newInstance(*args)
-}
+fun Class<*>.newInstance(vararg args: Any): Any =
+        if (isInterface) newIInstance(*args)
+        else newCInstance(*args)
+
+fun <T : Any> Class<T>.newInstanceX(vararg args: Any): T =
+        if (isInterface) newIInstanceX(*args)
+        else newCInstanceX(*args)
+
+// ==== new class instance ====
+
+private fun Class<*>.newCInstance(vararg args: Any): Any =
+        newCInstanceX(*args)
+
+private fun <T> Class<T>.newCInstanceX(vararg args: Any): T =
+        ConstructorUtils.getMatchingAccessibleConstructor(this, *args.getClasses())
+                .newInstance(*args)
+
+// ==== annotation ====
 
 fun Class<*>.hasAnnot(annotClass: Class<out Annotation>) = getAnnotation(annotClass) != null
 
