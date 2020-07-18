@@ -369,6 +369,9 @@ fun Array<out Any>.getClasses(): Array<Class<out Any>> =
 
 // ==== toString ====
 
+/**
+ * TODO handle uninitialized property
+ */
 fun Any.toDataString(): String =
         StringBuilder()
                 .also {
