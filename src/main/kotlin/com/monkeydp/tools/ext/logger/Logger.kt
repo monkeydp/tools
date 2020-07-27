@@ -172,6 +172,17 @@ enum class LogLevel {
 }
 
 @JvmSynthetic
+inline fun Logger.log(level: LogLevel, message: String) {
+    when (level) {
+        TRACE -> trace(message)
+        DEBUG -> debug(message)
+        INFO -> info(message)
+        WARN -> warn(message)
+        ERROR -> error(message)
+    }
+}
+
+@JvmSynthetic
 inline fun Logger.log(level: LogLevel, lazyMessage: () -> Any?) {
     when (level) {
         TRACE -> trace(lazyMessage)
