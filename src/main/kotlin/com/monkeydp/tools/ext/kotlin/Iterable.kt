@@ -46,9 +46,16 @@ inline fun <reified T> Iterable<Any>.convertValue() =
 
 // ==== Group ====
 
-public inline fun <T, K> Iterable<T>.groupById(
-        keySelector: (T) -> K
-): Map<K, T> =
+public inline fun <K, V> Iterable<V>.groupById(
+        keySelector: (V) -> K
+): Map<K, V> =
         groupBy(keySelector)
                 .map { it.key to it.value.first() }
                 .toMap()
+
+public inline fun <K, V> Iterable<V>.findById(
+        id: K,
+        keySelector: (V) -> K
+): V =
+        groupById(keySelector)
+                .getValue(id)
