@@ -29,3 +29,7 @@ fun <E : Enum<E>> KClass<E>.random(): E = java.enumConstants.toList().shuffled()
 
 fun <E : Enum<E>, ID> KClass<E>.groupById(getId: (E) -> ID): Map<ID, E> =
         java.enumConstants.map { getId(it) to it }.toMap()
+
+fun <E : Enum<E>, ID> KClass<E>.findById(id: ID, getId: (E) -> ID): E =
+        groupById(getId)
+                .getValue(id)
