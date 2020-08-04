@@ -23,3 +23,10 @@ fun <T> Collection<T>.diff(another: Collection<T>): List<T> =
         filter {
             !another.contains(it)
         }.toList()
+
+fun <T> listOfAll(vararg lists: List<T>): List<T> =
+        mutableListOf<T>().apply {
+            lists.forEach {
+                addAll(it)
+            }
+        }.toList()

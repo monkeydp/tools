@@ -16,10 +16,11 @@ import kotlin.reflect.full.isSubclassOf
  */
 // ==== Has ====
 
-fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean {
-    val matched = filter(predicate)
-    return matched.size >= 1
-}
+fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean =
+        filter(predicate).size >= 1
+
+fun <T> Iterable<T>.hasSingle(predicate: (T) -> Boolean): Boolean =
+        singleOrNull(predicate) != null
 
 // ==== Lines ====
 
