@@ -16,4 +16,7 @@ object RandomUtil {
      */
     fun randomAlphanumeric(length: Int): String =
             RandomStringUtils.randomAlphanumeric(length)
+
+    fun randomNumeric(count: Int) =
+            RandomStringUtils.randomNumeric(count)
 }
