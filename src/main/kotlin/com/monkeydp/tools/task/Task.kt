@@ -5,6 +5,7 @@ interface Task<ID : Any, C : TaskContent> {
     val name: String
     val content: C
     val executorName: String
+    var desc: String
     val info
         get() =
             "Task(id = $id, name = $name)"
