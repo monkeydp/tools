@@ -21,6 +21,8 @@ dependencies {
     api("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.4")
     // log
     api("org.slf4j:jul-to-slf4j:1.7.30")
+    api("ch.qos.logback:logback-classic:1.2.3")
+    api("org.apache.logging.log4j:log4j-to-slf4j:2.12.1")
     // reflection
     api("org.reflections:reflections:0.9.11")
     // di
