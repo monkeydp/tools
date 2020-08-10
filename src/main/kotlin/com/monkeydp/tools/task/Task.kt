@@ -13,10 +13,10 @@ interface Task<ID : Any, C : TaskContent> {
 
 abstract class BaseTask<ID : Any, C : TaskContent> : Task<ID, C>
 
-interface TaskExecutor<T : Task<*, *>> {
-    fun execute(task: T)
+interface TaskRunnable<T : Task<*, *>> {
+    fun run(task: T)
 }
 
-abstract class BaseTaskExecutor<T : Task<*, *>> : TaskExecutor<T>
+abstract class BaseTaskRunnable<T : Task<*, *>> : TaskRunnable<T>
 
 interface TaskContent
