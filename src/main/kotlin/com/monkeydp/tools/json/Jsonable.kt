@@ -6,7 +6,6 @@ import com.monkeydp.tools.ext.kotlin.toJson
  * @author iPotato-Work
  * @date 2020/8/10
  */
-
 interface Jsonable {
     fun toJson(): String
 }
