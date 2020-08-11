@@ -125,9 +125,13 @@ fun String.asResource(): URL = asResourceOrNull()!!
 fun String.asResourceOrNull(): URL? = object {}.javaClass.getResource(this)
 
 
-// ==== Wrapped ====
+// ==== Wrap ====
 
-fun String.wrappedInCurlyBraces() = "{$this}"
+fun String.unwrapFromCurlyBraces() =
+        removePrefix("{").removeSuffix("}")
+
+fun String.wrapInCurlyBraces() =
+        "{$this}"
 
 
 // ==== Charset ====

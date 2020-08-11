@@ -12,7 +12,7 @@ interface Task<ID : Any, C : TaskContent> {
     var desc: String
     val info
         get() =
-            "Task(id = $id, name = $name)"
+            "Task(id = $id, name = $name, desc = $desc)"
 }
 
 abstract class BaseTask<ID : Any, C : TaskContent> : Task<ID, C>
