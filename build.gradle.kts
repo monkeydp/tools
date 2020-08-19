@@ -37,7 +37,7 @@ dependencies {
     api("com.github.javafaker:javafaker:1.0.2")
     // test
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.0")
 }
 
 tasks {
