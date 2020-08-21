@@ -6,7 +6,7 @@ interface Task<ID : Any, C : TaskContent> {
     val id: ID
     val name: String
     val content: C
-    val runnerName: String
+    val handlerName: String
     val startedAt: Date
     val runAt: Date
     var desc: String
@@ -17,11 +17,11 @@ interface Task<ID : Any, C : TaskContent> {
 
 abstract class BaseTask<ID : Any, C : TaskContent> : Task<ID, C>
 
-interface TaskRunner<T : Task<*, *>> {
+interface TaskHandler<T : Task<*, *>> {
     fun run(task: T)
 }
 
-abstract class BaseTaskRunner<T : Task<*, *>> : TaskRunner<T> {
+abstract class BaseTaskHandler<T : Task<*, *>> : TaskHandler<T> {
     override fun run(task: T) {
         beforeRun(task)
         innerRun(task)
