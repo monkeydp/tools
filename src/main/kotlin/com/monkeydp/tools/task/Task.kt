@@ -19,20 +19,34 @@ abstract class BaseTask<ID : Any, C : TaskContent> : Task<ID, C>
 
 interface TaskHandler<T : Task<*, *>> {
     fun run(task: T)
+    fun cancel(task: T)
 }
 
 abstract class BaseTaskHandler<T : Task<*, *>> : TaskHandler<T> {
+
     override fun run(task: T) {
         beforeRun(task)
         innerRun(task)
         afterRun(task)
     }
 
-    protected abstract fun beforeRun(task: T)
+    protected open fun beforeRun(task: T) {}
 
     protected abstract fun innerRun(task: T)
 
-    protected abstract fun afterRun(task: T)
+    protected open fun afterRun(task: T) {}
+
+    override fun cancel(task: T) {
+        beforeCancel(task)
+        innerCancel(task)
+        afterCancel(task)
+    }
+
+    protected open fun beforeCancel(task: T) {}
+
+    protected abstract fun innerCancel(task: T)
+
+    protected open fun afterCancel(task: T) {}
 }
 
 interface TaskContent
