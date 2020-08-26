@@ -371,15 +371,30 @@ fun Array<out Any>.getClasses(): Array<Class<out Any>> =
 
 // ==== toString ====
 
-fun Any.toDataString(): String =
+@JvmName("toDataStringByProps")
+fun <A : Any> A.toDataString(
+        showProps: List<KProperty1<A, *>>,
+        configInit: (ToDataStringConfig.() -> Unit)? = null
+): String =
+        toDataString(showPropNames = showProps.map { it.name }, configInit = configInit)
+
+fun <A : Any> A.toDataString(
+        showPropNames: List<String>? = null,
+        configInit: (ToDataStringConfig.() -> Unit)? = null
+): String =
         StringBuilder()
                 .also {
+                    val config = ToDataStringConfig(configInit)
                     val separator = ", "
-                    it.append(this::class)
+                    it.append(if (config.fullClassname) this::class else this::class.simpleName)
                     it.append("(")
                     toMemberProps().forEach { prop ->
+                        showPropNames?.apply {
+                            if (!contains(prop.name)) return@forEach
+                        }
+
                         val value = try {
-                            prop.call(this)
+                            prop.get(this)
                         } catch (ex: InvocationTargetException) {
                             if (ex.targetException is UninitializedPropertyAccessException)
                                 "<uninitialized>"
@@ -393,3 +408,14 @@ fun Any.toDataString(): String =
                     it.removeSuffix(separator)
                     it.append(")")
                 }.toString()
+
+
+class ToDataStringConfig(
+        configInit: (ToDataStringConfig.() -> Unit)? = null
+) {
+    var fullClassname: Boolean = true
+
+    init {
+        configInit?.invoke(this)
+    }
+}
