@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion.VERSION_1_8
+
 plugins {
     // kotlin
     val kotlinVersion = "1.3.72"
@@ -6,8 +8,8 @@ plugins {
 
 group = "com.monkeydp"
 version = "1.1.2-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = VERSION_1_8
+java.targetCompatibility = VERSION_1_8
 
 dependencies {
     // kotlin
