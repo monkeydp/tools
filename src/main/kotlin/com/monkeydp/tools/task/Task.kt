@@ -18,8 +18,8 @@ interface Task<ID : Any, C : TaskContent> {
 abstract class BaseTask<ID : Any, C : TaskContent> : Task<ID, C>
 
 interface TaskHandler<T : Task<*, *>> {
-    fun run(task: T)
-    fun cancel(task: T)
+    fun run(task: T): T
+    fun cancel(task: T): T
 }
 
 abstract class BaseTaskHandler<T : Task<*, *>> : TaskHandler<T>
