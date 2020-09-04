@@ -9,11 +9,6 @@ import kotlin.reflect.full.isSubclassOf
  * @author iPotato
  * @date 2019/11/9
  */
-
-/**
- *  If match once, return matched element
- *  else throw ex
- */
 // ==== Has ====
 
 fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean =
