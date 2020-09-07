@@ -6,4 +6,4 @@ package com.monkeydp.tools.exception.inner
  */
 class FunctionNotImplementedException(
         functionName: String = Thread.currentThread().stackTrace[2].methodName
-) : InnerException("Function `$functionName` is not implemented!")
+) : InnerEx("Function `$functionName` is not implemented!")

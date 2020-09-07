@@ -7,7 +7,7 @@ import com.monkeydp.tools.ext.logger.LogLevel.ERROR
  * @author iPotato
  * @date 2019/10/14
  */
-open class InnerException(
+open class InnerEx(
         message: CharSequence = NO_EX_MESSAGE,
         cause: Throwable? = null,
         configInit: (InnerExConfigBuilder.() -> Unit)? = null
