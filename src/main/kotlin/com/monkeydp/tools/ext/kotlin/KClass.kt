@@ -3,6 +3,7 @@ package com.monkeydp.tools.ext.kotlin
 import com.monkeydp.tools.ext.java.*
 import com.monkeydp.tools.util.FieldUtil
 import com.monkeydp.tools.util.MethodUtil
+import com.monkeydp.tools.util.MethodUtilConfig
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
@@ -63,10 +64,10 @@ inline fun <reified A : Annotation> KClass<*>.getAnnotFields() =
 
 // ==== Method ====
 
-fun KClass<*>.getMethod(name: String, vararg args: Any): Method =
+fun KClass<*>.getMethodByArgs(name: String, vararg args: Any): Method =
         MethodUtil.getMethod(this, name, *args)
 
-fun KClass<*>.getMethodOrNull(name: String, vararg args: Any): Method? =
+fun KClass<*>.getMethodOrNullByArgs(name: String, vararg args: Any): Method? =
         MethodUtil.getMethodOrNull(this, name, *args)
 
 fun KClass<*>.getMethod(name: String, vararg paramKClasses: KClass<*>): Method =
@@ -101,6 +102,20 @@ fun KClass<*>.smartGetMethodOrNull(
 
 fun KClass<*>.getMethods(): List<Method> =
         MethodUtil.getMethods(this)
+
+fun <T> Any.invokeMethod(
+        methodName: String,
+        vararg args: Any,
+        config: (MethodUtilConfig.() -> Unit)? = null
+): T =
+        MethodUtil.invoke(this, methodName, *args, config = config)
+
+fun <T> Any.invokeMethod(
+        method: Method,
+        vararg args: Any,
+        config: (MethodUtilConfig.() -> Unit)? = null
+): T =
+        MethodUtil.invoke(this, method, *args, config = config)
 
 fun KClass<*>.getAnnotMethods(annotKClass: KClass<out Annotation>): List<Method> =
         getMethods().filter { it.hasAnnot(annotKClass) }
