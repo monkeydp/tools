@@ -14,6 +14,9 @@ import kotlin.reflect.full.isSubclassOf
 fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean =
         filter(predicate).size >= 1
 
+fun <T> Iterable<T>.hasNo(predicate: (T) -> Boolean): Boolean =
+        !has(predicate)
+
 fun <T> Iterable<T>.hasSingle(predicate: (T) -> Boolean): Boolean =
         singleOrNull(predicate) != null
 
