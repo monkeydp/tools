@@ -33,7 +33,7 @@ inline fun <reified T> JsonNode.convertValue(): T =
         objectMapper.treeToValue<T>(this)!!
 
 
-val DEFAULT_PATH_SEPARATOR get() = "."
+inline val DEFAULT_PATH_SEPARATOR get() = "."
 
 fun JsonNode.getByPath(path: String, separator: String = DEFAULT_PATH_SEPARATOR): JsonNode? =
         getByPath(path.split(separator))

@@ -16,18 +16,30 @@ fun ObjectNode.removeByPath(path: List<String>): JsonNode? {
             .remove(path.last())
 }
 
-fun <T : JsonNode> ObjectNode.replaceByPath(
+fun ObjectNode.replaceByPath(
         path: String,
-        node: T,
+        node: JsonNode,
         separator: String = DEFAULT_PATH_SEPARATOR
 ) =
         replaceByPath(path.split(separator), node)
 
-fun <T : JsonNode> ObjectNode.replaceByPath(
+fun ObjectNode.replaceByPath(
         path: List<String>,
-        node: T
+        node: JsonNode
 ) {
     require(path.isNotEmpty()) { "Path cannot be empty!" }
     (secondToLastNode(path) as ObjectNode)
-            .set<T>(path.last(), node)
+            .set<ObjectNode>(path.last(), node)
 }
+
+fun ObjectNode.unwrapByPath(path: String, separator: String = DEFAULT_PATH_SEPARATOR) =
+        unwrapByPath(path.split(separator))
+
+fun ObjectNode.unwrapByPath(path: List<String>) {
+    (secondToLastNode(path) as ObjectNode).let {
+        val node = getByPath(path) as ObjectNode
+        it.remove(path.last())
+        it.setAll<ObjectNode>(node)
+    }
+}
+
