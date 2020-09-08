@@ -103,6 +103,18 @@ fun KClass<*>.smartGetMethodOrNull(
 fun KClass<*>.getMethods(): List<Method> =
         MethodUtil.getMethods(this)
 
+fun Any.getMethod(
+        methodName: String,
+        vararg args: Any
+) =
+        MethodUtil.getMethod(this, methodName, *args)
+
+fun Any.getMethodOrNull(
+        methodName: String,
+        vararg args: Any
+) =
+        MethodUtil.getMethodOrNull(this, methodName, *args)
+
 fun <T> Any.invokeMethod(
         methodName: String,
         vararg args: Any,
