@@ -42,4 +42,3 @@ fun ObjectNode.unwrapByPath(path: List<String>) {
         it.setAll<ObjectNode>(node)
     }
 }
-
