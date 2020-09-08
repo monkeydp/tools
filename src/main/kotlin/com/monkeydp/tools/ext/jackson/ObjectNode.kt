@@ -36,9 +36,8 @@ fun ObjectNode.unwrapByPath(path: String, separator: String = DEFAULT_PATH_SEPAR
         unwrapByPath(path.split(separator))
 
 fun ObjectNode.unwrapByPath(path: List<String>) {
-    (secondToLastNode(path) as ObjectNode).let {
-        val node = getByPath(path) as ObjectNode
-        it.remove(path.last())
-        it.setAll<ObjectNode>(node)
-    }
+    val secondToLastNode = secondToLastNode(path) as ObjectNode
+    val node = getByPath(path)
+    if (node != null)
+        secondToLastNode.replaceByPath(path, node)
 }
