@@ -59,55 +59,76 @@ fun Any.toDeclaredProperties(): Properties {
 
 // ==== Props ====
 
-private fun <T : Any> T.filterMemberProps(
+private fun <T : Any> T.filterProps(
         props: Iterable<KProperty1<T, *>>,
         config: (FilterConfig.() -> Unit)? = null
-): List<KProperty1<T, *>> = KProperty1Filter.filterMemberProps(this, props, config)
+): List<KProperty1<T, *>> =
+        KProperty1Filter.filterProps(this, props, config)
 
 fun <T : Any> T.toMemberProps(
         config: (FilterConfig.() -> Unit)? = null
-): List<KProperty1<T, *>> = javaClass.kotlin.memberProperties.run { filterMemberProps(this, config) }
+): List<KProperty1<T, *>> =
+        javaClass.kotlin.memberProperties
+                .let { filterProps(it, config = config) }
 
 inline fun <T : Any, reified R> T.toMemberPropsX(
         noinline config: (FilterConfig.() -> Unit)? = null
-): List<KProperty1<T, R>> = toMemberProps(config).filterValueType<T, R>()
+): List<KProperty1<T, R>> =
+        toMemberProps(config)
+                .filterValueType<T, R>()
 
 fun <T : Any> T.toDeclaredMemberProps(
         config: (FilterConfig.() -> Unit)? = null
-): List<KProperty1<T, *>> = javaClass.kotlin.declaredMemberProperties.run { filterMemberProps(this, config) }
+): List<KProperty1<T, *>> =
+        javaClass.kotlin.declaredMemberProperties
+                .run { filterProps(this, config) }
 
 inline fun <T : Any, reified R> T.toDeclaredMemberPropsX(
         noinline config: (FilterConfig.() -> Unit)? = null
-): List<KProperty1<T, R>> = toDeclaredMemberProps(config).filterValueType<T, R>()
+): List<KProperty1<T, R>> =
+        toDeclaredMemberProps(config)
+                .filterValueType<T, R>()
 
 
 // ==== Prop Values ====
 
 fun Any.toMemberPropValues(
         config: (FilterConfig.() -> Unit)? = null
-): List<Any?> = toMemberProps(config).map { it.get(this) }
+): List<Any?> =
+        toMemberProps(config)
+                .map { it.get(this) }
 
 fun <V : Any> Any.toMemberPropValues(
         kClass: KClass<V>,
         config: (FilterConfig.() -> Unit)? = null
-): List<V> = toMemberPropValues(config).filterIsInstance(kClass)
+): List<V> =
+        toMemberPropValues(config)
+                .filterIsInstance(kClass)
 
 inline fun <reified V> Any.toPropValuesX(
         noinline config: (FilterConfig.() -> Unit)? = null
-): List<V> = toMemberPropValues(config).filterIsInstance<V>()
+): List<V> =
+        toMemberPropValues(config)
+                .filterIsInstance<V>()
 
 fun Any.toDeclaredMemberPropValues(
         config: (FilterConfig.() -> Unit)? = null
-): List<Any?> = toDeclaredMemberProps(config).map { it.get(this) }
+): List<Any?> =
+        toDeclaredMemberProps(config)
+                .map { it.get(this) }
 
 fun <V : Any> Any.toDeclaredMemberPropValues(
         kClass: KClass<V>,
         config: (FilterConfig.() -> Unit)? = null
-): List<V> = toDeclaredMemberPropValues(config).filterIsInstance(kClass)
+): List<V> =
+        toDeclaredMemberPropValues(config)
+        .filterIsInstance(kClass)
 
 inline fun <reified V> Any.toDeclaredPropValuesX(
         noinline config: (FilterConfig.() -> Unit)? = null
-): List<V> = toDeclaredMemberPropValues(config).filterIsInstance<V>()
+): List<V> =
+        toDeclaredMemberPropValues(config)
+        .filterIsInstance<V>()
 
 
 // ==== Prop Map ====
@@ -115,20 +136,30 @@ inline fun <reified V> Any.toDeclaredPropValuesX(
 inline fun <K, reified V> Any.toMemberPropMap(
         key: (KProperty1<Any, V>) -> K = { it as K },
         noinline config: (FilterConfig.() -> Unit)? = null
-): Map<K, V> = toMemberPropsX<Any, V>(config).map { key(it) to it.get(this) }.toMap()
+): Map<K, V> =
+        toMemberPropsX<Any, V>(config)
+                .map { key(it) to it.get(this) }
+                .toMap()
 
 inline fun <reified K, reified V> Any.toMemberPropMapX(
         noinline config: (FilterConfig.() -> Unit)? = null
-): Map<K, V> = toMemberPropsX<Any, V>(config).run(::buildMemberPropMap)
+): Map<K, V> =
+        toMemberPropsX<Any, V>(config)
+                .run(::buildMemberPropMap)
 
 inline fun <K, reified V> Any.toDeclaredPropMap(
         key: (KProperty1<Any, V>) -> K = { it as K },
         noinline config: (FilterConfig.() -> Unit)? = null
-): Map<K, V> = toDeclaredMemberPropsX<Any, V>(config).map { key(it) to it.get(this) }.toMap()
+): Map<K, V> =
+        toDeclaredMemberPropsX<Any, V>(config)
+                .map { key(it) to it.get(this) }
+                .toMap()
 
 inline fun <reified K, reified V> Any.toDeclaredMemberPropMapX(
         noinline config: (FilterConfig.() -> Unit)? = null
-): Map<K, V> = toDeclaredMemberPropsX<Any, V>(config).run(::buildMemberPropMap)
+): Map<K, V> =
+        toDeclaredMemberPropsX<Any, V>(config)
+                .run(::buildMemberPropMap)
 
 inline fun <reified K, reified V> Any.buildMemberPropMap(props: Iterable<KProperty1<Any, *>>): Map<K, V> =
         K::class.let { kClass ->
@@ -149,7 +180,7 @@ fun <T : Any, S : Any> T.copyMemberPropValuesFrom(
     val sourceProps =
             (if (props.isEmpty()) source::class.memberProperties.toList() else props.toList())
                     .let {
-                        KProperty1Filter.filterMemberProps(source, it, config)
+                        KProperty1Filter.filterProps(source, it, config)
                     }
 
     this::class.memberProperties.filterIsInstance<KMutableProperty<*>>().also { mutableProps ->
@@ -373,7 +404,7 @@ fun Array<out Any>.getClasses(): Array<Class<out Any>> =
 
 @JvmName("toDataStringByProps")
 fun <A : Any> A.toDataString(
-        showProps: List<KProperty1<A, *>>,
+        showProps: List<KProperty1<out A, *>>,
         configInit: (ToDataStringConfig.() -> Unit)? = null
 ): String =
         toDataString(showPropNames = showProps.map { it.name }, configInit = configInit)

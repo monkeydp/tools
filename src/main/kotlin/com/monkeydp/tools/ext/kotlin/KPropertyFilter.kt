@@ -23,7 +23,7 @@ object KPropertyFilter {
             configInit: (FilterConfig.() -> Unit)? = null
     ): List<KProperty<R>> =
             FilterConfig().run {
-                if (configInit != null) configInit(this)
+                configInit?.invoke(this)
                 var filteredProps = props
                 if (ignoreIllegalAccess) filteredProps =
                         filterException(any, props, IllegalCallableAccessException::class)

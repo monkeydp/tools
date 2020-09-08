@@ -1,15 +1,11 @@
 package com.monkeydp.tools.ext.jackson
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.monkeydp.tools.config.kodein
-import com.monkeydp.tools.ext.jackson.JsonFlatten.Times.ONE
-import com.monkeydp.tools.ext.jackson.JsonFlatten.Times.TWO
 import com.monkeydp.tools.global.objectMapper
-import org.kodein.di.generic.instance
+import kotlin.annotation.AnnotationTarget.PROPERTY
 
 /**
  * @author iPotato-Work
@@ -31,36 +27,31 @@ class JsonFlattenModule : SimpleModule() {
  * @author iPotato-Work
  * @date 2020/5/18
  */
-@Target(AnnotationTarget.PROPERTY)
-annotation class JsonFlatten(val times: Times = ONE) {
-    enum class Times {
-        ONE, TWO
-    }
-}
+@Target(PROPERTY)
+annotation class JsonFlatten
 
 object JsonFlattener {
 
-    fun flattenData(objectNode: ObjectNode, dataName: String, jsonFlatten: JsonFlatten?): ObjectNode =
+    /**
+     * @param path path to collection, separate by `.`, like "data.content"
+     */
+    fun flattenData(objectNode: ObjectNode, path: String, jsonFlatten: JsonFlatten?): ObjectNode =
             objectNode.deepCopy().apply {
                 if (jsonFlatten == null) return this
 
-                val data = get(dataName) as ArrayNode
-                val dataPairs = data.mapIndexed { index, jsonNode ->
-                    jsonNode.fieldNames()
-                            .asSequence()
-                            .toList()
-                            .map {
-                                "$it[$index]" to jsonNode.get(it)
-                            }
-                }
-                remove(dataName)
-                when (jsonFlatten.times) {
-                    ONE -> dataPairs.forEachIndexed { index, list ->
-                        val node = objectMapper.createObjectNode()
-                        node.setAll<ObjectNode>(list.toMap())
-                        set<ObjectNode>(index.toString(), node)
-                    }
-                    TWO -> setAll<ObjectNode>(dataPairs.flatten().toMap())
-                }
+                val collection = getByPath(path) as ArrayNode
+                val pairs =
+                        collection.mapIndexed { index, jsonNode ->
+                            jsonNode.fieldNames()
+                                    .asSequence()
+                                    .toList()
+                                    .map {
+                                        "$it[$index]" to jsonNode.get(it)
+                                    }
+                        }
+
+                val replacement = objectMapper.createObjectNode()
+                replacement.setAll<ObjectNode>(pairs.flatten().toMap())
+                replaceByPath(path, replacement)
             }
 }

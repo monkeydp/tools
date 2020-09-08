@@ -13,5 +13,6 @@ fun StringBuilder.clear() {
 
 fun StringBuilder.removeSuffix(suffix: CharSequence) {
     val index = lastIndexOf(suffix.toString())
-    delete(index, index + suffix.length)
+    if (index >= 0)
+        delete(index, index + suffix.length)
 }
