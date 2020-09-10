@@ -122,13 +122,13 @@ fun <V : Any> Any.toDeclaredMemberPropValues(
         config: (FilterConfig.() -> Unit)? = null
 ): List<V> =
         toDeclaredMemberPropValues(config)
-        .filterIsInstance(kClass)
+                .filterIsInstance(kClass)
 
 inline fun <reified V> Any.toDeclaredPropValuesX(
         noinline config: (FilterConfig.() -> Unit)? = null
 ): List<V> =
         toDeclaredMemberPropValues(config)
-        .filterIsInstance<V>()
+                .filterIsInstance<V>()
 
 
 // ==== Prop Map ====
@@ -351,20 +351,6 @@ fun <T> Any.invoke(
         config: (MethodUtilConfig.() -> Unit)? = null
 ): T =
         MethodUtil.invoke(this, method, *params, config = config)
-
-// ==== Json ====
-
-fun <T : Any> T.toJson() =
-        objectMapper.writeValueAsString(this)
-
-inline fun <reified T> Any.convertValue() =
-        objectMapper.convertValue<T>(this)
-
-fun <T> Any.convertValue(clazz: Class<T>) =
-        objectMapper.convertValue(this, clazz)
-
-fun <T : Any> Any.convertValue(kClass: KClass<T>) =
-        objectMapper.convertValue(this, kClass.java)
 
 // ==== Reflections ====
 

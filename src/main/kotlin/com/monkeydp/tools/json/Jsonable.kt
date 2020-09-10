@@ -13,7 +13,7 @@ interface Jsonable {
 abstract class BaseJsonable : Jsonable {
     override fun toJson() =
             toJsonX()
-}
 
-private fun Any.toJsonX() =
-        toJson()
+    private fun Any.toJsonX() =
+            toJson()
+}

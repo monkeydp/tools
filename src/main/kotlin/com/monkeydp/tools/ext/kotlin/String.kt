@@ -99,20 +99,6 @@ fun String.camelSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequ
 }
 
 
-// ==== Json ====
-
-fun String.toJsonNode() =
-        objectMapper.readTree(this)!!
-
-fun <T> String.toObject(clazz: Class<T>): T =
-        objectMapper.readValue(this, clazz)
-
-fun <T : Any> String.toObject(kClass: KClass<T>): T =
-        objectMapper.readValue(this, kClass.java)
-
-inline fun <reified T> String.toObject(): T =
-        toObject(T::class.java)
-
 // ==== Resource ====
 
 /**
