@@ -29,7 +29,7 @@ private fun JsonNode.recurRemoveKey(node: JsonNode): JsonNode =
             else -> node
         }
 
-inline fun <reified T> JsonNode.convertValue(): T =
+inline fun <reified T> JsonNode.treeToValue(): T =
         objectMapper.treeToValue<T>(this)!!
 
 

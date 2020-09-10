@@ -1,6 +1,6 @@
 package com.monkeydp.tools.json
 
-import com.monkeydp.tools.ext.kotlin.toJson
+import com.monkeydp.tools.ext.jackson.toJson
 
 /**
  * @author iPotato-Work

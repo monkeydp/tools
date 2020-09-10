@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext.kotlin
+package com.monkeydp.tools.ext.jackson
 
 import com.fasterxml.jackson.module.kotlin.convertValue
 import com.monkeydp.tools.global.objectMapper
@@ -16,6 +16,9 @@ fun <T> Any.convertValue(clazz: Class<T>) =
 
 fun <T : Any> Any.convertValue(kClass: KClass<T>) =
         objectMapper.convertValue(this, kClass.java)
+
+inline fun <reified T> Iterable<Any>.convertValue() =
+        map { objectMapper.convertValue<T>(it) }.toList()
 
 
 fun Any.toJson() =
