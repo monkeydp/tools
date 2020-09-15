@@ -1,7 +1,5 @@
 package com.monkeydp.tools.ext.kotlin
 
-import com.fasterxml.jackson.module.kotlin.convertValue
-import com.monkeydp.tools.global.objectMapper
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -12,7 +10,7 @@ import kotlin.reflect.full.isSubclassOf
 // ==== Has ====
 
 fun <T> Iterable<T>.has(predicate: (T) -> Boolean): Boolean =
-        filter(predicate).size >= 1
+        firstOrNull(predicate) != null
 
 fun <T> Iterable<T>.hasNo(predicate: (T) -> Boolean): Boolean =
         !has(predicate)
