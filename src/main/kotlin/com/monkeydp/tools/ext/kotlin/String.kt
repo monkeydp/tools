@@ -4,10 +4,8 @@ import com.monkeydp.tools.constant.Symbol.BACKSLASH
 import com.monkeydp.tools.constant.Symbol.SLASH
 import com.monkeydp.tools.constant.Symbol.SPACE
 import com.monkeydp.tools.constant.Symbol.UNDERSCORE
-import com.monkeydp.tools.global.objectMapper
 import java.net.URL
 import java.nio.charset.Charset
-import kotlin.reflect.KClass
 
 /**
  * @author iPotato
@@ -124,3 +122,12 @@ fun String.wrapInCurlyBraces() =
 
 fun String.changeCharset(from: Charset, to: Charset) =
         String(this.toByteArray(from), to)
+
+
+// ==== Radix ====
+
+fun String.radixPlus(i: Int, radix: Int = 10) =
+        toLong(radix = radix).plus(i).toString(radix = radix)
+
+fun String.hexPlus(i: Int) =
+        radixPlus(i = i, radix = 16)
