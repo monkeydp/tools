@@ -2,10 +2,10 @@ package com.monkeydp.tools.task
 
 import java.util.*
 
-interface Task<ID : Any, C : TaskContent> {
+interface Task<ID : Any> {
     val id: ID
     val name: String
-    val content: C
+    val content: String
     val handlerName: String
     val startedAt: Date
     val runAt: Date
@@ -15,13 +15,6 @@ interface Task<ID : Any, C : TaskContent> {
             "Task(id = $id, name = $name, desc = $desc)"
 }
 
-abstract class BaseTask<ID : Any, C : TaskContent> : Task<ID, C>
-
-interface TaskHandler<T : Task<*, *>> {
-    fun run(task: T): T
-    fun cancel(task: T): T
-}
-
-abstract class BaseTaskHandler<T : Task<*, *>> : TaskHandler<T>
+abstract class BaseTask<ID : Any> : Task<ID>
 
 interface TaskContent

@@ -13,8 +13,9 @@ java.targetCompatibility = VERSION_1_8
 
 dependencies {
     // kotlin
-    implementation(kotlin("reflect"))
-    implementation(kotlin("stdlib-jdk8"))
+    api(kotlin("reflect"))
+    api(kotlin("stdlib-jdk8"))
+
     // other tool
     implementation("org.apache.commons:commons-lang3:3.8.1")
     // yaml
