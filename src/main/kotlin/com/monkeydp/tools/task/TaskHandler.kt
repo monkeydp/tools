@@ -3,8 +3,8 @@ package com.monkeydp.tools.task
 import kotlin.reflect.KClass
 
 interface TaskHandler<T : Task<*>> {
-    fun run(task: T): T
-    fun cancel(task: T): T
+    fun run(task: T)
+    fun cancel(task: T)
 
     /**
      * For example, task rerun after server restart
