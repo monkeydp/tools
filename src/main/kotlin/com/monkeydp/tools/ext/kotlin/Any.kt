@@ -291,7 +291,7 @@ fun Any.setFieldValueByPath(
         setFieldValue(path, value, configInit)
         return
     }
-    val pathWithoutLast = parts.toMutableList().removeLast().joinToString(".")
+    val pathWithoutLast = parts.toMutableList().apply { removeLast() }.joinToString(".")
     val any = getFieldValueByPath<Any>(pathWithoutLast) { forceAccess = true }
     any.setFieldValue(parts.last(), value, configInit)
 }

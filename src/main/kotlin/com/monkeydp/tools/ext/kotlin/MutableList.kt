@@ -17,14 +17,11 @@ fun <E> MutableList<E>.replaceLast(new: E) {
     this[this.lastIndex] = new
 }
 
-fun <E> MutableList<E>.removeFirst() {
-    this.removeAt(0)
-}
+fun <E> MutableList<E>.removeFirst() =
+        this.removeAt(0)
 
-fun <T> MutableList<T>.removeLast(): MutableList<T> {
-    removeAt(lastIndex)
-    return this
-}
+fun <T> MutableList<T>.removeLast() =
+        removeAt(lastIndex)
 
 fun <T> MutableList<T>.removeAllAt(vararg indexes: Int): List<T> =
         indexes.run {

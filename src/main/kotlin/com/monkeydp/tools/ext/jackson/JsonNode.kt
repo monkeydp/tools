@@ -51,4 +51,4 @@ fun JsonNode.secondToLastNode(path: String, separator: String = DEFAULT_PATH_SEP
 
 fun JsonNode.secondToLastNode(path: List<String>) =
         if (path.size == 1) this
-        else getByPath(path.toMutableList().removeLast())
+        else getByPath(path.toMutableList().apply { removeLast() })
