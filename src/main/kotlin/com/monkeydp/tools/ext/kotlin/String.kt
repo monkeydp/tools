@@ -1,7 +1,5 @@
 package com.monkeydp.tools.ext.kotlin
 
-import com.monkeydp.tools.constant.Symbol.BACKSLASH
-import com.monkeydp.tools.constant.Symbol.SLASH
 import com.monkeydp.tools.constant.Symbol.SPACE
 import com.monkeydp.tools.constant.Symbol.UNDERSCORE
 import java.net.URL
@@ -12,6 +10,17 @@ import java.nio.charset.Charset
  * @date 2019/10/30
  */
 fun String.replaceAt(index: Int, replacement: CharSequence) = this.replaceRange(index, index + 1, replacement)
+
+/**
+ * Starts with any prefix in list
+ */
+fun String.startsWithIn(vararg prefixes: String, ignoreCase: Boolean = false): Boolean {
+    prefixes.forEach {
+        if (startsWith(it, ignoreCase))
+            return true
+    }
+    return false
+}
 
 fun String.snakeToUpperCamel() = snakeToCamel(true)
 
@@ -83,8 +92,6 @@ fun String.isAllUpperCase(): Boolean {
     }
     return bool
 }
-
-fun String.toStdPath() = this.replace(BACKSLASH, SLASH)
 
 fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")
 
