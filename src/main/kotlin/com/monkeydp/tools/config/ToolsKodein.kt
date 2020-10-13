@@ -10,6 +10,7 @@ import com.monkeydp.tools.ext.kodein.AbstractKodeinModuleContainer
 import com.monkeydp.tools.ext.logger.getLogger
 import org.apache.commons.exec.DefaultExecutor
 import org.apache.commons.exec.Executor
+import org.apache.commons.validator.routines.UrlValidator
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -32,6 +33,7 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
         ObjectMapper()
                 .registerKotlinModule()
     }
+    bind<UrlValidator>() with singleton { UrlValidator() }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
 
     importAll(*moduleArray, allowOverride = true)

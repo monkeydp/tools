@@ -16,8 +16,10 @@ dependencies {
     api(kotlin("reflect"))
     api(kotlin("stdlib-jdk8"))
 
-    // other tool
+    // apache commons
     implementation("org.apache.commons:commons-lang3:3.8.1")
+    implementation("org.apache.commons:commons-exec:1.3")
+    api("commons-validator:commons-validator:1.7")
     // yaml
     implementation("org.yaml:snakeyaml:1.23")
     // json
@@ -31,8 +33,6 @@ dependencies {
     api("org.reflections:reflections:0.9.11")
     // di
     api("org.kodein.di:kodein-di-generic-jvm:6.4.1")
-    // command line
-    implementation("org.apache.commons:commons-exec:1.3")
     // jakarta
     api("jakarta.validation:jakarta.validation-api:2.0.2")
     // swagger

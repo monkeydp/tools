@@ -3,6 +3,7 @@ package com.monkeydp.tools.global
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.javafaker.Faker
 import com.monkeydp.tools.config.kodein
+import org.apache.commons.validator.routines.UrlValidator
 import org.kodein.di.generic.instance
 import java.nio.charset.Charset
 import java.util.*
@@ -24,6 +25,11 @@ val defaultLocale by lazy {
 val objectMapper by lazy {
     val objectMapper by kodein.instance<ObjectMapper>()
     objectMapper
+}
+
+val urlValidator by lazy {
+    val urlValidator by kodein.instance<UrlValidator>()
+    urlValidator
 }
 
 val faker by lazy {
