@@ -37,6 +37,8 @@ dependencies {
     api("jakarta.validation:jakarta.validation-api:2.0.2")
     // swagger
     api("io.swagger:swagger-annotations:1.5.22")
+    //  servlet
+    api("javax.servlet:javax.servlet-api:4.0.1")
     // faker
     api("com.github.javafaker:javafaker:1.0.2")
     // test
