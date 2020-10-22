@@ -20,6 +20,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.8.1")
     implementation("org.apache.commons:commons-exec:1.3")
     api("commons-validator:commons-validator:1.7")
+    api("commons-io:commons-io:2.4")
     // yaml
     implementation("org.yaml:snakeyaml:1.23")
     // json
