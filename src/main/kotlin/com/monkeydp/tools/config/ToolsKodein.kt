@@ -39,7 +39,7 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
     importAll(*moduleArray, allowOverride = true)
 }
 
-internal val kodein = Kodein {
+internal val kodein = Kodein.lazy {
     import(toolsKodeinModule, allowOverride = true)
     ToolsKodeinModuleContainer.logRegistered()
 }
