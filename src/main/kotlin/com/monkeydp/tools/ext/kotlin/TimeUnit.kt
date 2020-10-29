@@ -1,7 +1,6 @@
 package com.monkeydp.tools.ext.kotlin
 
-import java.util.concurrent.TimeUnit.MILLISECONDS
-import java.util.concurrent.TimeUnit.MINUTES
+import java.util.concurrent.TimeUnit.*
 
 /**
  * @author iPotato-Work
@@ -12,3 +11,9 @@ fun Number.millisToMinutes() =
 
 fun Number.minutesToMillis() =
         MILLISECONDS.convert(this.toLong(), MINUTES)
+
+fun Number.millisToSeconds() =
+        SECONDS.convert(this.toLong(), MILLISECONDS)
+
+fun Number.secondsToMillis() =
+        MILLISECONDS.convert(this.toLong(), SECONDS)
