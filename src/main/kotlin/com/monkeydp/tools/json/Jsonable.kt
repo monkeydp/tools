@@ -8,17 +8,13 @@ import com.monkeydp.tools.ext.jackson.toObject
  * @date 2020/8/10
  */
 interface Jsonable {
-    fun toJson(): String
-}
-
-abstract class BaseJsonable : Jsonable {
-    override fun toJson() =
-            toJsonX()
+    fun toJson() = toJsonX()
 
     private fun Any.toJsonX() =
-            toJson()
+        toJson()
 }
 
-inline fun <reified T : Jsonable> Jsonable.fromJson(json: String): T =
-        json.toObject()
+abstract class BaseJsonable : Jsonable
 
+inline fun <reified T : Jsonable> Jsonable.fromJson(json: String): T =
+    json.toObject()
