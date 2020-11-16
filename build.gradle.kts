@@ -30,7 +30,7 @@ dependencies {
     // log
     implementation("org.slf4j:jul-to-slf4j:1.7.30")
     implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.12.1")
+    api("org.apache.logging.log4j:log4j-to-slf4j:2.12.1")
     // reflection
     api("org.reflections:reflections:0.9.11")
     // di
