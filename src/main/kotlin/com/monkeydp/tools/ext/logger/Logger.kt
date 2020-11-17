@@ -11,14 +11,15 @@ import com.monkeydp.tools.ext.logger.LogLevel.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.Marker
-import java.lang.invoke.MethodHandles
 
 /**
  * Calls [LoggerFactory.getLogger] with the [Class] that contains the call to this method.
  */
 @JvmSynthetic
 inline fun getLogger(): Logger {
-    return LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+    val calledClass =
+        Thread.currentThread().contextClassLoader.loadClass(Thread.currentThread().stackTrace[2].className)
+    return LoggerFactory.getLogger(calledClass)
 }
 
 /**
