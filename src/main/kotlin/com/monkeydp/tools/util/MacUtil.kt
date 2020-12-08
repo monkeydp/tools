@@ -11,7 +11,7 @@ object MacUtil {
 
     fun isMac(cs: CharSequence) =
             cs.length == 12 &&
-                    cs matches "^([0-9A-Fa-f]{2}){5}$"
+                    cs matches "^([0-9A-Fa-f]{2}){6}$"
 
     /**
      * 批量生成唯一的 mac
