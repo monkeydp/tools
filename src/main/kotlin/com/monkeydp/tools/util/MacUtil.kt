@@ -1,12 +1,18 @@
 package com.monkeydp.tools.util
 
 import com.monkeydp.tools.exception.ierror
+import com.monkeydp.tools.ext.kotlin.matches
 
 /**
  * @author iPotato-Work
  * @date 2020/9/17
  */
 object MacUtil {
+
+    fun isMac(cs: CharSequence) =
+            cs.length == 12 &&
+                    cs matches "^([0-9A-Fa-f]{2}){5}$"
+
     /**
      * 批量生成唯一的 mac
      */
@@ -36,3 +42,6 @@ class BatchGenMacConfig {
         }
     var skipMacs: Iterable<String> = setOf<String>()
 }
+
+fun CharSequence.isMac() =
+        MacUtil.isMac(this)
