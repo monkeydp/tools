@@ -9,14 +9,18 @@ import com.monkeydp.tools.ext.kotlin.matches
  */
 object MacUtil {
 
-    fun isMac(cs: CharSequence) =
-            cs.length == 12 &&
-                    cs matches "^([0-9A-Fa-f]{2}){6}$"
+    fun isMac(mac: CharSequence? = null) =
+        mac != null &&
+                mac.length == 12 &&
+                mac matches "^([0-9A-Fa-f]{2}){6}$"
 
     /**
      * 批量生成唯一的 mac
      */
-    fun batchGenerate(number: Int, configInit: (BatchGenMacConfig.() -> Unit)? = null): Set<String> {
+    fun batchGenerate(
+        number: Int,
+        configInit: (BatchGenMacConfig.() -> Unit)? = null
+    ): Set<String> {
         BatchGenMacConfig().apply {
             configInit?.invoke(this)
             var currentMac = initMac.toLong(radix = 16)
@@ -44,4 +48,4 @@ class BatchGenMacConfig {
 }
 
 fun CharSequence.isMac() =
-        MacUtil.isMac(this)
+    MacUtil.isMac(this)
