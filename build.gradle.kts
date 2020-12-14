@@ -4,6 +4,8 @@ plugins {
     // kotlin
     val kotlinVersion = "1.4.10"
     kotlin("jvm") version kotlinVersion
+    // ml
+    id("com.moonlight.gradle.java-maven-publish") version "1.0.1.RELEASE"
 }
 
 
