@@ -1,5 +1,6 @@
 package com.monkeydp.tools.config
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.javafaker.Faker
@@ -30,6 +31,7 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
     bind<ObjectMapper>() with singleton {
         ObjectMapper()
                 .registerKotlinModule()
+                .setSerializationInclusion(NON_NULL)
     }
     bind<UrlValidator>() with singleton { UrlValidator() }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
