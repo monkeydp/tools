@@ -1,10 +1,6 @@
 package com.monkeydp.tools.config
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
-import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.javafaker.Faker
 import com.monkeydp.tools.config.ToolsKodeinModuleContainer.moduleArray
@@ -34,7 +30,6 @@ val toolsKodeinModule = Kodein.Module("toolsKodeinModule") {
     bind<ObjectMapper>() with singleton {
         ObjectMapper()
                 .registerKotlinModule()
-                .setSerializationInclusion(NON_NULL)
     }
     bind<UrlValidator>() with singleton { UrlValidator() }
     bind<Faker>() with singleton { Faker(instance<Locale>()) }
