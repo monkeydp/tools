@@ -9,7 +9,8 @@ import java.nio.charset.Charset
  * @author iPotato
  * @date 2019/10/30
  */
-fun String.replaceAt(index: Int, replacement: CharSequence) = this.replaceRange(index, index + 1, replacement)
+fun String.replaceAt(index: Int, replacement: CharSequence) =
+    this.replaceRange(index, index + 1, replacement)
 
 /**
  * Starts with any prefix in list
@@ -33,38 +34,38 @@ fun String.snakeToLowerCamel() = snakeToCamel(false)
  * false -> lower camel case
  */
 fun String.snakeToCamel(capitalize: Boolean? = null) =
-        this.split(UNDERSCORE)
-                .map { it.camelToList() }
-                .flatten()
-                .mapIndexed { index, str ->
-                    if (index == 0)
-                        when (capitalize) {
-                            null -> {
-                                val first = str[0].toString()
-                                str.toLowerCase().replaceAt(0, first)
-                            }
-                            true -> str.toLowerCase().capitalize()
-                            false -> str.toLowerCase()
-                        }
-                    else str.toLowerCase().capitalize()
-                }.joinToString("")
+    this.split(UNDERSCORE)
+        .map { it.camelToList() }
+        .flatten()
+        .mapIndexed { index, str ->
+            if (index == 0)
+                when (capitalize) {
+                    null -> {
+                        val first = str[0].toString()
+                        str.toLowerCase().replaceAt(0, first)
+                    }
+                    true -> str.toLowerCase().capitalize()
+                    false -> str.toLowerCase()
+                }
+            else str.toLowerCase().capitalize()
+        }.joinToString("")
 
 fun String.camelToSnake(): String =
-        StringBuilder()
-                .also { builder ->
-                    forEachIndexed { index, it ->
-                        if (it.isUpperCase() && index != 0)
-                            builder.append(UNDERSCORE)
-                                    .append(it.toLowerCase())
-                        else builder.append(it)
-                    }
-                }.toString()
+    StringBuilder()
+        .also { builder ->
+            forEachIndexed { index, it ->
+                if (it.isUpperCase() && index != 0)
+                    builder.append(UNDERSCORE)
+                        .append(it.toLowerCase())
+                else builder.append(it)
+            }
+        }.toString()
 
 fun String.snakeToChain(joiner: String): String = split(UNDERSCORE).joinToString(joiner)
 
-fun String.camelToList(): List<String> {
+fun String.camelToMutableList(): MutableList<String> {
 
-    if (isAllUpperCase()) return listOf(this)
+    if (isAllUpperCase()) return mutableListOf(this)
 
     val list = mutableListOf<String>()
     val builder = StringBuilder()
@@ -77,8 +78,11 @@ fun String.camelToList(): List<String> {
     }
     list.add(builder.toString())
     if (list.first().isEmpty()) list.removeFirst()
-    return list.toList()
+    return list
 }
+
+fun String.camelToList(): List<String> =
+    camelToMutableList().toList()
 
 fun String.camelToChain(joiner: String) = camelToList().joinToString(joiner)
 
@@ -97,7 +101,10 @@ fun String.removeExtension() = replaceFirst("[.][^.]+$".toRegex(), "")
 
 fun String.firstOfSnack() = this.split(UNDERSCORE).first()
 
-fun String.camelSeparated(capitalizeEveryWord: Boolean = false, symbol: CharSequence = SPACE): String {
+fun String.camelSeparated(
+    capitalizeEveryWord: Boolean = false,
+    symbol: CharSequence = SPACE
+): String {
     var strings = camelToList()
     if (capitalizeEveryWord) strings = strings.map { it.capitalize() }.toList()
     return strings.joinToString(symbol)
@@ -119,22 +126,22 @@ fun String.asResourceOrNull(): URL? = object {}.javaClass.getResource(this)
 // ==== Wrap ====
 
 fun String.unwrapFromCurlyBraces() =
-        removePrefix("{").removeSuffix("}")
+    removePrefix("{").removeSuffix("}")
 
 fun String.wrapInCurlyBraces() =
-        "{$this}"
+    "{$this}"
 
 
 // ==== Charset ====
 
 fun String.changeCharset(from: Charset, to: Charset) =
-        String(this.toByteArray(from), to)
+    String(this.toByteArray(from), to)
 
 
 // ==== Radix ====
 
 fun String.radixPlus(i: Int, radix: Int = 10) =
-        toLong(radix = radix).plus(i).toString(radix = radix)
+    toLong(radix = radix).plus(i).toString(radix = radix)
 
 fun String.hexPlus(i: Int) =
-        radixPlus(i = i, radix = 16)
+    radixPlus(i = i, radix = 16)
