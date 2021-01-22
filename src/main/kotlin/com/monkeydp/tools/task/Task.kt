@@ -8,7 +8,8 @@ interface Task<ID : Any> {
     val content: String
     val handlerName: String
     val startedAt: Date
-    val runAt: Date
+    val expectedToRunAt: Date
+    val runAt: Date?
     var desc: String
     val info
         get() =
