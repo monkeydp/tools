@@ -2,7 +2,7 @@ package com.monkeydp.tools.task
 
 import kotlin.reflect.KClass
 
-interface TaskHandler<T : Task<*>> {
+interface TaskHandler<T : Task> {
     fun run(task: T)
     fun cancel(task: T)
 
@@ -16,7 +16,7 @@ interface TaskHandler<T : Task<*>> {
     fun clean(tasks: Iterable<T>): Set<T>
 }
 
-abstract class BaseTaskHandler<T : Task<*>> : TaskHandler<T>
+abstract class BaseTaskHandler<T : Task> : TaskHandler<T>
 
 val <T : TaskHandler<*>> KClass<T>.handlerName
     get() = simpleName!!.decapitalize()

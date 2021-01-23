@@ -2,8 +2,7 @@ package com.monkeydp.tools.task
 
 import java.util.*
 
-interface Task<ID : Any> {
-    val id: ID
+interface Task {
     val name: String
     var desc: String
     val content: String
@@ -11,9 +10,6 @@ interface Task<ID : Any> {
     val startedAt: Date
     val expectedToRunAt: Date
     val runAt: Date?
-    val info
-        get() =
-            "Task(id = $id, name = $name, desc = $desc)"
 }
 
 interface TaskContent
