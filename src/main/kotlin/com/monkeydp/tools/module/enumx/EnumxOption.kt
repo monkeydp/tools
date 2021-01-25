@@ -1,4 +1,4 @@
-package com.monkeydp.tools.enumx
+package com.monkeydp.tools.module.enumx
 
 import kotlin.annotation.AnnotationTarget.CLASS
 import kotlin.reflect.KClass

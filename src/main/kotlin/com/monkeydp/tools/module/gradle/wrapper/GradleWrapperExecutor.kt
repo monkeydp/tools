@@ -1,4 +1,4 @@
-package com.monkeydp.tools.gradle.wrapper
+package com.monkeydp.tools.module.gradle.wrapper
 
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.exception.ierror

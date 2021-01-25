@@ -1,9 +1,9 @@
-package com.monkeydp.tools.i18n
+package com.monkeydp.tools.module.i18n
 
 import com.monkeydp.tools.config.kodein
 import com.monkeydp.tools.constant.Symbol.DOT
 import com.monkeydp.tools.constant.Symbol.HYPHEN
-import com.monkeydp.tools.enumx.Enumx
+import com.monkeydp.tools.module.enumx.Enumx
 import com.monkeydp.tools.ext.java.getMessage
 import com.monkeydp.tools.ext.kotlin.camelToChain
 import com.monkeydp.tools.ext.kotlin.snakeToChain

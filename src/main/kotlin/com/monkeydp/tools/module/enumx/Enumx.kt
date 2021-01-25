@@ -1,4 +1,4 @@
-package com.monkeydp.tools.enumx
+package com.monkeydp.tools.module.enumx
 
 import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.kotlin.enumSet

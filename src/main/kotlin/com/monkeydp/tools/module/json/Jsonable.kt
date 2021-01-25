@@ -1,4 +1,4 @@
-package com.monkeydp.tools.json
+package com.monkeydp.tools.module.json
 
 import com.monkeydp.tools.ext.jackson.toJson
 import com.monkeydp.tools.ext.jackson.toObject
