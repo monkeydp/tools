@@ -7,19 +7,19 @@ import java.util.concurrent.TimeUnit.*
  * @date 2020/8/21
  */
 fun Number.millisToSeconds() =
-        SECONDS.convert(this.toLong(), MILLISECONDS)
+        SECONDS.convert(toLong(), MILLISECONDS)
 
 fun Number.secondsToMillis() =
-        MILLISECONDS.convert(this.toLong(), SECONDS)
+        MILLISECONDS.convert(toLong(), SECONDS)
 
 fun Number.millisToMinutes() =
-        MINUTES.convert(this.toLong(), MILLISECONDS)
+        MINUTES.convert(toLong(), MILLISECONDS)
 
 fun Number.minutesToMillis() =
-        MILLISECONDS.convert(this.toLong(), MINUTES)
+        MILLISECONDS.convert(toLong(), MINUTES)
 
 fun Number.millisToHours() =
-        HOURS.convert(this.toLong(), MILLISECONDS)
+        HOURS.convert(toLong(), MILLISECONDS)
 
 fun Number.hoursToMillis() =
-        MILLISECONDS.convert(this.toLong(), HOURS)
+        MILLISECONDS.convert(toLong(), HOURS)

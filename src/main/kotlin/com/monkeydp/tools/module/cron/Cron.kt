@@ -24,16 +24,17 @@ interface Cron {
     val day: CharSequence
     val month: CharSequence
     val week: CharSequence
-    val year: CharSequence?
+    val year: CharSequence
+    val yearOrNull: CharSequence?
 
     val date: Date
 
-    fun plusSeconds(seconds: Int): Cron
-    fun minusSeconds(seconds: Int): Cron
-    fun plusMinutes(minutes: Int): Cron
-    fun minusMinutes(minutes: Int): Cron
-    fun plusHours(hours: Int): Cron
-    fun minusHours(hours: Int): Cron
+    fun plusSeconds(seconds: Long): Cron
+    fun minusSeconds(seconds: Long): Cron
+    fun plusMinutes(minutes: Long): Cron
+    fun minusMinutes(minutes: Long): Cron
+    fun plusHours(hours: Long): Cron
+    fun minusHours(hours: Long): Cron
 
     companion object {
         operator fun invoke(expression: CharSequence): Cron =
@@ -55,26 +56,27 @@ class CronImpl(
     override val day = expsplit[3]
     override val month = expsplit[4]
     override val week = expsplit[5]
-    override val year = expsplit.getOrNull(6)
+    override val year get() = yearOrNull ?: throw NullPointerException()
+    override val yearOrNull = expsplit.getOrNull(6)
 
     override val date
         get() = dateOrNull ?: ierror("Cron expression `$expression` cannot convert to date!")
 
     private val datePattern =
-            if (year == null)
+            if (yearOrNull == null)
                 "$month-$day $hour:$minute:$second"
             else
-                "$year-$month-$day $hour:$minute:$second"
+                "$yearOrNull-$month-$day $hour:$minute:$second"
 
     private val dateFormat =
-            if (year == null)
+            if (yearOrNull == null)
                 MMddHHmmssFormat
             else yyyyMMddHHmmssFormat
 
     private val dateOrNull = run {
         val datetimeParts = mutableListOf(second, minute, hour, day, month)
-        if (year != null)
-            datetimeParts.add(year)
+        if (yearOrNull != null)
+            datetimeParts.add(yearOrNull)
         return@run if (datetimeParts.any { !toString().integerable() })
             null
         else dateFormat.parse(datePattern)
@@ -84,28 +86,28 @@ class CronImpl(
         val date = Date(date.time + millSeconds)
         val expression = date.cronExp {
             week = this@CronImpl.week
-            if (listOf(null, "*").contains(this@CronImpl.year))
-                year = this@CronImpl.year
+            if (listOf(null, "*").contains(this@CronImpl.yearOrNull))
+                year = this@CronImpl.yearOrNull
         }
         return Cron(expression)
     }
 
-    override fun plusSeconds(seconds: Int) =
+    override fun plusSeconds(seconds: Long) =
             plusMillSeconds(seconds.secondsToMillis())
 
-    override fun minusSeconds(seconds: Int) =
+    override fun minusSeconds(seconds: Long) =
             plusSeconds(-seconds)
 
-    override fun plusMinutes(minutes: Int) =
+    override fun plusMinutes(minutes: Long) =
             plusMillSeconds(minutes.minutesToMillis())
 
-    override fun minusMinutes(minutes: Int) =
+    override fun minusMinutes(minutes: Long) =
             plusMinutes(-minutes)
 
-    override fun plusHours(hours: Int) =
+    override fun plusHours(hours: Long) =
             plusMillSeconds(hours.hoursToMillis())
 
-    override fun minusHours(hours: Int) =
+    override fun minusHours(hours: Long) =
             plusHours(-hours)
 }
 
