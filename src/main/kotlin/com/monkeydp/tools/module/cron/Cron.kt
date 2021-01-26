@@ -1,7 +1,6 @@
 package com.monkeydp.tools.module.cron
 
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.java.MMddHHmmssFormat
 import com.monkeydp.tools.ext.java.yearx
 import com.monkeydp.tools.ext.java.yyyyMMddHHmmssFormat
 import com.monkeydp.tools.ext.kotlin.hoursToMillis
@@ -16,7 +15,7 @@ import java.util.*
  * @date 2021/1/25
  */
 interface Cron {
-    val expression: CharSequence
+    val exp: CharSequence
 
     val second: CharSequence
     val minute: CharSequence
@@ -46,9 +45,10 @@ interface Cron {
  * @param datetimePart one of datetime like minute
  */
 class CronImpl(
-        override val expression: CharSequence
+        expression: CharSequence
 ) : Cron {
-    private val expsplit = expression.split(" ")
+    override val exp = expression.trim()
+    private val expsplit = exp.split(" ")
 
     override val second = expsplit[0]
     override val minute = expsplit[1]
@@ -60,24 +60,21 @@ class CronImpl(
     override val yearOrNull = expsplit.getOrNull(6)
 
     override val date
-        get() = dateOrNull ?: ierror("Cron expression `$expression` cannot convert to date!")
+        get() = dateOrNull ?: ierror("Cron expression `$exp` cannot convert to date!")
 
     private val datePattern =
             if (yearOrNull == null)
-                "$month-$day $hour:$minute:$second"
+                "${Date().yearx}-$month-$day $hour:$minute:$second"
             else
                 "$yearOrNull-$month-$day $hour:$minute:$second"
 
-    private val dateFormat =
-            if (yearOrNull == null)
-                MMddHHmmssFormat
-            else yyyyMMddHHmmssFormat
+    private val dateFormat = yyyyMMddHHmmssFormat
 
     private val dateOrNull = run {
         val datetimeParts = mutableListOf(second, minute, hour, day, month)
         if (yearOrNull != null)
             datetimeParts.add(yearOrNull)
-        return@run if (datetimeParts.any { !toString().integerable() })
+        return@run if (datetimeParts.any { !it.integerable() })
             null
         else dateFormat.parse(datePattern)
     }
@@ -121,8 +118,8 @@ fun Date.cronExp(options: CronExpOptions) =
                 "" -> this@cronExp.yearx
                 else -> year
             }
-            SimpleDateFormat("ss mm HH dd MM $week $year".trim())
-                    .format(this)
+            SimpleDateFormat("ss mm HH dd MM $week ${year ?: ""}".trim())
+                    .format(this@cronExp)
         }
 
 class CronExpOptions(init: (CronExpOptions.() -> Unit)? = null) {
