@@ -1,9 +1,10 @@
 package com.monkeydp.tools.ext.java
 
 import com.monkeydp.tools.exception.ierror
+import com.monkeydp.tools.ext.java.util.toDate
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Calendar.YEAR
+import java.util.Calendar.*
 import kotlin.math.floor
 
 /**
@@ -49,3 +50,50 @@ fun Date.pretty(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
         else -> SimpleDateFormat(pattern).format(this)
     }
 }
+
+fun Date.plus(field: Int, amount: Int) =
+        toCalendar().apply {
+            add(field, amount)
+        }.toDate()
+
+fun Date.plusYear(amount: Int) =
+        plus(YEAR, amount)
+
+fun Date.minusYear(amount: Int) =
+        plusYear(-amount)
+
+fun Date.plusMouth(amount: Int) =
+        plus(MONTH, amount)
+
+fun Date.minusMouth(amount: Int) =
+        plusMouth(-amount)
+
+fun Date.plusDay(amount: Int) =
+        plus(DATE, amount)
+
+fun Date.minusDay(amount: Int) =
+        plusDay(-amount)
+
+fun Date.plusHour(amount: Int) =
+        plus(HOUR, amount)
+
+fun Date.minusHour(amount: Int) =
+        plusHour(-amount)
+
+fun Date.plusMinute(amount: Int) =
+        plus(MINUTE, amount)
+
+fun Date.minusMinute(amount: Int) =
+        plusMinute(-amount)
+
+fun Date.plusSecond(amount: Int) =
+        plus(SECOND, amount)
+
+fun Date.minusSecond(amount: Int) =
+        plusSecond(-amount)
+
+fun Date.plusMillis(amount: Int) =
+        plus(MILLISECOND, amount)
+
+fun Date.minusMillis(amount: Int) =
+        plusMillis(-amount)

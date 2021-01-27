@@ -49,8 +49,11 @@ dependencies {
     // swagger
     api("io.swagger:swagger-annotations:1.5.22")
 
-    //  servlet
+    // servlet
     api("javax.servlet:javax.servlet-api:4.0.1")
+
+    // cron
+    implementation("com.cronutils:cron-utils:9.1.3")
 
     // faker
     api("com.github.javafaker:javafaker:1.0.2")
