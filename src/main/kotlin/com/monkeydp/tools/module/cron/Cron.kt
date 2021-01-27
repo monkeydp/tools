@@ -7,6 +7,7 @@ import com.monkeydp.tools.ext.kotlin.hoursToMillis
 import com.monkeydp.tools.ext.kotlin.integerable
 import com.monkeydp.tools.ext.kotlin.minutesToMillis
 import com.monkeydp.tools.ext.kotlin.secondsToMillis
+import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,6 +28,9 @@ interface Cron {
     val yearOrNull: CharSequence?
 
     val date: Date
+    val dateOrNull: Date?
+    val time: Time
+    val timeOrNull: Time?
 
     fun plusSeconds(seconds: Long): Cron
     fun minusSeconds(seconds: Long): Cron
@@ -59,24 +63,30 @@ class CronImpl(
     override val year get() = yearOrNull ?: throw NullPointerException()
     override val yearOrNull = expsplit.getOrNull(6)
 
+    private val datePattern = if (yearOrNull == null) "${Date().yearx}-$month-$day" else "$yearOrNull-$month-$day"
+    private val timePattern = "$hour:$minute:$second"
+    private val datetimePattern = "$datePattern $timePattern"
+
     override val date
         get() = dateOrNull ?: ierror("Cron expression `$exp` cannot convert to date!")
 
-    private val datePattern =
-            if (yearOrNull == null)
-                "${Date().yearx}-$month-$day $hour:$minute:$second"
-            else
-                "$yearOrNull-$month-$day $hour:$minute:$second"
-
-    private val dateFormat = yyyyMMddHHmmssFormat
-
-    private val dateOrNull = run {
+    override val dateOrNull = run {
         val datetimeParts = mutableListOf(second, minute, hour, day, month)
         if (yearOrNull != null)
             datetimeParts.add(yearOrNull)
         return@run if (datetimeParts.any { !it.integerable() })
             null
-        else dateFormat.parse(datePattern)
+        else yyyyMMddHHmmssFormat.parse(datetimePattern)
+    }
+
+    override val time
+        get() = timeOrNull ?: ierror("Cron expression `$exp` cannot convert to time!")
+
+    override val timeOrNull = run {
+        val datetimeParts = mutableListOf(second, minute, hour)
+        return@run if (datetimeParts.any { !it.integerable() })
+            null
+        else Time.valueOf(timePattern)
     }
 
     private fun plusMillSeconds(millSeconds: Long): Cron {
