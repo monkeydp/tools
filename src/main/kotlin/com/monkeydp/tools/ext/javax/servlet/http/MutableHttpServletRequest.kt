@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext.javax.servlet
+package com.monkeydp.tools.ext.javax.servlet.http
 
 import java.util.*
 import javax.servlet.http.HttpServletRequest

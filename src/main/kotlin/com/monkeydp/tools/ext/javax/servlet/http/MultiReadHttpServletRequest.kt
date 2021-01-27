@@ -1,4 +1,4 @@
-package com.monkeydp.tools.ext.javax.servlet
+package com.monkeydp.tools.ext.javax.servlet.http
 
 import org.apache.commons.io.IOUtils
 import java.io.BufferedReader
