@@ -66,13 +66,13 @@ dependencies {
 tasks {
     compileKotlin {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
+            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xopt-in=kotlin.time.ExperimentalTime")
             jvmTarget = "1.8"
         }
     }
     compileTestKotlin {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
+            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xopt-in=kotlin.time.ExperimentalTime")
             jvmTarget = "1.8"
         }
     }

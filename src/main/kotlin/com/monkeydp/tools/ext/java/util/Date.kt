@@ -2,6 +2,7 @@ package com.monkeydp.tools.ext.java
 
 import com.monkeydp.tools.exception.ierror
 import com.monkeydp.tools.ext.java.util.toDate
+import org.apache.commons.lang3.time.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
@@ -51,9 +52,13 @@ fun Date.pretty(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
     }
 }
 
-fun Date.plus(field: Int, amount: Int) =
+/**
+ * @param unit the calendar unit like Calendar.YEAR
+ * @param amount the amount of date or time to be added to the field
+ */
+fun Date.plus(unit: Int, amount: Int) =
         toCalendar().apply {
-            add(field, amount)
+            add(unit, amount)
         }.toDate()
 
 fun Date.plusYear(amount: Int) =
@@ -97,3 +102,24 @@ fun Date.plusMillis(amount: Int) =
 
 fun Date.minusMillis(amount: Int) =
         plusMillis(-amount)
+
+
+/**
+ * 向上取整
+ *
+ * 比如 19:05:15 -> 19:06:00
+ *
+ * @param field  like Calendar.MINUTE
+ */
+fun Date.ceil(field: Int) =
+        DateUtils.ceiling(this, field)
+
+/**
+ * 向下取整
+ *
+ * 比如 19:05:15 -> 19:05:00
+ *
+ * @param field  like Calendar.MINUTE
+ */
+fun Date.floor(field: Int) =
+        DateUtils.ceiling(minusMinute(1), field)
