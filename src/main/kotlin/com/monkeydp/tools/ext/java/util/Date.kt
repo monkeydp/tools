@@ -56,49 +56,49 @@ fun Date.pretty(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
  * @param unit the calendar unit like Calendar.YEAR
  * @param amount the amount of date or time to be added to the field
  */
-fun Date.plus(unit: Int, amount: Int) =
+fun Date.plus(amount: Int, unit: Int) =
         toCalendar().apply {
             add(unit, amount)
         }.toDate()
 
 fun Date.plusYear(amount: Int) =
-        plus(YEAR, amount)
+        plus(amount, YEAR)
 
 fun Date.minusYear(amount: Int) =
         plusYear(-amount)
 
 fun Date.plusMouth(amount: Int) =
-        plus(MONTH, amount)
+        plus(amount, MONTH)
 
 fun Date.minusMouth(amount: Int) =
         plusMouth(-amount)
 
 fun Date.plusDay(amount: Int) =
-        plus(DATE, amount)
+        plus(amount, DATE)
 
 fun Date.minusDay(amount: Int) =
         plusDay(-amount)
 
 fun Date.plusHour(amount: Int) =
-        plus(HOUR, amount)
+        plus(amount, HOUR)
 
 fun Date.minusHour(amount: Int) =
         plusHour(-amount)
 
 fun Date.plusMinute(amount: Int) =
-        plus(MINUTE, amount)
+        plus(amount, MINUTE)
 
 fun Date.minusMinute(amount: Int) =
         plusMinute(-amount)
 
 fun Date.plusSecond(amount: Int) =
-        plus(SECOND, amount)
+        plus(amount, SECOND)
 
 fun Date.minusSecond(amount: Int) =
         plusSecond(-amount)
 
 fun Date.plusMillis(amount: Int) =
-        plus(MILLISECOND, amount)
+        plus(amount, MILLISECOND)
 
 fun Date.minusMillis(amount: Int) =
         plusMillis(-amount)
