@@ -123,3 +123,15 @@ fun Date.ceil(field: Int) =
  */
 fun Date.floor(field: Int) =
         DateUtils.ceiling(minusMinute(1), field)
+
+/**
+ * 四舍五入
+ *
+ * 比如
+ * - 19:05:15 -> 19:05:00
+ * - 19:05:30 -> 19:06:00
+ *
+ * @param field  like Calendar.MINUTE
+ */
+fun Date.round(field: Int) =
+        DateUtils.round(this, field)
