@@ -15,11 +15,11 @@ inline fun <reified E : Enum<*>> E.toDeclaredPropMap() =
         E::class.declaredMemberProperties.map { it.name to it.get(this) }.toMap()
 
 
-fun <E : Enum<E>> KClass<E>.valueOfOrNull(name: String?, caseSensitive: Boolean = false) =
+fun <E : Enum<E>> KClass<E>.findByNameOrNull(name: String?, caseSensitive: Boolean = false) =
         if (name == null) null
         else enumSet().singleOrNull() { it.name == transformEnumName(name, caseSensitive) }
 
-fun <E : Enum<E>> KClass<E>.valueOf(name: String, caseSensitive: Boolean = false) =
+fun <E : Enum<E>> KClass<E>.findByName(name: String, caseSensitive: Boolean = false) =
         enumSet().single { it.name == transformEnumName(name, caseSensitive) }
 
 fun transformEnumName(enumName: String, caseSensitive: Boolean = false) =

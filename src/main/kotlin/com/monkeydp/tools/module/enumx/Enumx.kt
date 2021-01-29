@@ -20,7 +20,7 @@ fun <C : Enumx<*>, K : KClass<out C>> K.recurFindEnum(
         enumName: String,
         caseSensitive: Boolean = false
 ): C = recurFindEnumOrNull(enumName, caseSensitive)
-       ?: ierror("No such enum named `$enumName` in `$this` and it's parent.")
+        ?: ierror("No such enum named `$enumName` in `$this` and it's parent.")
 
 /**
  * @param C enum contract
@@ -30,7 +30,7 @@ tailrec fun <C : Enumx<*>, K : KClass<out C>> K.recurFindEnumOrNull(
         enumName: String,
         caseSensitive: Boolean = false
 ): C? {
-    var enum = valueOfOrNullX(enumName, caseSensitive)
+    var enum = findByNameOrNull(enumName, caseSensitive)
     if (enum != null) return enum as C
 
     val parent = findAnnotOrNull<EnumxOption>()?.parent
@@ -39,8 +39,8 @@ tailrec fun <C : Enumx<*>, K : KClass<out C>> K.recurFindEnumOrNull(
     return (parent as KClass<out C>).recurFindEnumOrNull(enumName, caseSensitive)
 }
 
-fun <E : Enumx<out E>> KClass<out E>.valueOfOrNullX(name: String, caseSensitive: Boolean = false) =
+fun <E : Enumx<out E>> KClass<out E>.findByNameOrNull(name: String, caseSensitive: Boolean = false) =
         enumSet().singleOrNull() { it.asEnum().name == transformEnumName(name, caseSensitive) }
 
-fun <E : Enumx<out E>> KClass<out E>.valueOfX(name: String, caseSensitive: Boolean = false) =
+fun <E : Enumx<out E>> KClass<out E>.findByName(name: String, caseSensitive: Boolean = false) =
         enumSet().single() { it.asEnum().name == transformEnumName(name, caseSensitive) }
