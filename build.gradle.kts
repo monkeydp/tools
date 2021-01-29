@@ -1,6 +1,7 @@
 import org.gradle.api.JavaVersion.VERSION_1_8
 
 plugins {
+    `maven-publish`
     // kotlin
     val kotlinVersion = "1.4.10"
     kotlin("jvm") version kotlinVersion
