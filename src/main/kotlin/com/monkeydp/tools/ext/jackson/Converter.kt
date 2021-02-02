@@ -24,16 +24,22 @@ fun <T> Any.convertValue(typeRef: TypeReference<T>) =
 inline fun <reified T> Iterable<Any>.convertValue() =
         map { objectMapper.convertValue<T>(it) }.toList()
 
-fun Any.toJson(cfg: (ToJsonConfig.() -> Unit)? = null) =
-        ToJsonConfig().run {
-            cfg?.invoke(this)
+fun Any.toJson(options: (ToJsonOptions.() -> Unit)? = null) =
+        ToJsonOptions(options).run {
             objectMapper.copy()
                     .writerWithView(view?.java)
                     .writeValueAsString(this@toJson)
         }
 
-class ToJsonConfig {
+class ToJsonOptions {
     var view: KClass<*>? = null
+
+    companion object {
+        operator fun invoke(init: (ToJsonOptions.() -> Unit)? = null) =
+                ToJsonOptions().apply {
+                    init?.invoke(this)
+                }
+    }
 }
 
 fun <T> String.toObject(clazz: Class<T>): T =
