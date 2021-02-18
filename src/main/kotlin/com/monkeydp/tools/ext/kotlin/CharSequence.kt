@@ -6,3 +6,9 @@ package com.monkeydp.tools.ext.kotlin
  */
 infix fun CharSequence.matches(pattern: String) =
         matches(Regex(pattern))
+
+fun CharSequence.toInt() =
+        Integer.parseInt(toString())
+
+fun CharSequence.toLong() =
+        java.lang.Long.parseLong(toString())
