@@ -12,17 +12,20 @@ import kotlin.math.floor
  * @author iPotato-Work
  * @date 2020/8/10
  */
-val HHmmssFormat = SimpleDateFormat("HH:mm:ss")
+const val HHmmss = "HH:mm:ss"
+val HHmmssFormat = SimpleDateFormat(HHmmss)
+
+const val MMddHHmmss = "MM-dd HH:mm:ss"
+val MMddHHmmssFormat = SimpleDateFormat(MMddHHmmss)
+
+const val yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss"
+val yyyyMMddHHmmssFormat = SimpleDateFormat(yyyyMMddHHmmss)
 
 val Date.HHmmss
     get() = HHmmssFormat.format(this)
 
-val MMddHHmmssFormat = SimpleDateFormat("MM-dd HH:mm:ss")
-
 val Date.MMddHHmmss
     get() = MMddHHmmssFormat.format(this)
-
-val yyyyMMddHHmmssFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
 val Date.yyyyMMddHHmmss
     get() = yyyyMMddHHmmssFormat.format(this)
@@ -32,11 +35,11 @@ val Date.yearx
         toCalendar().get(YEAR)
 
 fun Date.toCalendar() =
-        Calendar.getInstance().also {
+        getInstance().also {
             it.setTime(this)
         }
 
-fun Date.pretty(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
+fun Date.pretty(pattern: String = yyyyMMddHHmmss): String {
     val now = Date()
     if (now < this)
         ierror("Time must be earlier than now. Time: $time, now: ${now.time}")
