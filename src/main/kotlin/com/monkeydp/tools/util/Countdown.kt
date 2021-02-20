@@ -14,7 +14,7 @@ object Countdown {
             time.toSeconds(unit).let {
                 LeftTime(
                         days = time.toDays(unit),
-                        hours = it / (60 * 60),
+                        hours = it / (60 * 60) % 24,
                         minutes = (it / 60) % 60,
                         seconds = it % 60,
                 )
