@@ -1,7 +1,6 @@
 package com.monkeydp.tools.ext.java
 
 import com.monkeydp.tools.exception.ierror
-import com.monkeydp.tools.ext.java.util.toDate
 import org.apache.commons.lang3.time.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,7 +61,7 @@ fun Date.pretty(pattern: String = yyyyMMddHHmmss): String {
 fun Date.plus(amount: Int, unit: Int) =
         toCalendar().apply {
             add(unit, amount)
-        }.toDate()
+        }.time
 
 fun Date.plusYear(amount: Int) =
         plus(amount, YEAR)
